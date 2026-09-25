@@ -1,0 +1,35 @@
+CASE "CASE-2026-001"
+
+TARGET "DEMO-WINDOWS-ENDPOINT"
+
+COLLECT registry
+WHERE path MATCHES "Run|RunOnce"
+
+COLLECT process
+WHERE parent == "explorer.exe"
+
+COLLECT eventlog
+WHERE event_id IN [4688, 7045]
+
+COLLECT network
+
+COLLECT filesystem
+
+CORRELATE
+    registry
+    WITH process
+    WITH eventlog
+    WITH network
+    WITH filesystem
+
+ANALYZE forensic_vector
+
+CALCULATE threat_score
+
+VERIFY tamper
+
+HASH evidence
+
+CHAIN evidence
+
+REPORT

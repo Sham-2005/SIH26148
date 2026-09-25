@@ -1,0 +1,64 @@
+services:
+  database:
+    image: postgres:16-alpine
+    container_name: jocky-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: jocky_user
+      POSTGRES_PASSWORD: jocky_password
+      POSTGRES_DB: jocky_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U jocky_user -d jocky_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: jocky-backend
+    restart: unless-stopped
+    depends_on:
+      database:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://jocky_user:jocky_password@database:5432/jocky_db
+      SECRET_KEY: dev_secret_key_change_in_production_jocky_2026
+      ENVIRONMENT: development
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./evidence_storage:/app/evidence_storage
+      - ./reports_output:/app/reports_output
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: jocky-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "5173:5173"
+
+  agent-sim:
+    build:
+      context: .
+      dockerfile: agent/Dockerfile
+    container_name: jocky-agent-sim
+    restart: unless-stopped
+    depends_on:
+      - backend
+    environment:
+      BACKEND_URL: http://backend:8000
+      AGENT_NAME: Agent-Sim-01
+      PLATFORM: Linux
+
+volumes:
+  pgdata:

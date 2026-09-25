@@ -1,0 +1,19 @@
+script SystemInvestigation {
+    // Collect fundamental endpoint metadata
+    system.info();
+
+    // Query hostname and platform identifiers
+    system.hostname();
+
+    // Enumerate active processes and associated users
+    process.list();
+
+    // Enumerate open connections and network sockets
+    network.connections();
+
+    // Enumerate active network adapters
+    network.interfaces();
+
+    // Explicitly seal evidence
+    evidence.collect();
+}

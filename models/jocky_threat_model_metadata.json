@@ -1,0 +1,102 @@
+{
+  "model_name": "JOCKY-Forensic-Threat-Classifier",
+  "model_version": "1.0.0",
+  "algorithm": "RandomForestClassifier",
+  "sha256_hash": "ad2af1bb04690f3b0e5cc81b3efc6a9a60c3c0c8e4838abd5a37a36483510102",
+  "feature_schema_version": "1.0",
+  "feature_names": [
+    "process_count",
+    "suspicious_process_count",
+    "temp_path_process_count",
+    "connection_count",
+    "external_connection_count",
+    "suspicious_port_count",
+    "persistence_count",
+    "suspicious_persistence_count",
+    "file_count",
+    "pe_anomaly_count",
+    "suspicious_file_count",
+    "ioc_count",
+    "malicious_ioc_count",
+    "suspicious_ioc_count",
+    "ip_ioc_count",
+    "hash_ioc_count",
+    "timeline_event_count",
+    "security_event_count",
+    "cti_match_count",
+    "mitre_technique_count",
+    "tamper_event_count"
+  ],
+  "class_labels": {
+    "0": "NORMAL",
+    "1": "SUSPICIOUS",
+    "2": "MALICIOUS"
+  },
+  "training_dataset": "data/ml/jocky_threat_training.csv",
+  "sample_count": 2000,
+  "train_count": 1600,
+  "test_count": 400,
+  "random_seed": 42,
+  "hyperparameters": {
+    "n_estimators": 100,
+    "max_depth": 10,
+    "class_weight": "balanced"
+  },
+  "metrics": {
+    "evaluation_type": "Synthetic Demonstration Evaluation",
+    "disclaimer": "Metrics evaluated on synthetic forensic datasets for demonstration and verification purposes only. Model is strictly designed as human-in-the-loop decision support and must never trigger autonomous containment or response actions.",
+    "accuracy": 1.0,
+    "precision_macro": 1.0,
+    "recall_macro": 1.0,
+    "f1_macro": 1.0,
+    "precision_weighted": 1.0,
+    "recall_weighted": 1.0,
+    "f1_weighted": 1.0,
+    "confusion_matrix": [
+      [
+        200,
+        0,
+        0
+      ],
+      [
+        0,
+        120,
+        0
+      ],
+      [
+        0,
+        0,
+        80
+      ]
+    ],
+    "classes": [
+      "NORMAL",
+      "SUSPICIOUS",
+      "MALICIOUS"
+    ]
+  },
+  "feature_importance": {
+    "process_count": 0.0007,
+    "suspicious_process_count": 0.0846,
+    "temp_path_process_count": 0.0118,
+    "connection_count": 0.003,
+    "external_connection_count": 0.0081,
+    "suspicious_port_count": 0.0148,
+    "persistence_count": 0.0037,
+    "suspicious_persistence_count": 0.151,
+    "file_count": 0.0002,
+    "pe_anomaly_count": 0.0361,
+    "suspicious_file_count": 0.0774,
+    "ioc_count": 0.15,
+    "malicious_ioc_count": 0.1462,
+    "suspicious_ioc_count": 0.0623,
+    "ip_ioc_count": 0.0258,
+    "hash_ioc_count": 0.0138,
+    "timeline_event_count": 0.0247,
+    "security_event_count": 0.0774,
+    "cti_match_count": 0.0068,
+    "mitre_technique_count": 0.0988,
+    "tamper_event_count": 0.0027
+  },
+  "training_timestamp": "2026-09-24T06:43:40.666700+00:00"
+}

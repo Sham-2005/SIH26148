@@ -1,0 +1,361 @@
+{
+  "project": "SIH26148 \u2014 JOCKY Defensive Digital-Forensics Framework",
+  "phase": "PHASE 8: Final Validation, Testing, Benchmarking, Documentation & Release Certification",
+  "timestamp": "2026-09-23T15:02:59Z",
+  "environment": {
+    "python_version": "3.12.10",
+    "os_platform": "win32",
+    "project_root": "."
+  },
+  "overall_status": "PASS",
+  "release_decision": "CERTIFIED",
+  "stages": {
+    "pytest_regression": {
+      "status": "PASS",
+      "duration_seconds": 9.27,
+      "return_code": 0,
+      "summary": "============================= 114 passed in 8.39s =============================",
+      "output_tail": [
+        "tests/test_phase8_validation.py::test_api_security_headers_and_error_structure PASSED [ 93%]",
+        "tests/test_phase8_validation.py::test_agent_isolation_and_replay_protection PASSED [ 94%]",
+        "tests/test_phase8_validation.py::test_malformed_stix_bundle_rejection PASSED [ 95%]",
+        "tests/test_phase8_validation.py::test_sensitive_secret_redaction PASSED  [ 96%]",
+        "tests/test_phase8_validation.py::test_temporal_causality_anomaly_detection PASSED [ 97%]",
+        "tests/test_phase8_validation.py::test_multi_agent_heterogeneous_fleet PASSED [ 98%]",
+        "tests/test_phase8_validation.py::test_database_schema_and_foreign_keys PASSED [ 99%]",
+        "tests/test_phase8_validation.py::test_configuration_integrity_and_simulation PASSED [100%]",
+        "",
+        "============================= 114 passed in 8.39s ============================="
+      ]
+    },
+    "compiler_certification": {
+      "status": "PASS",
+      "duration_seconds": 0.002,
+      "plan_hash": "22021b4633f0bafc7f27f6a8a403fe48ae4c29f121519ea6c5d3e536bb8273fe",
+      "deterministic": true
+    },
+    "api_standards": {
+      "status": "PASS",
+      "duration_seconds": 0.06,
+      "findings": []
+    },
+    "cryptographic_integrity": {
+      "status": "PASS",
+      "duration_seconds": 0.03,
+      "details": {
+        "audit_chain_valid": true,
+        "tamper_event_recorded": true
+      }
+    },
+    "database_audit": {
+      "status": "PASS",
+      "duration_seconds": 0.305,
+      "audit_summary": {
+        "total_checks": 10,
+        "passed_checks": 10,
+        "failed_checks": 0,
+        "warning_checks": 0
+      },
+      "checks": {
+        "sqlite_foreign_key_pragma": "PASS",
+        "orphaned_tasks": "PASS",
+        "orphaned_evidence": "PASS",
+        "orphaned_findings": "PASS",
+        "orphaned_playbooks": "PASS",
+        "audit_hash_chain_integrity": "PASS",
+        "evidence_envelope_signatures": "PASS",
+        "evidence_case_chains": "PASS",
+        "playbook_integrity": "PASS",
+        "report_manifest_integrity": "PASS"
+      }
+    },
+    "report_validation": {
+      "status": "PASS",
+      "duration_seconds": 0.116,
+      "formats": {
+        "export_json": "OK (1215 bytes)",
+        "export_html": "OK (4753 bytes)",
+        "export_pdf": "OK (3285 bytes)",
+        "report_generate": "OK"
+      }
+    },
+    "benchmarks_and_load": {
+      "status": "PASS",
+      "duration_seconds": 4.77,
+      "benchmark_data": {
+        "overall_status": "PASS",
+        "timestamp": "2026-09-23T15:03:14Z",
+        "compiler": {
+          "status": "PASS",
+          "target_ms": 1000.0,
+          "stages": {
+            "lexer": {
+              "count": 30,
+              "min": 0.045,
+              "max": 0.064,
+              "mean": 0.048,
+              "median": 0.047,
+              "p95": 0.062,
+              "p99": 0.064
+            },
+            "parser": {
+              "count": 30,
+              "min": 0.012,
+              "max": 0.025,
+              "mean": 0.013,
+              "median": 0.013,
+              "p95": 0.016,
+              "p99": 0.025
+            },
+            "semantic_analyzer": {
+              "count": 30,
+              "min": 0.003,
+              "max": 0.016,
+              "mean": 0.004,
+              "median": 0.004,
+              "p95": 0.005,
+              "p99": 0.016
+            },
+            "codegen": {
+              "count": 30,
+              "min": 0.015,
+              "max": 0.058,
+              "mean": 0.019,
+              "median": 0.016,
+              "p95": 0.024,
+              "p99": 0.058
+            },
+            "total_compilation": {
+              "count": 30,
+              "min": 0.077,
+              "max": 0.163,
+              "mean": 0.084,
+              "median": 0.08,
+              "p95": 0.098,
+              "p99": 0.163
+            }
+          }
+        },
+        "security_integrity": {
+          "status": "PASS",
+          "target_ms": 1000.0,
+          "metrics": {
+            "audit_append": {
+              "count": 50,
+              "min": 0.739,
+              "max": 2.842,
+              "mean": 0.917,
+              "median": 0.802,
+              "p95": 1.594,
+              "p99": 2.842
+            },
+            "audit_chain_verification_100": {
+              "count": 20,
+              "min": 12.096,
+              "max": 15.017,
+              "mean": 13.704,
+              "median": 13.752,
+              "p95": 15.017,
+              "p99": 15.017
+            },
+            "evidence_chain_verification_50": {
+              "count": 20,
+              "min": 1.537,
+              "max": 3.152,
+              "mean": 1.785,
+              "median": 1.601,
+              "p95": 3.152,
+              "p99": 3.152
+            }
+          }
+        },
+        "backend_api": {
+          "status": "PASS",
+          "endpoints": {
+            "health_check": {
+              "status": "PASS",
+              "target_ms": 100.0,
+              "metrics": {
+                "count": 20,
+                "min": 2.562,
+                "max": 29.252,
+                "mean": 8.565,
+                "median": 4.461,
+                "p95": 29.252,
+                "p99": 29.252
+              }
+            },
+            "case_list": {
+              "status": "PASS",
+              "target_ms": 250.0,
+              "metrics": {
+                "count": 20,
+                "min": 4.053,
+                "max": 30.954,
+                "mean": 11.895,
+                "median": 7.857,
+                "p95": 30.954,
+                "p99": 30.954
+              }
+            },
+            "agent_tasks_poll": {
+              "status": "PASS",
+              "target_ms": 250.0,
+              "metrics": {
+                "count": 20,
+                "min": 4.216,
+                "max": 36.962,
+                "mean": 14.243,
+                "median": 8.281,
+                "p95": 36.962,
+                "p99": 36.962
+              }
+            },
+            "investigation_summary": {
+              "status": "PASS",
+              "target_ms": 500.0,
+              "metrics": {
+                "count": 20,
+                "min": 7.242,
+                "max": 81.546,
+                "mean": 18.836,
+                "median": 11.751,
+                "p95": 81.546,
+                "p99": 81.546
+              }
+            },
+            "investigation_iocs": {
+              "status": "PASS",
+              "target_ms": 500.0,
+              "metrics": {
+                "count": 20,
+                "min": 2.804,
+                "max": 24.225,
+                "mean": 8.599,
+                "median": 5.163,
+                "p95": 24.225,
+                "p99": 24.225
+              }
+            },
+            "investigation_correlations": {
+              "status": "PASS",
+              "target_ms": 500.0,
+              "metrics": {
+                "count": 20,
+                "min": 3.861,
+                "max": 31.625,
+                "mean": 11.473,
+                "median": 7.107,
+                "p95": 31.625,
+                "p99": 31.625
+              }
+            },
+            "integrity_scorecard": {
+              "status": "PASS",
+              "target_ms": 1000.0,
+              "metrics": {
+                "count": 20,
+                "min": 2.51,
+                "max": 30.57,
+                "mean": 6.85,
+                "median": 3.901,
+                "p95": 30.57,
+                "p99": 30.57
+              }
+            },
+            "report_export_json": {
+              "status": "PASS",
+              "target_ms": 3000.0,
+              "metrics": {
+                "count": 20,
+                "min": 7.118,
+                "max": 38.599,
+                "mean": 16.656,
+                "median": 10.751,
+                "p95": 38.599,
+                "p99": 38.599
+              }
+            },
+            "report_export_html": {
+              "status": "PASS",
+              "target_ms": 3000.0,
+              "metrics": {
+                "count": 20,
+                "min": 6.679,
+                "max": 38.196,
+                "mean": 17.201,
+                "median": 11.687,
+                "p95": 38.196,
+                "p99": 38.196
+              }
+            }
+          }
+        },
+        "agent_concurrency_load": {
+          "status": "PASS",
+          "scenarios": {
+            "fleet_6_agents": {
+              "fleet_size": 6,
+              "status": "PASS",
+              "wall_time_ms": 104.14,
+              "throughput_req_per_sec": 57.61,
+              "poll_latencies_ms": {
+                "count": 6,
+                "min": 5.888,
+                "max": 33.768,
+                "mean": 17.355,
+                "median": 14.637,
+                "p95": 33.768,
+                "p99": 33.768
+              }
+            },
+            "fleet_10_agents": {
+              "fleet_size": 10,
+              "status": "PASS",
+              "wall_time_ms": 140.9,
+              "throughput_req_per_sec": 70.97,
+              "poll_latencies_ms": {
+                "count": 10,
+                "min": 7.921,
+                "max": 35.036,
+                "mean": 14.088,
+                "median": 9.768,
+                "p95": 35.036,
+                "p99": 35.036
+              }
+            },
+            "fleet_25_agents": {
+              "fleet_size": 25,
+              "status": "PASS",
+              "wall_time_ms": 250.03,
+              "throughput_req_per_sec": 99.99,
+              "poll_latencies_ms": {
+                "count": 25,
+                "min": 5.109,
+                "max": 36.41,
+                "mean": 10.0,
+                "median": 6.235,
+                "p95": 33.6,
+                "p99": 36.41
+              }
+            }
+          }
+        }
+      }
+    },
+    "frontend_build": {
+      "status": "PASS",
+      "duration_seconds": 3.35,
+      "return_code": 0,
+      "output_tail": [
+        "rendering chunks...",
+        "computing gzip size...",
+        "\u001b[2mdist/\u001b[22m\u001b[32mindex.html                 \u001b[39m\u001b[1m\u001b[2m  0.78 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m \u00e2\u201d\u201a gzip:  0.46 kB\u001b[22m",
+        "\u001b[2mdist/\u001b[22m\u001b[35massets/index-CKo0mkbr.css  \u001b[39m\u001b[1m\u001b[2m  1.87 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m \u00e2\u201d\u201a gzip:  0.84 kB\u001b[22m",
+        "\u001b[2mdist/\u001b[22m\u001b[36massets/index-Bj-r-pQj.js   \u001b[39m\u001b[1m\u001b[2m280.49 kB\u001b[22m\u001b[1m\u001b[22m\u001b[2m \u00e2\u201d\u201a gzip: 73.60 kB\u001b[22m",
+        "\u001b[32m\u00e2\u0153\u201c built in 1.68s\u001b[39m"
+      ]
+    }
+  },
+  "total_duration_seconds": 17.91
+}
