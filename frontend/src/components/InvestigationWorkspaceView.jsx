@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {
+  X,
   Shield,
   ShieldCheck,
   ShieldAlert,
@@ -330,9 +331,7 @@ REPORT "Suspicious Endpoint Forensics"`;
           <button
             onClick={() => setNotice(null)}
             style={{ background: 'transparent', border: 'none', color: '#667085', cursor: 'pointer', fontSize: '0.8rem' }}
-          >
-            ✕
-          </button>
+          ><X size={15} /></button>
         </div>
       )}
 
@@ -347,10 +346,10 @@ REPORT "Suspicious Endpoint Forensics"`;
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-              <span style={{ fontSize: '0.75rem', color: '#2563EB', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 700 }}>
+              <span style={{ fontSize: '0.75rem', color: '#166534', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 700 }}>
                 INVESTIGATION WORKSPACE
               </span>
-              <span style={{ fontSize: '0.72rem', background: '#EFF6FF', color: '#2563EB', padding: '0.1rem 0.45rem', borderRadius: '4px', border: '1px solid #BFDBFE', fontWeight: 600 }}>
+              <span style={{ fontSize: '0.72rem', background: '#ECFDF3', color: '#166534', padding: '0.1rem 0.45rem', borderRadius: '4px', border: '1px solid #BBF7D0', fontWeight: 600 }}>
                 PHASE 27 PROVENANCE ENGINE
               </span>
             </div>
@@ -423,7 +422,7 @@ REPORT "Suspicious Endpoint Forensics"`;
           {/* Evidence Count */}
           <div style={{ background: '#F8FAFC', padding: '0.65rem 0.85rem', borderRadius: '6px', border: '1px solid #E2E5E9' }}>
             <div style={{ fontSize: '0.7rem', color: '#667085', textTransform: 'uppercase', fontWeight: 600, letterSpacing: '0.04em' }}>Evidence</div>
-            <div style={{ fontSize: '0.92rem', fontWeight: 700, color: '#2563EB', marginTop: '0.15rem' }}>
+            <div style={{ fontSize: '0.92rem', fontWeight: 700, color: '#166534', marginTop: '0.15rem' }}>
               {evidenceList.length} Sealed Items
             </div>
           </div>
@@ -538,7 +537,7 @@ REPORT "Suspicious Endpoint Forensics"`;
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: '#667085' }}>Execution ID:</span>
-                  <strong style={{ color: '#2563EB', fontFamily: 'var(--font-mono)' }}>{integrityData?.execution_id || 'EXE-2026-909F'}</strong>
+                  <strong style={{ color: '#166534', fontFamily: 'var(--font-mono)' }}>{integrityData?.execution_id || 'EXE-2026-909F'}</strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: '#667085' }}>Target Host:</span>
@@ -566,7 +565,7 @@ REPORT "Suspicious Endpoint Forensics"`;
                     <span>Script SHA-256 Digest:</span>
                     <button
                       onClick={() => handleCopy(scriptHash, 'script_hash_overview')}
-                      style={{ background: 'transparent', border: 'none', color: '#2563EB', cursor: 'pointer', fontSize: '0.72rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}
+                      style={{ background: 'transparent', border: 'none', color: '#166534', cursor: 'pointer', fontSize: '0.72rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}
                     >
                       {copiedText === 'script_hash_overview' ? <Check size={12} color="#16A34A" /> : <Copy size={12} />}
                       {copiedText === 'script_hash_overview' ? 'Copied' : 'Copy'}
@@ -582,7 +581,7 @@ REPORT "Suspicious Endpoint Forensics"`;
                     <span>Merkle Tree Root:</span>
                     <button
                       onClick={() => handleCopy(integrityData?.merkle?.root || merkleData?.merkle_root, 'merkle_root_overview')}
-                      style={{ background: 'transparent', border: 'none', color: '#2563EB', cursor: 'pointer', fontSize: '0.72rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}
+                      style={{ background: 'transparent', border: 'none', color: '#166534', cursor: 'pointer', fontSize: '0.72rem', display: 'flex', alignItems: 'center', gap: '0.2rem' }}
                     >
                       {copiedText === 'merkle_root_overview' ? <Check size={12} color="#16A34A" /> : <Copy size={12} />}
                       {copiedText === 'merkle_root_overview' ? 'Copied' : 'Copy'}
@@ -612,7 +611,7 @@ REPORT "Suspicious Endpoint Forensics"`;
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: '#667085' }}>Evidence Envelopes:</span>
-                  <strong style={{ color: '#2563EB' }}>28 RFC-8785 Sealed Envelopes</strong>
+                  <strong style={{ color: '#166534' }}>28 RFC-8785 Sealed Envelopes</strong>
                 </div>
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: '#667085' }}>Detection Findings:</span>
@@ -625,7 +624,7 @@ REPORT "Suspicious Endpoint Forensics"`;
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: '#667085' }}>Verification Status:</span>
                   <span style={{ color: isIntegrityValid ? '#16A34A' : '#DC2626', fontWeight: 700 }}>
-                    {isIntegrityValid ? '✓ 100% Validated' : '⚠ Discrepancy Flagged'}
+                    {isIntegrityValid ? 'Validated' : 'Discrepancy Flagged'}
                   </span>
                 </div>
               </div>
@@ -653,10 +652,10 @@ REPORT "Suspicious Endpoint Forensics"`;
                 <div key={i} style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', borderRadius: '8px', padding: '1.25rem' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.75rem' }}>
                     <div>
-                      <div style={{ fontSize: '0.75rem', color: '#2563EB', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>{inc.id}</div>
+                      <div style={{ fontSize: '0.75rem', color: '#166534', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>{inc.id}</div>
                       <div style={{ fontSize: '0.98rem', fontWeight: 600, color: '#1F2937', marginTop: '0.15rem' }}>{inc.title}</div>
                     </div>
-                    <span style={{ fontSize: '0.72rem', background: '#EFF6FF', color: '#2563EB', border: '1px solid #BFDBFE', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 600 }}>
+                    <span style={{ fontSize: '0.72rem', background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0', padding: '0.15rem 0.5rem', borderRadius: '4px', fontWeight: 600 }}>
                       {inc.classification || 'Suspicious Activity Cluster'}
                     </span>
                   </div>
@@ -670,7 +669,7 @@ REPORT "Suspicious Endpoint Forensics"`;
                     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
                       {(inc.timeline_sequence || ['Registry persistence written', 'Process spawned', 'Outbound socket established', 'Service registered']).map((step, idx) => (
                         <div key={idx} style={{ background: '#FFFFFF', border: '1px solid #D0D5DD', borderRadius: '4px', padding: '0.3rem 0.65rem', fontSize: '0.75rem', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                          <span style={{ color: '#2563EB', fontWeight: 700 }}>#{idx + 1}</span>
+                          <span style={{ color: '#166534', fontWeight: 700 }}>#{idx + 1}</span>
                           <span style={{ color: '#1F2937' }}>{step}</span>
                         </div>
                       ))}
@@ -679,7 +678,7 @@ REPORT "Suspicious Endpoint Forensics"`;
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginTop: '0.4rem' }}>
                       <span style={{ fontSize: '0.78rem', color: '#667085', fontWeight: 600 }}>Linked Evidence:</span>
                       {(inc.evidence_ids || []).map(eid => (
-                        <span key={eid} style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#2563EB', background: '#EFF6FF', border: '1px solid #BFDBFE', padding: '0.15rem 0.45rem', borderRadius: '3px' }}>
+                        <span key={eid} style={{ fontFamily: 'var(--font-mono)', fontSize: '0.72rem', color: '#166534', background: '#ECFDF3', border: '1px solid #BBF7D0', padding: '0.15rem 0.45rem', borderRadius: '3px' }}>
                           {eid}
                         </span>
                       ))}
@@ -732,7 +731,7 @@ REPORT "Suspicious Endpoint Forensics"`;
                   flexDirection: 'column',
                   gap: '0.2rem'
                 }}>
-                  <div style={{ fontSize: '0.7rem', color: '#2563EB', fontWeight: 700 }}>Step {item.step}</div>
+                  <div style={{ fontSize: '0.7rem', color: '#166534', fontWeight: 700 }}>Step {item.step}</div>
                   <div style={{ fontSize: '0.82rem', fontWeight: 600, color: '#1F2937' }}>{item.title}</div>
                   <div style={{ fontSize: '0.7rem', color: '#667085' }}>{item.sub}</div>
                 </div>
@@ -778,7 +777,7 @@ REPORT "Suspicious Endpoint Forensics"`;
               <div style={{ fontSize: '0.8rem', color: '#667085' }}>
                 Recorded Script SHA-256 Digest: <strong style={{ color: '#1F2937', fontFamily: 'var(--font-mono)' }}>{scriptHash}</strong>
               </div>
-              <div style={{ fontSize: '0.75rem', color: '#2563EB', fontWeight: 600 }}>
+              <div style={{ fontSize: '0.75rem', color: '#166534', fontWeight: 600 }}>
                 Version: 1.0 • Execution: {integrityData?.execution_id || 'EXE-2026-909F'}
               </div>
             </div>
@@ -830,7 +829,7 @@ REPORT "Suspicious Endpoint Forensics"`;
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '0.85rem', marginBottom: '1.5rem' }}>
               <div style={{ background: '#F8FAFC', padding: '0.85rem', borderRadius: '6px', border: '1px solid #E2E5E9' }}>
                 <div style={{ fontSize: '0.72rem', color: '#667085', textTransform: 'uppercase' }}>Execution ID</div>
-                <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#2563EB', fontFamily: 'var(--font-mono)', marginTop: '0.15rem' }}>
+                <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#166534', fontFamily: 'var(--font-mono)', marginTop: '0.15rem' }}>
                   {integrityData?.execution_id || 'EXE-2026-909F'}
                 </div>
               </div>
@@ -891,11 +890,11 @@ REPORT "Suspicious Endpoint Forensics"`;
                         width: '28px',
                         height: '28px',
                         borderRadius: '50%',
-                        background: '#EFF6FF',
-                        color: '#2563EB',
+                        background: '#ECFDF3',
+                        color: '#166534',
                         fontWeight: 700,
                         fontSize: '0.82rem',
-                        border: '1px solid #BFDBFE'
+                        border: '1px solid #BBF7D0'
                       }}>
                         {step.stage}
                       </span>
@@ -905,7 +904,7 @@ REPORT "Suspicious Endpoint Forensics"`;
                       </div>
                     </div>
                     <span style={{ fontSize: '0.72rem', padding: '0.2rem 0.55rem', borderRadius: '4px', background: '#F0FDF4', color: '#16A34A', border: '1px solid #BBF7D0', fontWeight: 700 }}>
-                      ✓ {step.status}
+                      {step.status}
                     </span>
                   </div>
                 ))}
@@ -1006,7 +1005,7 @@ REPORT "Suspicious Endpoint Forensics"`;
                       onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#EFF6FF'; }}
                       onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = idx % 2 === 0 ? '#FFFFFF' : '#F8FAFC'; }}
                     >
-                      <td style={{ padding: '0.75rem 1rem', fontFamily: 'var(--font-mono)', fontWeight: 600, color: '#2563EB' }}>
+                      <td style={{ padding: '0.75rem 1rem', fontFamily: 'var(--font-mono)', fontWeight: 600, color: '#166534' }}>
                         {ev.id}
                       </td>
                       <td style={{ padding: '0.75rem 1rem' }}>
@@ -1033,12 +1032,12 @@ REPORT "Suspicious Endpoint Forensics"`;
                           border: `1px solid ${ev.integrity_status === 'VERIFIED' ? '#BBF7D0' : '#FECACA'}`,
                           fontWeight: 600
                         }}>
-                          {ev.integrity_status === 'VERIFIED' ? '✓ Verified' : '⚠ Tampered'}
+                          {ev.integrity_status === 'VERIFIED' ? 'Verified' : 'Integrity Check Failed'}
                         </span>
                       </td>
                       <td style={{ padding: '0.75rem 1rem', textAlign: 'right' }}>
-                        <span style={{ color: '#2563EB', fontSize: '0.8rem', fontWeight: 600 }}>
-                          Inspect Envelope →
+                        <span style={{ color: '#166534', fontSize: '0.8rem', fontWeight: 600 }}>
+                          Inspect Envelope
                         </span>
                       </td>
                     </tr>
@@ -1136,7 +1135,7 @@ REPORT "Suspicious Endpoint Forensics"`;
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '0.75rem', marginBottom: '0.75rem' }}>
                       <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', fontWeight: 700, color: '#2563EB' }}>
+                          <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', fontWeight: 700, color: '#166534' }}>
                             {f.id}
                           </span>
                           <span style={{
@@ -1190,11 +1189,11 @@ REPORT "Suspicious Endpoint Forensics"`;
                           {f.explainable_factors.map((factor, idx) => (
                             <div key={idx} style={{ background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '4px', padding: '0.5rem 0.65rem' }}>
                               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', fontWeight: 600, color: '#1F2937' }}>
-                                <span>✓ {factor.name}</span>
-                                <span style={{ color: '#2563EB' }}>{Math.round(factor.contribution * 100)}%</span>
+                                <span>{factor.name}</span>
+                                <span style={{ color: '#166534' }}>{Math.round(factor.contribution * 100)}%</span>
                               </div>
                               <div style={{ width: '100%', height: '4px', background: '#E2E5E9', borderRadius: '2px', overflow: 'hidden', margin: '0.35rem 0' }}>
-                                <div style={{ width: `${factor.contribution * 100}%`, height: '100%', background: '#2563EB', borderRadius: '2px' }} />
+                                <div style={{ width: `${factor.contribution * 100}%`, height: '100%', background: '#166534', borderRadius: '2px' }} />
                               </div>
                               <div style={{ fontSize: '0.7rem', color: '#667085', fontFamily: 'var(--font-mono)' }}>
                                 Evidence: {factor.evidence_ids?.join(', ')}
@@ -1219,9 +1218,9 @@ REPORT "Suspicious Endpoint Forensics"`;
                             }
                           }}
                           style={{
-                            background: '#EFF6FF',
-                            border: '1px solid #BFDBFE',
-                            color: '#2563EB',
+                            background: '#ECFDF3',
+                            border: '1px solid #BBF7D0',
+                            color: '#166534',
                             padding: '0.15rem 0.5rem',
                             borderRadius: '4px',
                             fontSize: '0.75rem',
@@ -1229,7 +1228,7 @@ REPORT "Suspicious Endpoint Forensics"`;
                             cursor: 'pointer'
                           }}
                         >
-                          {eid} →
+                          {eid}
                         </button>
                       ))}
                     </div>
@@ -1296,7 +1295,7 @@ REPORT "Suspicious Endpoint Forensics"`;
                     minWidth: '70px',
                     fontFamily: 'var(--font-mono)',
                     fontSize: '0.8rem',
-                    color: '#2563EB',
+                    color: '#166534',
                     fontWeight: 700
                   }}>
                     {item.timestamp ? item.timestamp.slice(11, 19) : `10:21:${String(idx * 2).padStart(2, '0')}`}
@@ -1308,9 +1307,9 @@ REPORT "Suspicious Endpoint Forensics"`;
                         fontSize: '0.72rem',
                         padding: '0.1rem 0.45rem',
                         borderRadius: '3px',
-                        background: '#EFF6FF',
-                        color: '#2563EB',
-                        border: '1px solid #BFDBFE',
+                        background: '#ECFDF3',
+                        color: '#166534',
+                        border: '1px solid #BBF7D0',
                         fontWeight: 700
                       }}>
                         {item.event_type?.toUpperCase() || 'TELEMETRY'}
@@ -1335,9 +1334,9 @@ REPORT "Suspicious Endpoint Forensics"`;
                             style={{
                               fontFamily: 'var(--font-mono)',
                               fontSize: '0.72rem',
-                              color: '#2563EB',
+                              color: '#166534',
                               background: '#FFFFFF',
-                              border: '1px solid #BFDBFE',
+                              border: '1px solid #BBF7D0',
                               padding: '0.1rem 0.4rem',
                               borderRadius: '3px',
                               cursor: 'pointer'
@@ -1376,7 +1375,7 @@ REPORT "Suspicious Endpoint Forensics"`;
                 </span>
                 <div style={{ fontSize: '1.45rem', fontWeight: 700, color: isIntegrityValid ? '#16A34A' : '#DC2626', display: 'flex', alignItems: 'center', gap: '0.6rem', marginTop: '0.2rem' }}>
                   {isIntegrityValid ? <CheckCircle2 size={24} color="#16A34A" /> : <AlertTriangle size={24} color="#DC2626" />}
-                  {isIntegrityValid ? '✓ ALL 8 CRYPTOGRAPHIC INTEGRITY CHECKS PASSED' : '⚠ INTEGRITY FAILURE — TAMPERING DETECTED'}
+                  {isIntegrityValid ? 'ALL 8 CRYPTOGRAPHIC INTEGRITY CHECKS PASSED' : 'INTEGRITY FAILURE: TAMPERING DETECTED'}
                 </div>
                 <div style={{ fontSize: '0.85rem', color: '#667085', marginTop: '0.25rem' }}>
                   Live verification against 28 RFC-8785 evidence envelopes, Merkle tree root, and Local Evidence Blockchain ledger.
@@ -1445,7 +1444,7 @@ REPORT "Suspicious Endpoint Forensics"`;
                 </div>
                 {integrityData.failures.map((fail, i) => (
                   <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', fontSize: '0.82rem', color: '#1F2937' }}>
-                    <div>Target Evidence / Artifact: <strong style={{ color: '#2563EB', fontFamily: 'var(--font-mono)' }}>{fail.evidence_id || fail.target_id || 'Evidence Record'}</strong></div>
+                    <div>Target Evidence / Artifact: <strong style={{ color: '#166534', fontFamily: 'var(--font-mono)' }}>{fail.evidence_id || fail.target_id || 'Evidence Record'}</strong></div>
                     <div>Integrity Failure Reason: <strong style={{ color: '#DC2626' }}>{fail.reason}</strong></div>
                     {fail.expected && (
                       <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#667085' }}>
@@ -1598,7 +1597,7 @@ REPORT "Suspicious Endpoint Forensics"`;
             {/* Embedded Report Summary Sheet */}
             <div style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', borderRadius: '8px', padding: '1.5rem', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <div style={{ borderBottom: '1px solid #E2E5E9', paddingBottom: '0.75rem' }}>
-                <div style={{ fontSize: '0.75rem', color: '#2563EB', fontWeight: 700, textTransform: 'uppercase' }}>Executive Forensic Summary</div>
+                <div style={{ fontSize: '0.75rem', color: '#166534', fontWeight: 700, textTransform: 'uppercase' }}>Executive Forensic Summary</div>
                 <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1F2937', marginTop: '0.2rem' }}>Digital Forensic Investigation Report: {caseId}</div>
                 <div style={{ fontSize: '0.82rem', color: '#667085', marginTop: '0.2rem' }}>Generated: {new Date().toISOString()} • Operator: secops-lead@jocky.defense</div>
               </div>
@@ -1614,7 +1613,7 @@ REPORT "Suspicious Endpoint Forensics"`;
                 </div>
                 <div>
                   <div style={{ fontSize: '0.72rem', color: '#667085' }}>Merkle Root:</div>
-                  <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#2563EB', fontFamily: 'var(--font-mono)' }}>2033beab256b...</div>
+                  <div style={{ fontSize: '0.8rem', fontWeight: 600, color: '#166534', fontFamily: 'var(--font-mono)' }}>2033beab256b...</div>
                 </div>
                 <div>
                   <div style={{ fontSize: '0.72rem', color: '#667085' }}>Blockchain Anchor:</div>
@@ -1645,7 +1644,7 @@ REPORT "Suspicious Endpoint Forensics"`;
             {/* Modal Header */}
             <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #E2E5E9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <div style={{ fontSize: '0.72rem', color: '#2563EB', fontWeight: 700 }}>EVIDENCE ENVELOPE INSPECTOR</div>
+                <div style={{ fontSize: '0.72rem', color: '#166534', fontWeight: 700 }}>EVIDENCE ENVELOPE INSPECTOR</div>
                 <h3 style={{ fontSize: '1.15rem', fontWeight: 600, color: '#1F2937', margin: '0.15rem 0 0 0', fontFamily: 'var(--font-mono)' }}>
                   {selectedEvidenceModal.id}
                 </h3>
@@ -1653,9 +1652,7 @@ REPORT "Suspicious Endpoint Forensics"`;
               <button
                 onClick={() => setSelectedEvidenceModal(null)}
                 style={{ background: 'transparent', border: 'none', color: '#667085', cursor: 'pointer', fontSize: '1.1rem' }}
-              >
-                ✕
-              </button>
+              ><X size={15} /></button>
             </div>
 
             {/* Modal Hash & Metadata Summary */}
@@ -1787,7 +1784,7 @@ REPORT "Suspicious Endpoint Forensics"`;
             {/* Header */}
             <div style={{ padding: '1.25rem 1.5rem', borderBottom: '1px solid #E2E5E9', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <div style={{ fontSize: '0.72rem', color: '#2563EB', fontWeight: 700 }}>FINDING PROVENANCE &amp; TRACEABILITY CHAIN</div>
+                <div style={{ fontSize: '0.72rem', color: '#166534', fontWeight: 700 }}>FINDING PROVENANCE &amp; TRACEABILITY CHAIN</div>
                 <h3 style={{ fontSize: '1.15rem', fontWeight: 600, color: '#1F2937', margin: '0.15rem 0 0 0' }}>
                   {selectedFindingProvenance.finding?.title}
                 </h3>
@@ -1795,9 +1792,7 @@ REPORT "Suspicious Endpoint Forensics"`;
               <button
                 onClick={() => setSelectedFindingProvenance(null)}
                 style={{ background: 'transparent', border: 'none', color: '#667085', cursor: 'pointer', fontSize: '1.1rem' }}
-              >
-                ✕
-              </button>
+              ><X size={15} /></button>
             </div>
 
             {/* Traceability Stepper Body */}
@@ -1816,9 +1811,9 @@ REPORT "Suspicious Endpoint Forensics"`;
                     width: '32px',
                     height: '32px',
                     borderRadius: '50%',
-                    background: '#EFF6FF',
-                    border: '1px solid #BFDBFE',
-                    color: '#2563EB',
+                    background: '#ECFDF3',
+                    border: '1px solid #BBF7D0',
+                    color: '#166534',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -1832,7 +1827,7 @@ REPORT "Suspicious Endpoint Forensics"`;
                   <div style={{ flex: 1 }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span style={{ fontSize: '0.72rem', color: '#667085', fontWeight: 700, textTransform: 'uppercase' }}>{step.type}</span>
-                      <span style={{ fontSize: '0.75rem', color: '#16A34A', fontWeight: 600 }}>✓ Verified</span>
+                      <span style={{ fontSize: '0.75rem', color: '#16A34A', fontWeight: 600 }}>Verified</span>
                     </div>
                     <div style={{ fontSize: '0.92rem', fontWeight: 600, color: '#1F2937', marginTop: '0.15rem' }}>
                       {step.name || step.title || step.id}
@@ -1841,7 +1836,7 @@ REPORT "Suspicious Endpoint Forensics"`;
                       {step.description}
                     </div>
                     {step.hash && (
-                      <div style={{ marginTop: '0.35rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#2563EB', background: '#FFFFFF', padding: '0.25rem 0.5rem', borderRadius: '4px', border: '1px solid #E2E5E9', wordBreak: 'break-all' }}>
+                      <div style={{ marginTop: '0.35rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#166534', background: '#FFFFFF', padding: '0.25rem 0.5rem', borderRadius: '4px', border: '1px solid #E2E5E9', wordBreak: 'break-all' }}>
                         Hash: {step.hash}
                       </div>
                     )}

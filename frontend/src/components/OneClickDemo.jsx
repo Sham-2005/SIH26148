@@ -22,7 +22,8 @@ import {
   Flame,
   Gauge,
   ChevronDown,
-  ChevronUp
+  ChevronUp,
+  Search
 } from 'lucide-react';
 import ExecutionHistoryView from './ExecutionHistoryView';
 import InvestigationWorkspaceView from './InvestigationWorkspaceView';
@@ -64,12 +65,12 @@ CHAIN evidence
 REPORT`;
 
 const PIPELINE_STAGES = [
-  { id: 'COLLECT', num: '①', label: 'COLLECT', desc: 'Artifact Acquisition' },
-  { id: 'CORRELATE', num: '②', label: 'CORRELATE', desc: 'Cross-Source Linkage' },
-  { id: 'ANALYZE', num: '③', label: 'ANALYZE', desc: '21-D Vector Extraction' },
-  { id: 'VERIFY', num: '④', label: 'VERIFY', desc: '12 Tamper Detectors' },
-  { id: 'CHAIN', num: '⑤', label: 'CHAIN', desc: 'Cryptographic Custody' },
-  { id: 'REPORT', num: '⑥', label: 'REPORT', desc: 'Court-Admissible Manifest' }
+  { id: 'COLLECT', num: '01', label: 'COLLECT', desc: 'Artifact Acquisition' },
+  { id: 'CORRELATE', num: '02', label: 'CORRELATE', desc: 'Cross-Source Linkage' },
+  { id: 'ANALYZE', num: '03', label: 'ANALYZE', desc: '21-D Vector Extraction' },
+  { id: 'VERIFY', num: '04', label: 'VERIFY', desc: '12 Tamper Detectors' },
+  { id: 'CHAIN', num: '05', label: 'CHAIN', desc: 'Cryptographic Custody' },
+  { id: 'REPORT', num: '06', label: 'REPORT', desc: 'Court-Admissible Manifest' }
 ];
 
 export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
@@ -188,17 +189,17 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
 
   const pipelineLogSteps = [
     { stage: 0, log: "[JOCKY] Parsing script... CASE: CASE-2026-001, TARGET: DEMO-WINDOWS-ENDPOINT" },
-    { stage: 0, log: "[JOCKY] ① COLLECT: Collecting registry Run/RunOnce keys... DONE" },
-    { stage: 0, log: "[JOCKY] ① COLLECT: Collecting process tree (parent==explorer.exe)... DONE" },
-    { stage: 0, log: "[JOCKY] ① COLLECT: Collecting event logs (4688, 7045)... DONE" },
-    { stage: 0, log: "[JOCKY] ① COLLECT: Collecting active network connections... DONE" },
-    { stage: 0, log: "[JOCKY] ① COLLECT: Collecting filesystem metadata & PE hashes... DONE" },
-    { stage: 1, log: "[JOCKY] ② CORRELATE: Cross-source artifact correlation converging... DONE" },
-    { stage: 2, log: "[JOCKY] ③ ANALYZE: Computing 21-dimensional deterministic forensic vector... DONE" },
-    { stage: 2, log: "[JOCKY] ③ ANALYZE: Calculating forensic threat score (weighted heuristic)... DONE" },
-    { stage: 3, log: "[JOCKY] ④ VERIFY: Running 12 deterministic anti-tamper detectors... ALL PASSED" },
-    { stage: 4, log: "[JOCKY] ⑤ CHAIN: Generating RFC-8785 canonical hash & building custody block #2... DONE" },
-    { stage: 5, log: "[JOCKY] ⑥ REPORT: Synthesizing court-admissible forensic manifest... DONE" }
+    { stage: 0, log: "[JOCKY] 01 COLLECT: Collecting registry Run/RunOnce keys... DONE" },
+    { stage: 0, log: "[JOCKY] 01 COLLECT: Collecting process tree (parent==explorer.exe)... DONE" },
+    { stage: 0, log: "[JOCKY] 01 COLLECT: Collecting event logs (4688, 7045)... DONE" },
+    { stage: 0, log: "[JOCKY] 01 COLLECT: Collecting active network connections... DONE" },
+    { stage: 0, log: "[JOCKY] 01 COLLECT: Collecting filesystem metadata & PE hashes... DONE" },
+    { stage: 1, log: "[JOCKY] 02 CORRELATE: Cross-source artifact correlation converging... DONE" },
+    { stage: 2, log: "[JOCKY] 03 ANALYZE: Computing 21-dimensional deterministic forensic vector... DONE" },
+    { stage: 2, log: "[JOCKY] 03 ANALYZE: Calculating forensic threat score (weighted heuristic)... DONE" },
+    { stage: 3, log: "[JOCKY] 04 VERIFY: Running 12 deterministic anti-tamper detectors... ALL PASSED" },
+    { stage: 4, log: "[JOCKY] 05 CHAIN: Generating RFC-8785 canonical hash & building custody block #2... DONE" },
+    { stage: 5, log: "[JOCKY] 06 REPORT: Synthesizing court-admissible forensic manifest... DONE" }
   ];
 
   const handleRunInvestigation = async (scriptOverride) => {
@@ -414,7 +415,7 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
               color: studioTab === 'new' ? '#2563EB' : '#667085'
             }}
           >
-            <span>▶</span> NEW INVESTIGATION
+            <Play size={13} /> NEW INVESTIGATION
           </button>
           <button
             id="studio-tab-execution-history"
@@ -435,7 +436,7 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
               color: studioTab === 'history' ? '#2563EB' : '#667085'
             }}
           >
-            <span>↶</span> EXECUTION HISTORY
+            <Clock size={13} /> EXECUTION HISTORY
             {historyList.length > 0 && (
               <span style={{
                 fontSize: '0.72rem',
@@ -472,7 +473,7 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
               color: studioTab === 'workspace' ? '#2563EB' : '#667085'
             }}
           >
-            <span>🔬</span> INVESTIGATION WORKSPACE
+            <Activity size={13} /> INVESTIGATION WORKSPACE
             <span style={{
               fontSize: '0.72rem',
               padding: '0.1rem 0.45rem',
@@ -509,7 +510,7 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
             gap: '1rem'
           }}>
             <div>
-              <span style={{ fontSize: '0.75rem', color: '#2563EB', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600 }}>
+              <span style={{ fontSize: '0.75rem', color: '#166534', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600 }}>
                 JOCKY FORENSIC INVESTIGATION
               </span>
               <h1 style={{ fontSize: '28px', fontWeight: 600, color: '#1F2937', marginTop: '0.2rem', letterSpacing: '-0.02em', lineHeight: 1.3 }}>
@@ -558,7 +559,7 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                 fontWeight: 600,
                 color: stageIndex === 6 ? '#16A34A' : isRunning ? '#2563EB' : '#667085'
               }}>
-                {stageIndex === 6 ? '✓ 6 / 6 STAGES COMPLETED' : isRunning ? `EXECUTING STAGE ${stageIndex + 1} OF 6` : 'READY FOR EXECUTION'}
+                {stageIndex === 6 ? '6 / 6 STAGES COMPLETED' : isRunning ? `EXECUTING STAGE ${stageIndex + 1} OF 6` : 'READY FOR EXECUTION'}
               </span>
             </div>
 
@@ -573,18 +574,18 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                 const isActive = stageIndex === idx && isRunning;
                 const isPending = stageIndex < idx && stageIndex !== 6;
 
-                let statusIcon = '○';
+                let statusIcon = '';
                 let borderColor = '#E2E5E9';
                 let bgColor = '#F8FAFC';
                 let textColor = '#667085';
 
                 if (isCompleted) {
-                  statusIcon = '✓';
+                  statusIcon = '';
                   borderColor = '#BBF7D0';
                   bgColor = '#F0FDF4';
                   textColor = '#16A34A';
                 } else if (isActive) {
-                  statusIcon = '●';
+                  statusIcon = '';
                   borderColor = '#BFDBFE';
                   bgColor = '#EFF6FF';
                   textColor = '#2563EB';
@@ -607,7 +608,7 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <span style={{ fontSize: '0.88rem', fontWeight: 600, color: textColor }}>
-                        {statusIcon} {stg.label}
+                        {stg.label}
                       </span>
                       <span style={{ fontSize: '0.75rem', color: '#98A2B3', fontWeight: 500 }}>
                         {stg.num}
@@ -694,7 +695,7 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                 }}
               >
                 <Play size={16} fill="#ffffff" />
-                {isRunning ? 'EXECUTING PIPELINE...' : '▶ RUN INVESTIGATION'}
+                {isRunning ? 'EXECUTING PIPELINE...' : 'RUN INVESTIGATION'}
               </button>
             </div>
           </div>
@@ -718,7 +719,7 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
                   <CheckCircle2 size={18} color="#16A34A" />
                   <span style={{ color: '#16A34A', fontSize: '0.88rem', fontWeight: 600 }}>
-                    ✓ Execution saved to History
+                    Execution saved to History
                   </span>
                   {lastSavedExecutionId && (
                     <span style={{ color: '#667085', fontSize: '0.78rem', fontFamily: 'var(--font-mono)' }} data-mono>
@@ -734,8 +735,8 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                       setStudioTab('workspace');
                     }}
                     style={{
-                      background: '#2563EB',
-                      border: '1px solid #2563EB',
+                      background: '#166534',
+                      border: '1px solid #166534',
                       color: '#FFFFFF',
                       padding: '0.45rem 1rem',
                       borderRadius: '6px',
@@ -749,7 +750,7 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                       transition: 'all 0.15s ease'
                     }}
                   >
-                    <span>🔬</span> OPEN INVESTIGATION WORKSPACE →
+                    <Search size={14} /> OPEN INVESTIGATION WORKSPACE <ArrowRight size={14} />
                   </button>
                   <button
                     id="view-execution-history-btn"
@@ -758,9 +759,9 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                       setSelectedExecution(null);
                     }}
                     style={{
-                      background: '#EFF6FF',
-                      border: '1px solid #BFDBFE',
-                      color: '#2563EB',
+                      background: '#ECFDF3',
+                      border: '1px solid #BBF7D0',
+                      color: '#166534',
                       padding: '0.45rem 1rem',
                       borderRadius: '6px',
                       fontSize: '0.82rem',
@@ -772,7 +773,7 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                       transition: 'all 0.15s ease'
                     }}
                   >
-                    VIEW EXECUTION HISTORY ↶
+                    VIEW EXECUTION HISTORY
                   </button>
                 </div>
               </div>
@@ -787,7 +788,7 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
               }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #E2E5E9', paddingBottom: '0.85rem', marginBottom: '1.25rem' }}>
                   <div>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#2563EB', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                    <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#166534', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
                       AUTOMATED PIPELINE COMPLETE
                     </span>
                     <h2 style={{ fontSize: '22px', fontWeight: 600, color: '#1F2937', marginTop: '0.2rem' }}>
@@ -807,37 +808,74 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                 {/* Prominent Threat Score & 4 Summary Cards (Requirement 11 & 12) */}
                 <div style={{ display: 'grid', gridTemplateColumns: '1.15fr 2.85fr', gap: '1.25rem', alignItems: 'stretch', marginBottom: '1rem' }}>
                   {/* Threat Score Box */}
-                  <div style={{
-                    background: '#FEF2F2',
-                    border: '1px solid #FECACA',
-                    borderRadius: '8px',
-                    padding: '1.5rem',
-                    textAlign: 'center',
-                    display: 'flex',
-                    flexDirection: 'column',
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                  }}>
-                    <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#991B1B', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-                      THREAT SCORE
-                    </span>
-                    <div style={{ fontSize: '3.2rem', fontWeight: 700, color: '#DC2626', lineHeight: 1.1, margin: '0.35rem 0' }}>
-                      {demoResult.threat_analysis.threat_score} <span style={{ fontSize: '1.25rem', color: '#991B1B', fontWeight: 500 }}>/ 100</span>
-                    </div>
-                    <div style={{
-                      display: 'inline-block',
-                      background: '#FEE2E2',
-                      color: '#DC2626',
-                      border: '1px solid #FCA5A5',
-                      padding: '0.25rem 1rem',
-                      borderRadius: '999px',
-                      fontSize: '0.82rem',
-                      fontWeight: 700,
-                      letterSpacing: '0.06em'
-                    }}>
-                      {demoResult.threat_analysis.risk_level}
-                    </div>
-                  </div>
+                  {(() => {
+                    const score = demoResult.threat_analysis.threat_score;
+                    const isCritical = score >= 90;
+                    const isHigh = score >= 70 && score < 90;
+                    const isMedium = score >= 40 && score < 70;
+                    const theme = (isCritical || isHigh) ? {
+                      bg: '#FEF2F2',
+                      border: '#FECACA',
+                      label: '#991B1B',
+                      num: '#DC2626',
+                      slash: '#991B1B',
+                      badgeBg: '#FEE2E2',
+                      badgeBorder: '#FCA5A5',
+                      badgeText: '#DC2626'
+                    } : isMedium ? {
+                      bg: '#FFFBEB',
+                      border: '#FDE68A',
+                      label: '#92400E',
+                      num: '#D97706',
+                      slash: '#92400E',
+                      badgeBg: '#FEF3C7',
+                      badgeBorder: '#FCD34D',
+                      badgeText: '#B45309'
+                    } : {
+                      bg: '#F0FDF4',
+                      border: '#BBF7D0',
+                      label: '#166534',
+                      num: '#16A34A',
+                      slash: '#166534',
+                      badgeBg: '#DCFCE7',
+                      badgeBorder: '#86EFAC',
+                      badgeText: '#15803D'
+                    };
+
+                    return (
+                      <div style={{
+                        background: theme.bg,
+                        border: `1px solid ${theme.border}`,
+                        borderRadius: '8px',
+                        padding: '1.5rem',
+                        textAlign: 'center',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                      }}>
+                        <span style={{ fontSize: '0.75rem', fontWeight: 700, color: theme.label, letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                          THREAT SCORE
+                        </span>
+                        <div style={{ fontSize: '3.2rem', fontWeight: 700, color: theme.num, lineHeight: 1.1, margin: '0.35rem 0' }}>
+                          {demoResult.threat_analysis.threat_score} <span style={{ fontSize: '1.25rem', color: theme.slash, fontWeight: 500 }}>/ 100</span>
+                        </div>
+                        <div style={{
+                          display: 'inline-block',
+                          background: theme.badgeBg,
+                          color: theme.badgeText,
+                          border: `1px solid ${theme.badgeBorder}`,
+                          padding: '0.25rem 1rem',
+                          borderRadius: '999px',
+                          fontSize: '0.82rem',
+                          fontWeight: 700,
+                          letterSpacing: '0.06em'
+                        }}>
+                          {demoResult.threat_analysis.risk_level}
+                        </div>
+                      </div>
+                    );
+                  })()}
 
                   {/* Four Authoritative Summary Cards */}
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.85rem' }}>
@@ -847,13 +885,13 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                       <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#1F2937', margin: '0.2rem 0' }}>
                         {demoResult.evidence_collection.total_categories} Categories
                       </div>
-                      <span style={{ fontSize: '0.75rem', color: '#16A34A', fontWeight: 600 }}>✓ 100% Corroborated</span>
+                      <span style={{ fontSize: '0.75rem', color: '#16A34A', fontWeight: 600 }}>100% Corroborated</span>
                     </div>
 
                     {/* Forensic Vector */}
                     <div style={{ background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', padding: '1rem', boxShadow: '0 1px 2px rgba(16, 24, 40, 0.04)' }}>
                       <span style={{ fontSize: '0.75rem', color: '#667085', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 500 }}>Forensic Vector</span>
-                      <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#2563EB', margin: '0.2rem 0' }}>
+                      <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#166534', margin: '0.2rem 0' }}>
                         {demoResult.forensic_vector.dimensions} Dimensions
                       </div>
                       <span style={{ fontSize: '0.75rem', color: '#667085' }}>Deterministic numeric vector</span>
@@ -865,23 +903,23 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                       <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#16A34A', margin: '0.2rem 0' }}>
                         {demoResult.tamper_detection.passed_detectors} / {demoResult.tamper_detection.total_detectors} Passed
                       </div>
-                      <span style={{ fontSize: '0.75rem', color: '#16A34A', fontWeight: 600 }}>✓ 12/12 Checks Validated</span>
+                      <span style={{ fontSize: '0.75rem', color: '#16A34A', fontWeight: 600 }}>12/12 Checks Validated</span>
                     </div>
 
                     {/* Chain of Custody */}
                     <div style={{ background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', padding: '1rem', boxShadow: '0 1px 2px rgba(16, 24, 40, 0.04)' }}>
                       <span style={{ fontSize: '0.75rem', color: '#667085', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 500 }}>Chain of Custody</span>
-                      <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#2563EB', margin: '0.2rem 0' }}>
+                      <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#166534', margin: '0.2rem 0' }}>
                         {demoResult.chain_of_custody.chain_status}
                       </div>
-                      <span style={{ fontSize: '0.75rem', color: '#2563EB', fontWeight: 600 }}>✓ Cryptographic Hash Chain</span>
+                      <span style={{ fontSize: '0.75rem', color: '#166534', fontWeight: 600 }}>Cryptographic Hash Chain</span>
                     </div>
                   </div>
                 </div>
 
                 <div style={{ fontSize: '0.8rem', color: '#667085', borderTop: '1px solid #E2E5E9', paddingTop: '0.75rem', display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap' }}>
                   <span>Observed Latency: <strong style={{ color: '#16A34A' }}>{demoResult.execution_time_ms} ms</strong> ({demoResult.performance_metric.observed_latency_label})</span>
-                  <span>Evidence ID: <strong style={{ color: '#2563EB', fontFamily: 'var(--font-mono)' }}>{demoResult.evidence_hashing.evidence_id}</strong></span>
+                  <span>Evidence ID: <strong style={{ color: '#166534', fontFamily: 'var(--font-mono)' }}>{demoResult.evidence_hashing.evidence_id}</strong></span>
                 </div>
               </div>
 
@@ -911,7 +949,7 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                       </span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <span style={{ fontSize: '0.78rem', color: '#2563EB', fontWeight: 600 }}>
+                      <span style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 600 }}>
                         {openSections.vector ? 'Hide Details' : 'View 21 Dimensions'}
                       </span>
                       {openSections.vector ? <ChevronUp size={16} color="#2563EB" /> : <ChevronDown size={16} color="#2563EB" />}
@@ -938,7 +976,7 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                           }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                               <span style={{ color: '#1F2937' }}>
-                                <strong style={{ color: '#2563EB', marginRight: '0.35rem' }}>{String(f.id).padStart(2, '0')}</strong>
+                                <strong style={{ color: '#166534', marginRight: '0.35rem' }}>{String(f.id).padStart(2, '0')}</strong>
                                 {f.name}
                               </span>
                               <span style={{
@@ -985,7 +1023,7 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                         Evidence Integrity — 12 Detectors
                       </span>
                       <span style={{ fontSize: '0.78rem', color: '#16A34A', fontWeight: 600, marginLeft: '0.5rem' }}>
-                        ✓ 12 / 12 CHECKS PASSED
+                        12 / 12 CHECKS PASSED
                       </span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -1058,7 +1096,7 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                       </span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <span style={{ fontSize: '0.78rem', color: '#2563EB', fontWeight: 600 }}>
+                      <span style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 600 }}>
                         {openSections.evidence ? 'Hide Artifacts' : 'View Artifacts & Correlation'}
                       </span>
                       {openSections.evidence ? <ChevronUp size={16} color="#2563EB" /> : <ChevronDown size={16} color="#2563EB" />}
@@ -1135,8 +1173,8 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                       </div>
 
                       {/* Correlation Callout */}
-                      <div style={{ padding: '0.75rem', background: '#EFF6FF', border: '1px solid #BFDBFE', borderRadius: '6px', fontSize: '0.8rem' }}>
-                        <div style={{ color: '#2563EB', fontWeight: 600, marginBottom: '0.25rem' }}>
+                      <div style={{ padding: '0.75rem', background: '#ECFDF3', border: '1px solid #BBF7D0', borderRadius: '6px', fontSize: '0.8rem' }}>
+                        <div style={{ color: '#166534', fontWeight: 600, marginBottom: '0.25rem' }}>
                           Cross-Artifact Correlation Convergence:
                         </div>
                         <ul style={{ paddingLeft: '1.25rem', color: '#1F2937', display: 'flex', flexDirection: 'column', gap: '0.15rem' }}>
@@ -1168,12 +1206,12 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                       <span style={{ fontWeight: 600, fontSize: '0.95rem', color: '#1F2937' }}>
                         Chain of Custody
                       </span>
-                      <span style={{ fontSize: '0.78rem', color: '#2563EB', fontWeight: 600, marginLeft: '0.5rem' }}>
-                        Evidence → SHA-256 → Block #1 → Block #2 → ✓ VERIFIED
+                      <span style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 600, marginLeft: '0.5rem' }}>
+                        {'Evidence -> SHA-256 -> Block #1 -> Block #2 -> Verified'}
                       </span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <span style={{ fontSize: '0.78rem', color: '#2563EB', fontWeight: 600 }}>
+                      <span style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 600 }}>
                         {openSections.chain ? 'Hide Cryptography' : 'View Cryptographic Details'}
                       </span>
                       {openSections.chain ? <ChevronUp size={16} color="#2563EB" /> : <ChevronDown size={16} color="#2563EB" />}
@@ -1228,13 +1266,13 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                             gap: '0.35rem'
                           }}>
                             <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #E2E5E9', paddingBottom: '0.35rem' }}>
-                              <span style={{ color: '#2563EB', fontWeight: 700 }}>Block #{block.block_number}</span>
+                              <span style={{ color: '#166534', fontWeight: 700 }}>Block #{block.block_number}</span>
                               <span style={{ color: '#667085' }}>{block.evidence_id}</span>
                             </div>
                             <div><span style={{ color: '#667085' }}>Timestamp:</span> <span style={{ color: '#1F2937' }}>{block.timestamp}</span></div>
                             <div><span style={{ color: '#667085' }}>Previous Hash:</span> <code style={{ color: '#667085', fontSize: '0.7rem', display: 'block', wordBreak: 'break-all' }}>{block.previous_hash}</code></div>
                             <div><span style={{ color: '#667085' }}>Evidence Hash:</span> <code style={{ color: '#16A34A', fontSize: '0.7rem', display: 'block', wordBreak: 'break-all' }}>{block.evidence_hash}</code></div>
-                            <div><span style={{ color: '#667085' }}>Current Hash:</span> <code style={{ color: '#2563EB', fontSize: '0.7rem', display: 'block', wordBreak: 'break-all' }}>{block.current_hash}</code></div>
+                            <div><span style={{ color: '#667085' }}>Current Hash:</span> <code style={{ color: '#166534', fontSize: '0.7rem', display: 'block', wordBreak: 'break-all' }}>{block.current_hash}</code></div>
                           </div>
                         ))}
                       </div>
@@ -1266,7 +1304,7 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                       </span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <span style={{ fontSize: '0.78rem', color: '#2563EB', fontWeight: 600 }}>
+                      <span style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 600 }}>
                         {openSections.telemetry ? 'Hide Logs' : 'View Stream Logs'}
                       </span>
                       {openSections.telemetry ? <ChevronUp size={16} color="#2563EB" /> : <ChevronDown size={16} color="#2563EB" />}
@@ -1293,7 +1331,7 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                           alignItems: 'baseline',
                           gap: '0.35rem'
                         }}>
-                          <span style={{ color: '#2563EB', userSelect: 'none', fontWeight: 700 }}>&gt;</span>
+                          <span style={{ color: '#166534', userSelect: 'none', fontWeight: 700 }}>&gt;</span>
                           <span>{log}</span>
                         </div>
                       ))}
@@ -1340,7 +1378,7 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                           <div style={{ fontSize: '1.3rem', fontWeight: 700, color: '#16A34A' }}>
                             {demoResult.execution_time_ms} ms
                           </div>
-                          <span style={{ fontSize: '0.72rem', color: '#2563EB' }}>{demoResult.performance_metric.observed_latency_label}</span>
+                          <span style={{ fontSize: '0.72rem', color: '#166534' }}>{demoResult.performance_metric.observed_latency_label}</span>
                         </div>
                         <div>
                           <span style={{ color: '#667085', fontSize: '0.75rem' }}>Environment</span>
@@ -1356,7 +1394,7 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                         </div>
                         <div>
                           <span style={{ color: '#667085', fontSize: '0.75rem' }}>Artifact Categories</span>
-                          <div style={{ fontSize: '0.9rem', color: '#2563EB', fontWeight: 600 }}>
+                          <div style={{ fontSize: '0.9rem', color: '#166534', fontWeight: 600 }}>
                             {demoResult.performance_metric.artifacts_count} categories
                           </div>
                         </div>
@@ -1397,7 +1435,7 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
                       </span>
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                      <span style={{ fontSize: '0.78rem', color: '#2563EB', fontWeight: 600 }}>
+                      <span style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 600 }}>
                         {openSections.comparison ? 'Hide Comparison' : 'View Comparison'}
                       </span>
                       {openSections.comparison ? <ChevronUp size={16} color="#2563EB" /> : <ChevronDown size={16} color="#2563EB" />}

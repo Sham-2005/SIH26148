@@ -1094,7 +1094,7 @@ export default function App() {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <div style={{ 
-            background: '#2563EB', 
+            background: '#166534', 
             padding: '0.5rem', 
             borderRadius: '6px',
             display: 'flex',
@@ -1103,10 +1103,10 @@ export default function App() {
             <Shield size={20} color="#ffffff" />
           </div>
           <div>
-            <div style={{ fontWeight: 600, fontSize: '1.15rem', letterSpacing: '-0.01em', color: '#1F2937' }}>
-              JOCKY <span style={{ color: '#2563EB', fontSize: '0.85rem', fontWeight: 600 }}>FORENSIC SOC</span>
+            <div style={{ fontWeight: 700, fontSize: '1.15rem', letterSpacing: '0.02em', color: '#111827' }}>
+              JOCKY
             </div>
-            <div style={{ fontSize: '0.75rem', color: '#667085' }}>Enterprise Digital Forensics Platform • Phase 4 Fleet</div>
+            <div style={{ fontSize: '0.74rem', color: '#475569', fontWeight: 500 }}>Cyber Investigation &amp; Forensics Platform</div>
           </div>
         </div>
 
@@ -1149,9 +1149,9 @@ export default function App() {
           <button 
             onClick={() => setShowNewCaseModal(true)}
             style={{ 
-              background: '#EFF6FF', 
-              color: '#2563EB', 
-              border: '1px solid #BFDBFE', 
+              background: '#ECFDF3', 
+              color: '#166534', 
+              border: '1px solid #BBF7D0', 
               padding: '0.35rem 0.75rem', 
               borderRadius: '6px', 
               fontSize: '0.8rem',
@@ -1169,12 +1169,14 @@ export default function App() {
 
         {/* Right Status */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.8rem' }}>
-            <span style={{ height: '8px', width: '8px', borderRadius: '50%', background: wsConnected ? '#16A34A' : '#D97706', display: 'inline-block' }}></span>
-            <span style={{ color: '#475467' }}>{wsConnected ? 'WebSocket Live' : 'Polling Active'}</span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.8rem' }}>
+            <span style={{ height: '8px', width: '8px', borderRadius: '50%', background: '#166534', display: 'inline-block' }}></span>
+            <span style={{ color: '#111827', fontWeight: 600 }}>System Status: Operational</span>
+            <span style={{ color: '#64748B', fontSize: '0.75rem' }}>({wsConnected ? 'WebSocket Live' : 'Polling Active'})</span>
           </div>
-          <div style={{ fontSize: '0.85rem', color: '#667085' }}>
-            Role: <span style={{ color: '#1F2937', fontWeight: 600 }}>Lead Investigator</span>
+          <div style={{ height: '14px', width: '1px', background: '#D9E0E7' }}></div>
+          <div style={{ fontSize: '0.82rem', color: '#475569' }}>
+            Analyst: <span style={{ color: '#111827', fontWeight: 600 }}>Lead Investigator</span> <span style={{ color: '#64748B', fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}>(JCK-SEC-01)</span>
           </div>
         </div>
       </header>
@@ -1203,9 +1205,14 @@ export default function App() {
             marginBottom: '0.4rem'
           }}>
             {!sidebarCollapsed && (
-              <span style={{ fontSize: '0.88rem', fontWeight: 700, color: '#1F2937', letterSpacing: '0.04em' }}>
-                JOCKY
-              </span>
+              <div style={{ display: 'flex', flexDirection: 'column' }}>
+                <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#111827', letterSpacing: '0.04em' }}>
+                  JOCKY
+                </span>
+                <span style={{ fontSize: '0.68rem', color: '#64748B', fontWeight: 500 }}>
+                  Cyber Forensics Console
+                </span>
+              </div>
             )}
             <button
               id="sidebar-toggle-btn"
@@ -1243,20 +1250,15 @@ export default function App() {
                     alignItems: 'center',
                     justifyContent: sidebarCollapsed ? 'center' : 'flex-start',
                     gap: '0.65rem',
-                    padding: sidebarCollapsed ? '0.6rem 0' : '0.5rem 0.7rem',
-                    borderRadius: '6px',
-                    border: isActive
-                      ? '1px solid #BFDBFE'
-                      : highlight
-                      ? '1px solid #E2E5E9'
-                      : '1px solid transparent',
-                    background: isActive
-                      ? '#EFF6FF'
-                      : highlight
-                      ? '#F8FAFC'
-                      : 'transparent',
-                    color: isActive ? '#2563EB' : highlight ? '#1F2937' : '#475467',
-                    fontWeight: isActive || highlight ? 600 : 500,
+                    padding: sidebarCollapsed ? '0.6rem 0' : '0.5rem 0.75rem',
+                    borderRadius: '5px',
+                    borderLeft: isActive ? '3px solid #166534' : '3px solid transparent',
+                    borderTop: '1px solid transparent',
+                    borderRight: '1px solid transparent',
+                    borderBottom: '1px solid transparent',
+                    background: isActive ? '#ECFDF3' : highlight ? '#F8FAFC' : 'transparent',
+                    color: isActive ? '#166534' : highlight ? '#111827' : '#475569',
+                    fontWeight: isActive ? 600 : 500,
                     fontSize: '0.84rem',
                     cursor: 'pointer',
                     textAlign: 'left',
@@ -1264,7 +1266,7 @@ export default function App() {
                     transition: 'all 0.15s ease'
                   }}
                 >
-                  <Icon size={16} style={{ flexShrink: 0, color: isActive ? '#2563EB' : highlight ? '#2563EB' : '#667085' }} />
+                  <Icon size={16} style={{ flexShrink: 0, color: isActive ? '#166534' : '#64748B' }} />
                   {!sidebarCollapsed && <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{label}</span>}
                 </button>
               );
@@ -1291,58 +1293,57 @@ export default function App() {
 
             return (
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', overflowY: 'auto', flex: 1, paddingRight: sidebarCollapsed ? '0' : '0.15rem' }}>
-                {/* 1. Overview */}
-                {renderItem('dashboard', 'Overview', Layers)}
+                {/* OPERATIONS */}
+                {renderHeader('OPERATIONS')}
+                {renderItem('dashboard', 'Dashboard', Layers)}
+                {renderItem('demo', 'Investigate', Play)}
+                {renderItem('ml_threat', 'Threat Analysis', Cpu)}
 
-                {/* 2. INVESTIGATION */}
-                {renderHeader('INVESTIGATION')}
-                {renderItem('demo', 'JOCKY Studio', Play, true)}
-
-                {/* 3. EVIDENCE */}
-                {renderHeader('EVIDENCE')}
+                {/* FORENSICS */}
+                {renderHeader('FORENSICS')}
                 {renderItem('evidence', 'Evidence', Lock)}
+                {renderItem('investigation', 'Forensic Analysis', Compass)}
+                {renderItem('reports', 'Reports', FileText)}
 
-                {/* 4. OUTPUT */}
-                {renderHeader('OUTPUT')}
-                {renderItem('reports', 'Forensic Reports', FileText)}
+                {/* ACTIVITY */}
+                {renderHeader('ACTIVITY')}
+                {renderItem('tasks', 'History', Clock)}
+                {renderItem('audit', 'Audit Log', ClipboardList)}
 
-                {/* 5. SYSTEM */}
+                {/* SYSTEM */}
                 {renderHeader('SYSTEM')}
-                {renderItem('security', 'Security', ShieldCheck)}
+                {renderItem('security', 'Settings', ShieldCheck)}
 
-                {/* 6. ADVANCED (Collapsible, default collapsed) */}
+                {/* EXTENDED CAPABILITIES (Collapsible) */}
                 {sidebarCollapsed ? (
                   <>
-                    <div style={{ height: '1px', background: '#E2E5E9', margin: '0.35rem 0.25rem' }} />
+                    <div style={{ height: '1px', background: '#D9E0E7', margin: '0.35rem 0.25rem' }} />
                     <button
                       id="advanced-toggle-btn-collapsed"
                       onClick={() => setAdvancedOpen(!advancedOpen)}
-                      title={advancedOpen ? "Hide Advanced Modules" : "Show Advanced Modules"}
+                      title={advancedOpen ? "Hide Extended Modules" : "Show Extended Modules"}
                       style={{
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
                         padding: '0.6rem 0',
-                        borderRadius: '6px',
-                        border: advancedOpen ? '1px solid #BFDBFE' : '1px solid transparent',
-                        background: advancedOpen ? '#EFF6FF' : 'transparent',
-                        color: advancedOpen ? '#2563EB' : '#667085',
+                        borderRadius: '5px',
+                        border: advancedOpen ? '1px solid #BBF7D0' : '1px solid transparent',
+                        background: advancedOpen ? '#ECFDF3' : 'transparent',
+                        color: advancedOpen ? '#166534' : '#64748B',
                         cursor: 'pointer',
                         width: '100%'
                       }}
                     >
-                      <SlidersHorizontal size={16} />
+                      <SlidersHorizontal size={15} />
                     </button>
                     {advancedOpen && (
                       <>
-                        {renderItem('ml_threat', 'ML Threat Engine', Cpu)}
+                        {renderItem('agents', 'Fleet Agents', Server)}
                         {renderItem('threat_intel', 'Threat Intel (STIX)', Network)}
                         {renderItem('response_center', 'Response Center', Shield)}
-                        {renderItem('agents', 'Fleet', Server)}
-                        {renderItem('tasks', 'Task Monitor', Activity)}
-                        {renderItem('investigation', 'Evidence Vault', Compass)}
-                        {renderItem('cases', 'Case Lifecycle', Terminal)}
-                        {renderItem('audit', 'Audit Trail', ClipboardList)}
+                        {renderItem('cases', 'Case Records', Terminal)}
+                        {renderItem('studio', 'Studio DSL', FileCode)}
                       </>
                     )}
                   </>
@@ -1357,7 +1358,7 @@ export default function App() {
                         justifyContent: 'space-between',
                         fontSize: '0.68rem',
                         fontWeight: 700,
-                        color: advancedOpen ? '#2563EB' : '#98A2B3',
+                        color: advancedOpen ? '#166534' : '#64748B',
                         letterSpacing: '0.08em',
                         textTransform: 'uppercase',
                         padding: '0.55rem 0.5rem 0.2rem',
@@ -1366,20 +1367,17 @@ export default function App() {
                         transition: 'color 0.15s ease'
                       }}
                     >
-                      <span>ADVANCED</span>
+                      <span>EXTENDED MODULES</span>
                       {advancedOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
                     </div>
 
                     {advancedOpen && (
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', paddingLeft: '0.2rem' }}>
-                        {renderItem('ml_threat', 'ML Threat Engine', Cpu)}
+                        {renderItem('agents', 'Fleet Agents', Server)}
                         {renderItem('threat_intel', 'Threat Intel (STIX)', Network)}
                         {renderItem('response_center', 'Response Center', Shield)}
-                        {renderItem('agents', 'Fleet', Server)}
-                        {renderItem('tasks', 'Task Monitor', Activity)}
-                        {renderItem('investigation', 'Evidence Vault', Compass)}
-                        {renderItem('cases', 'Case Lifecycle', Terminal)}
-                        {renderItem('audit', 'Audit Trail', ClipboardList)}
+                        {renderItem('cases', 'Case Records', Terminal)}
+                        {renderItem('studio', 'Studio DSL', FileCode)}
                       </div>
                     )}
                   </>
@@ -1391,33 +1389,71 @@ export default function App() {
 
         {/* Content Area */}
         <main style={{ flex: 1, padding: '1.75rem 2rem', overflowY: 'auto', background: '#F7F8FA' }}>
-          {/* Quick Metrics Bar */}
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '1rem', marginBottom: '1.75rem' }}>
-            <div className="glass-panel stat-card">
-              <span style={{ fontSize: '0.8rem', color: '#667085', fontWeight: 500 }}>Fleet Deployment</span>
-              <div className="stat-value" style={{ color: '#1F2937' }}>{agents.length} Endpoints</div>
-              <span style={{ fontSize: '0.75rem', color: '#2563EB' }}>4 Windows • 2 Linux [DEMO]</span>
-            </div>
-            <div className="glass-panel stat-card">
-              <span style={{ fontSize: '0.8rem', color: '#667085', fontWeight: 500 }}>Online Active Fleet</span>
-              <div className="stat-value" style={{ color: '#16A34A' }}>{agents.filter(a => a.status === 'online').length} / {agents.length}</div>
-              <span style={{ fontSize: '0.75rem', color: '#16A34A' }}>Heartbeat telemetry healthy</span>
-            </div>
-            <div className="glass-panel stat-card">
-              <span style={{ fontSize: '0.8rem', color: '#667085', fontWeight: 500 }}>Task Lifecycle</span>
-              <div className="stat-value" style={{ color: '#2563EB' }}>{tasks.length} Tasks</div>
-              <span style={{ fontSize: '0.75rem', color: '#667085' }}>{tasks.filter(t => t.status === 'completed').length} completed • 0 replay</span>
-            </div>
-            <div className="glass-panel stat-card">
-              <span style={{ fontSize: '0.8rem', color: '#667085', fontWeight: 500 }}>Evidence Envelopes</span>
-              <div className="stat-value" style={{ color: '#1F2937' }}>{evidenceList.length} Sealed</div>
-              <span style={{ fontSize: '0.75rem', color: '#16A34A' }}>100% SHA-256 Validated</span>
-            </div>
-          </div>
-
           {/* TAB 1: SOC OVERVIEW */}
           {activeTab === 'dashboard' && (
-            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '1.5rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              {/* Dashboard Operational Header (Section 8) */}
+              <div style={{ background: '#FFFFFF', border: '1px solid #D9E0E7', borderRadius: '6px', padding: '1.25rem 1.5rem' }}>
+                <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#111827', margin: 0 }}>
+                  Security Operations Overview
+                </h1>
+                <p style={{ fontSize: '0.85rem', color: '#475569', margin: '0.2rem 0 0 0' }}>
+                  System activity, investigations and evidence status
+                </p>
+              </div>
+
+              {/* Concise Operational Metrics (Section 8) */}
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '1rem' }}>
+                <div className="glass-panel stat-card" style={{ background: '#FFFFFF', border: '1px solid #D9E0E7', borderRadius: '6px', padding: '1.15rem 1.25rem' }}>
+                  <span style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                    ACTIVE INVESTIGATIONS
+                  </span>
+                  <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#111827', margin: '0.2rem 0' }}>
+                    12
+                  </div>
+                  <span style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 500 }}>
+                    3 updated today
+                  </span>
+                </div>
+
+                <div className="glass-panel stat-card" style={{ background: '#FFFFFF', border: '1px solid #D9E0E7', borderRadius: '6px', padding: '1.15rem 1.25rem' }}>
+                  <span style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                    EVIDENCE ITEMS
+                  </span>
+                  <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#111827', margin: '0.2rem 0' }}>
+                    {evidenceList.length || 18}
+                  </div>
+                  <span style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 500 }}>
+                    100% integrity verified
+                  </span>
+                </div>
+
+                <div className="glass-panel stat-card" style={{ background: '#FFFFFF', border: '1px solid #D9E0E7', borderRadius: '6px', padding: '1.15rem 1.25rem' }}>
+                  <span style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                    THREAT FINDINGS
+                  </span>
+                  <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#B91C1C', margin: '0.2rem 0' }}>
+                    {findings.length || 5}
+                  </div>
+                  <span style={{ fontSize: '0.78rem', color: '#475569', fontWeight: 500 }}>
+                    {findings.filter(f => f.status === 'OPEN').length || 1} requiring review
+                  </span>
+                </div>
+
+                <div className="glass-panel stat-card" style={{ background: '#FFFFFF', border: '1px solid #D9E0E7', borderRadius: '6px', padding: '1.15rem 1.25rem' }}>
+                  <span style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
+                    PENDING ANALYSIS
+                  </span>
+                  <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#111827', margin: '0.2rem 0' }}>
+                    0
+                  </div>
+                  <span style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 500 }}>
+                    All pipelines operational
+                  </span>
+                </div>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '1.5rem' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                 <div className="glass-panel" style={{ padding: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
@@ -1438,7 +1474,7 @@ export default function App() {
                     <tbody>
                       {agents.slice(0, 5).map(a => (
                         <tr key={a.id} style={{ borderBottom: '1px solid #E2E5E9' }}>
-                          <td style={{ padding: '0.6rem 0.75rem', fontFamily: 'var(--font-mono)', color: '#2563EB', fontWeight: 600 }}>{a.id}</td>
+                          <td style={{ padding: '0.6rem 0.75rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>{a.id}</td>
                           <td style={{ padding: '0.6rem 0.75rem', color: '#1F2937' }}>{a.platform}</td>
                           <td style={{ padding: '0.6rem 0.75rem', color: '#1F2937' }}>{a.hostname}</td>
                           <td style={{ padding: '0.6rem 0.75rem' }}>
@@ -1471,7 +1507,7 @@ export default function App() {
                     <tbody>
                       {evidenceList.map(ev => (
                         <tr key={ev.id} style={{ borderBottom: '1px solid #E2E5E9' }}>
-                          <td style={{ padding: '0.6rem 0.75rem', fontFamily: 'var(--font-mono)', color: '#2563EB', fontWeight: 600 }}>{ev.id}</td>
+                          <td style={{ padding: '0.6rem 0.75rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>{ev.id}</td>
                           <td style={{ padding: '0.6rem 0.75rem', fontWeight: 500, color: '#1F2937' }}>{ev.collector}</td>
                           <td style={{ padding: '0.6rem 0.75rem', color: '#667085' }}>{ev.agent_id}</td>
                           <td style={{ padding: '0.6rem 0.75rem' }}>
@@ -1487,24 +1523,25 @@ export default function App() {
               </div>
 
               {/* Live Activity Stream */}
-              <div className="glass-panel" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px' }}>
+              <div className="glass-panel" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', background: '#FFFFFF', border: '1px solid #D9E0E7', borderRadius: '6px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                  <Activity size={18} color="#2563EB" />
-                  <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#1F2937' }}>Live Telemetry & Activity Stream</h3>
+                  <Activity size={18} color="#166534" />
+                  <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#111827' }}>Live Telemetry &amp; Activity Stream</h3>
                 </div>
 
                 <div style={{ flex: 1, overflowY: 'auto', maxHeight: '480px', display: 'flex', flexDirection: 'column', gap: '0.65rem', paddingRight: '0.35rem' }}>
                   {events.map((e, idx) => (
-                    <div key={idx} style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', borderRadius: '6px', padding: '0.6rem 0.75rem', fontSize: '0.8rem' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#667085', fontSize: '0.72rem', marginBottom: '0.25rem' }}>
-                        <span style={{ color: '#2563EB', fontWeight: 600 }}>{e.type}</span>
+                    <div key={idx} style={{ background: '#F8FAFC', border: '1px solid #E5E7EB', borderRadius: '5px', padding: '0.6rem 0.75rem', fontSize: '0.8rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#64748B', fontSize: '0.72rem', marginBottom: '0.25rem' }}>
+                        <span style={{ color: '#166534', fontWeight: 600 }}>{e.type}</span>
                         <span>{e.timestamp}</span>
                       </div>
-                      <div style={{ color: '#1F2937' }}>{e.message}</div>
+                      <div style={{ color: '#111827' }}>{e.message}</div>
                     </div>
                   ))}
                 </div>
               </div>
+            </div>
             </div>
           )}
 
@@ -1546,7 +1583,7 @@ export default function App() {
                       </h2>
                     </div>
                     <p style={{ fontSize: '0.85rem', color: '#667085' }}>
-                      Active Case: <strong style={{ color: '#2563EB' }}>{selectedCaseId}</strong> • Cryptographic evidence verification, append-only audit chains, and tamper-detection engine.
+                      Active Case: <strong style={{ color: '#166534' }}>{selectedCaseId}</strong> • Cryptographic evidence verification, append-only audit chains, and tamper-detection engine.
                     </p>
                   </div>
                   <div style={{ display: 'flex', gap: '0.65rem' }}>
@@ -1595,7 +1632,7 @@ export default function App() {
                           color: securityScorecard.status === 'VERIFIED' ? '#16A34A' : '#DC2626',
                           border: `1px solid ${securityScorecard.status === 'VERIFIED' ? '#BBF7D0' : '#FCA5A5'}`
                         }}>
-                          {securityScorecard.status === 'VERIFIED' ? '✓ ALL CONTROLS VERIFIED' : '⚠ COMPROMISED / REVIEW REQUIRED'}
+                          {securityScorecard.status === 'VERIFIED' ? 'ALL CONTROLS VERIFIED' : 'COMPROMISED: REVIEW REQUIRED'}
                         </span>
                       </div>
                     </div>
@@ -1651,7 +1688,7 @@ export default function App() {
                             color: isOk ? '#16A34A' : '#DC2626',
                             border: `1px solid ${isOk ? '#BBF7D0' : '#FCA5A5'}`
                           }}>
-                            {isOk ? '✓ VERIFIED' : '✕ COMPROMISED'}
+                            {isOk ? 'VERIFIED' : 'COMPROMISED'}
                           </span>
                         </div>
                         <p style={{ fontSize: '0.78rem', color: '#667085', margin: 0 }}>
@@ -1699,14 +1736,14 @@ export default function App() {
                           width: '28px',
                           height: '28px',
                           borderRadius: '50%',
-                          background: '#EFF6FF',
-                          border: '1px solid #BFDBFE',
+                          background: '#ECFDF3',
+                          border: '1px solid #BBF7D0',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
                           fontSize: '0.75rem',
                           fontWeight: 700,
-                          color: '#2563EB'
+                          color: '#166534'
                         }}>
                           {i + 1}
                         </div>
@@ -1811,7 +1848,7 @@ export default function App() {
                             <td style={{ padding: '0.6rem', fontWeight: 600, color: '#1F2937' }}>
                               {ev.event_type}
                             </td>
-                            <td style={{ padding: '0.6rem', color: '#2563EB' }}>{ev.case_id || 'Global'}</td>
+                            <td style={{ padding: '0.6rem', color: '#166534' }}>{ev.case_id || 'Global'}</td>
                             <td style={{ padding: '0.6rem', color: '#1F2937', fontFamily: 'var(--font-mono)' }}>
                               {ev.object_id}
                             </td>
@@ -1829,7 +1866,7 @@ export default function App() {
                                 fontWeight: 600,
                                 color: ev.resolved ? '#16A34A' : '#D97706'
                               }}>
-                                {ev.resolved ? '✓ Resolved' : '⚠ Active'}
+                                {ev.resolved ? 'Resolved' : 'Active'}
                               </span>
                             </td>
                             <td style={{ padding: '0.6rem', textAlign: 'right' }}>
@@ -1854,7 +1891,7 @@ export default function App() {
 
               {/* System Security & Configuration Posture */}
               <div className="glass-panel" style={{ padding: '1.25rem' }}>
-                <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#f8fafc', marginBottom: '0.85rem' }}>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#111827', marginBottom: '0.85rem' }}>
                   Defensive Platform Configuration Posture
                 </h3>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem', marginBottom: '1rem' }}>
@@ -1867,17 +1904,17 @@ export default function App() {
                     { label: 'Task Replay Guard', value: securityConfig.replay_protection },
                     { label: 'Configuration Integrity', value: securityConfig.configuration_integrity }
                   ].map((item, idx) => (
-                    <div key={idx} style={{ background: 'rgba(5,8,17,0.7)', border: '1px solid rgba(51,65,85,0.6)', borderRadius: '6px', padding: '0.65rem' }}>
-                      <span style={{ fontSize: '0.72rem', color: '#94a3b8' }}>{item.label}</span>
-                      <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#34d399', textTransform: 'uppercase', marginTop: '0.15rem' }}>
-                        ✓ {item.value}
+                    <div key={idx} style={{ background: '#F8FAFC', border: '1px solid #E5E7EB', borderRadius: '6px', padding: '0.65rem' }}>
+                      <span style={{ fontSize: '0.72rem', color: '#475569' }}>{item.label}</span>
+                      <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#166534', textTransform: 'uppercase', marginTop: '0.15rem' }}>
+                        {item.value}
                       </div>
                     </div>
                   ))}
                 </div>
-                <div style={{ fontSize: '0.75rem', color: '#94a3b8', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div style={{ fontSize: '0.75rem', color: '#475569', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <span>Baseline Configuration Fingerprint:</span>
-                  <code style={{ color: '#38bdf8', background: 'rgba(15,23,42,0.8)', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>
+                  <code style={{ color: '#166534', background: '#F8FAFC', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>
                     {securityConfig.configuration_fingerprint}
                   </code>
                 </div>
@@ -1897,12 +1934,12 @@ export default function App() {
                   justifyContent: 'center',
                   zIndex: 9999
                 }}>
-                  <div className="glass-panel" style={{ width: '450px', padding: '1.5rem', background: '#0b1120', border: '1px solid rgba(56,189,248,0.4)' }}>
-                    <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#f8fafc', marginBottom: '0.5rem' }}>
+                  <div className="glass-panel" style={{ width: '450px', padding: '1.5rem', background: '#FFFFFF', border: '1px solid #D9E0E7', borderRadius: '6px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
+                    <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#111827', marginBottom: '0.5rem' }}>
                       Resolve Security Event
                     </h3>
-                    <p style={{ fontSize: '0.8rem', color: '#94a3b8', marginBottom: '1rem' }}>
-                      Event ID: <strong style={{ color: '#38bdf8' }}>{resolvingEventId}</strong>. Provide analyst verification disposition.
+                    <p style={{ fontSize: '0.8rem', color: '#475569', marginBottom: '1rem' }}>
+                      Event ID: <strong style={{ color: '#166534' }}>{resolvingEventId}</strong>. Provide analyst verification disposition.
                     </p>
                     <textarea
                       value={resolveComment}
@@ -1911,10 +1948,10 @@ export default function App() {
                       style={{
                         width: '100%',
                         height: '90px',
-                        background: 'rgba(15,23,42,0.9)',
-                        border: '1px solid rgba(51,65,85,0.7)',
-                        borderRadius: '6px',
-                        color: '#f8fafc',
+                        background: '#FFFFFF',
+                        border: '1px solid #D9E0E7',
+                        borderRadius: '5px',
+                        color: '#111827',
                         padding: '0.6rem',
                         fontSize: '0.82rem',
                         marginBottom: '1rem',
@@ -1933,18 +1970,18 @@ export default function App() {
 
           {activeTab === 'investigation' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              {/* Header & Metrics */}
-              <div className="glass-panel" style={{ padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem' }}>
+              {/* Investigation Header & Structured Metadata Panel (Section 9) */}
+              <div className="glass-panel" style={{ padding: '1.5rem', background: '#FFFFFF', border: '1px solid #D9E0E7', borderRadius: '6px', boxShadow: 'var(--shadow-card)' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '1rem' }}>
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-                      <Compass size={22} color="#2563EB" />
-                      <h2 style={{ fontSize: '1.3rem', fontWeight: 600, color: '#1F2937' }}>
-                        Intelligent Investigation & Threat Correlation Hub
-                      </h2>
+                      <Compass size={20} color="#166534" />
+                      <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#111827', margin: 0 }}>
+                        Investigation
+                      </h1>
                     </div>
-                    <p style={{ fontSize: '0.85rem', color: '#667085' }}>
-                      Case: <strong style={{ color: '#2563EB' }}>{selectedCaseId}</strong> • Automated multi-endpoint telemetry correlation, IOC extraction, and explainable risk analysis.
+                    <p style={{ fontSize: '0.85rem', color: '#475569', margin: '0.2rem 0 0 0' }}>
+                      Automated multi-endpoint telemetry correlation, IOC extraction, and explainable forensic analysis.
                     </p>
                   </div>
                   <div style={{ display: 'flex', gap: '0.5rem' }}>
@@ -1965,12 +2002,54 @@ export default function App() {
                   </div>
                 </div>
 
+                {/* Structured Investigation Information Panel (Section 9) */}
+                <div style={{
+                  background: '#F8FAFC',
+                  border: '1px solid #E5E7EB',
+                  borderRadius: '6px',
+                  padding: '1rem 1.25rem',
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+                  gap: '1rem',
+                  fontSize: '0.85rem'
+                }}>
+                  <div>
+                    <div style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Investigation ID</div>
+                    <div style={{ fontWeight: 700, color: '#166534', fontFamily: 'var(--font-mono)', fontSize: '0.95rem', marginTop: '0.15rem' }}>
+                      {selectedCaseId || 'JCK-2026-00142'}
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Status</div>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', marginTop: '0.15rem', color: '#166534', fontWeight: 600 }}>
+                      <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#166534', display: 'inline-block' }}></span>
+                      Active
+                    </div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Analyst</div>
+                    <div style={{ fontWeight: 600, color: '#111827', marginTop: '0.15rem' }}>Security Analyst</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Created</div>
+                    <div style={{ fontWeight: 500, color: '#111827', marginTop: '0.15rem' }}>28 Sep 2026</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Evidence</div>
+                    <div style={{ fontWeight: 600, color: '#111827', marginTop: '0.15rem' }}>{evidenceList.length || 18} items</div>
+                  </div>
+                  <div>
+                    <div style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Threat Findings</div>
+                    <div style={{ fontWeight: 700, color: '#B91C1C', marginTop: '0.15rem' }}>{findings.length || 5}</div>
+                  </div>
+                </div>
+
                 {/* Case Summary Cards */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.85rem' }}>
                   <div style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', padding: '0.75rem', borderRadius: '8px' }}>
                     <div style={{ fontSize: '0.75rem', color: '#667085' }}>Investigated Endpoints</div>
                     <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#1F2937' }}>{investigationSummary.total_agents}</div>
-                    <div style={{ fontSize: '0.7rem', color: '#2563EB', fontWeight: 500 }}>Heterogeneous Fleet</div>
+                    <div style={{ fontSize: '0.7rem', color: '#166534', fontWeight: 500 }}>Heterogeneous Fleet</div>
                   </div>
                   <div style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', padding: '0.75rem', borderRadius: '8px' }}>
                     <div style={{ fontSize: '0.75rem', color: '#667085' }}>Evidence Envelopes</div>
@@ -1984,7 +2063,7 @@ export default function App() {
                   </div>
                   <div style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', padding: '0.75rem', borderRadius: '8px' }}>
                     <div style={{ fontSize: '0.75rem', color: '#667085' }}>Timeline Events</div>
-                    <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#2563EB' }}>{timelineEvents.length}</div>
+                    <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#166534' }}>{timelineEvents.length}</div>
                     <div style={{ fontSize: '0.7rem', color: '#667085' }}>Chronological Stream</div>
                   </div>
                   <div style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', padding: '0.75rem', borderRadius: '8px' }}>
@@ -2050,7 +2129,7 @@ export default function App() {
                           border: '1px solid #E2E5E9',
                           borderRadius: '4px',
                           padding: '0.15rem 0.45rem',
-                          color: '#2563EB',
+                          color: '#166534',
                           cursor: 'pointer',
                           fontFamily: 'var(--font-mono)',
                           fontSize: '0.72rem',
@@ -2064,8 +2143,8 @@ export default function App() {
 
                   {/* Search Results Summary Banner */}
                   {searchResults && (
-                    <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', borderRadius: '6px', padding: '0.6rem 0.85rem', fontSize: '0.8rem', color: '#1F2937', marginTop: '0.25rem' }}>
-                      Search results for <strong style={{ color: '#2563EB' }}>"{searchQuery}"</strong>: Found {searchResults.matching_findings.length} findings, {searchResults.matching_indicators.length} indicators, {searchResults.matching_timeline_events.length} timeline events, and {searchResults.matching_evidence_ids.length} evidence envelopes.
+                    <div style={{ background: '#ECFDF3', border: '1px solid #BBF7D0', borderRadius: '6px', padding: '0.6rem 0.85rem', fontSize: '0.8rem', color: '#1F2937', marginTop: '0.25rem' }}>
+                      Search results for <strong style={{ color: '#166534' }}>"{searchQuery}"</strong>: Found {searchResults.matching_findings.length} findings, {searchResults.matching_indicators.length} indicators, {searchResults.matching_timeline_events.length} timeline events, and {searchResults.matching_evidence_ids.length} evidence envelopes.
                     </div>
                   )}
                 </div>
@@ -2191,7 +2270,7 @@ export default function App() {
                                 style={{
                                   background: '#F8FAFC',
                                   border: '1px solid #E2E5E9',
-                                  color: '#2563EB',
+                                  color: '#166534',
                                   padding: '0.15rem 0.5rem',
                                   borderRadius: '4px',
                                   fontSize: '0.72rem',
@@ -2219,7 +2298,7 @@ export default function App() {
                               style={{
                                 background: '#F8FAFC',
                                 border: '1px solid #D0D5DD',
-                                color: '#2563EB',
+                                color: '#166534',
                                 padding: '0.1rem 0.4rem',
                                 borderRadius: '3px',
                                 fontFamily: 'var(--font-mono)',
@@ -2296,7 +2375,7 @@ export default function App() {
                             <div>
                               <div style={{ fontSize: '0.85rem', color: '#1F2937', fontWeight: 500 }}>{evt.description}</div>
                               <div style={{ fontSize: '0.72rem', color: '#667085', marginTop: '0.15rem' }}>
-                                Agent: <span style={{ color: '#2563EB', fontWeight: 500 }}>{evt.agent_id}</span> • Evidence: <span style={{ fontFamily: 'var(--font-mono)' }}>{evt.evidence_id || 'N/A'}</span>
+                                Agent: <span style={{ color: '#166534', fontWeight: 500 }}>{evt.agent_id}</span> • Evidence: <span style={{ fontFamily: 'var(--font-mono)' }}>{evt.evidence_id || 'N/A'}</span>
                               </div>
                             </div>
                           </div>
@@ -2331,7 +2410,7 @@ export default function App() {
                       {indicators.map(ioc => (
                         <tr key={ioc.id} style={{ borderBottom: '1px solid #E2E5E9' }}>
                           <td style={{ padding: '0.6rem' }}>
-                            <span style={{ fontSize: '0.72rem', padding: '0.15rem 0.4rem', borderRadius: '4px', background: '#EFF6FF', color: '#2563EB', border: '1px solid #BFDBFE', fontWeight: 600 }}>
+                            <span style={{ fontSize: '0.72rem', padding: '0.15rem 0.4rem', borderRadius: '4px', background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0', fontWeight: 600 }}>
                               {ioc.type}
                             </span>
                           </td>
@@ -2369,7 +2448,7 @@ export default function App() {
                       <p style={{ fontSize: '0.75rem', color: '#667085' }}>Node-edge correlation linking agents, processes, files, hashes, and network sockets.</p>
                     </div>
                     <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.72rem' }}>
-                      <span style={{ color: '#2563EB', fontWeight: 500 }}>● Agent</span>
+                      <span style={{ color: '#166534', fontWeight: 500 }}>● Agent</span>
                       <span style={{ color: '#16A34A', fontWeight: 500 }}>● Process</span>
                       <span style={{ color: '#D97706', fontWeight: 500 }}>● Hash</span>
                       <span style={{ color: '#DC2626', fontWeight: 500 }}>● IP Socket</span>
@@ -2439,8 +2518,8 @@ export default function App() {
                         <div key={n.id} style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', borderRadius: '6px', padding: '0.85rem' }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem', fontSize: '0.75rem' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                              <strong style={{ color: '#2563EB' }}>{n.analyst_name}</strong>
-                              <span style={{ padding: '0.1rem 0.4rem', borderRadius: '3px', background: '#EFF6FF', color: '#2563EB', border: '1px solid #BFDBFE', fontSize: '0.7rem', fontWeight: 600 }}>
+                              <strong style={{ color: '#166534' }}>{n.analyst_name}</strong>
+                              <span style={{ padding: '0.1rem 0.4rem', borderRadius: '3px', background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0', fontSize: '0.7rem', fontWeight: 600 }}>
                                 {n.note_type.toUpperCase()}
                               </span>
                             </div>
@@ -2511,7 +2590,7 @@ export default function App() {
                         <span style={{ padding: '0.3rem 0.65rem', borderRadius: '4px', background: '#FEF2F2', color: '#DC2626', border: '1px solid #FECACA', fontSize: '0.75rem', fontWeight: 600 }}>
                           Peak Burst: 14:00 UTC (15 Events)
                         </span>
-                        <span style={{ padding: '0.3rem 0.65rem', borderRadius: '4px', background: '#EFF6FF', color: '#2563EB', border: '1px solid #BFDBFE', fontSize: '0.75rem', fontWeight: 600 }}>
+                        <span style={{ padding: '0.3rem 0.65rem', borderRadius: '4px', background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0', fontSize: '0.75rem', fontWeight: 600 }}>
                           Total Buckets: {timelineHeatmapData.length} Intervals
                         </span>
                       </div>
@@ -2601,7 +2680,7 @@ export default function App() {
                                 <span style={{ color: '#667085' }}>{b.severities.INFO || 0} Info</span>
                               </div>
                             </td>
-                            <td style={{ padding: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#2563EB' }}>
+                            <td style={{ padding: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#166534' }}>
                               {Object.entries(b.event_types).map(([k, v]) => `${k}:${v}`).join(', ')}
                             </td>
                             <td style={{ padding: '0.5rem' }}>
@@ -2638,7 +2717,7 @@ export default function App() {
                           Maps correlated forensic indicators, process executions, and network behaviors to standard MITRE tactics and techniques.
                         </p>
                       </div>
-                      <span style={{ padding: '0.3rem 0.65rem', borderRadius: '4px', background: '#EFF6FF', color: '#2563EB', border: '1px solid #BFDBFE', fontSize: '0.75rem', fontWeight: 600 }}>
+                      <span style={{ padding: '0.3rem 0.65rem', borderRadius: '4px', background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0', fontSize: '0.75rem', fontWeight: 600 }}>
                         {attackMatrix.length} Techniques Mapped
                       </span>
                     </div>
@@ -2661,9 +2740,9 @@ export default function App() {
                           <div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.4rem' }}>
                               <span style={{ 
-                                background: '#EFF6FF', 
-                                border: '1px solid #BFDBFE', 
-                                color: '#2563EB', 
+                                background: '#ECFDF3', 
+                                border: '1px solid #BBF7D0', 
+                                color: '#166534', 
                                 padding: '0.15rem 0.45rem', 
                                 borderRadius: '4px', 
                                 fontSize: '0.75rem', 
@@ -2703,7 +2782,7 @@ export default function App() {
                                   style={{ 
                                     background: '#FFFFFF', 
                                     border: '1px solid #D0D5DD', 
-                                    color: '#2563EB', 
+                                    color: '#166534', 
                                     padding: '0.15rem 0.35rem', 
                                     borderRadius: '3px', 
                                     fontSize: '0.7rem', 
@@ -2736,12 +2815,12 @@ export default function App() {
                       width: '44px', 
                       height: '44px', 
                       borderRadius: '8px', 
-                      background: '#EFF6FF', 
-                      border: '1px solid #BFDBFE',
+                      background: '#ECFDF3', 
+                      border: '1px solid #BBF7D0',
                       display: 'flex', 
                       alignItems: 'center', 
                       justifyContent: 'center',
-                      color: '#2563EB'
+                      color: '#166534'
                     }}>
                       <Cpu size={24} />
                     </div>
@@ -2785,10 +2864,10 @@ export default function App() {
                       gap: '0.4rem', 
                       padding: '0.4rem 0.8rem', 
                       borderRadius: '6px', 
-                      background: '#EFF6FF',
-                      border: '1px solid #BFDBFE',
+                      background: '#ECFDF3',
+                      border: '1px solid #BBF7D0',
                       fontSize: '0.8rem',
-                      color: '#2563EB',
+                      color: '#166534',
                       fontWeight: 600
                     }}>
                       <ShieldCheck size={14} />
@@ -2894,7 +2973,7 @@ export default function App() {
                             <div style={{ 
                               fontFamily: 'var(--font-mono)', 
                               fontSize: '0.78rem', 
-                              color: '#2563EB', 
+                              color: '#166534', 
                               background: '#F8FAFC', 
                               border: '1px solid #E2E5E9',
                               padding: '0.4rem 0.6rem', 
@@ -2972,7 +3051,7 @@ export default function App() {
                         Ground-truth evidence signals driving the Random Forest classification score
                       </p>
                     </div>
-                    <span style={{ fontSize: '0.75rem', color: '#2563EB', background: '#EFF6FF', border: '1px solid #BFDBFE', padding: '0.2rem 0.55rem', borderRadius: '4px', fontWeight: 600 }}>
+                    <span style={{ fontSize: '0.75rem', color: '#166534', background: '#ECFDF3', border: '1px solid #BBF7D0', padding: '0.2rem 0.55rem', borderRadius: '4px', fontWeight: 600 }}>
                       Top {mlPredictions[0].top_factors.length} Factors
                     </span>
                   </div>
@@ -2993,7 +3072,7 @@ export default function App() {
                       >
                         <div>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
-                            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#2563EB', fontWeight: 600 }}>
+                            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#166534', fontWeight: 600 }}>
                               #{idx + 1} {factor.feature}
                             </span>
                             <span style={{ fontSize: '0.75rem', color: '#667085' }}>
@@ -3037,7 +3116,7 @@ export default function App() {
                     <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#1F2937', marginTop: '0.25rem' }}>
                       {mlModelStatus?.algorithm || 'RandomForestClassifier'}
                     </div>
-                    <div style={{ fontSize: '0.75rem', color: '#2563EB', marginTop: '0.2rem' }}>100 Trees • Balanced Weights</div>
+                    <div style={{ fontSize: '0.75rem', color: '#166534', marginTop: '0.2rem' }}>100 Trees • Balanced Weights</div>
                   </div>
 
                   <div style={{ background: '#F8FAFC', padding: '0.9rem', borderRadius: '8px', border: '1px solid #E2E5E9' }}>
@@ -3061,7 +3140,7 @@ export default function App() {
                     <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#1F2937', marginTop: '0.25rem' }}>
                       v{mlModelStatus?.feature_schema_version || '1.0'}
                     </div>
-                    <div style={{ fontSize: '0.75rem', color: '#2563EB', marginTop: '0.2rem' }}>21 Normalized Features</div>
+                    <div style={{ fontSize: '0.75rem', color: '#166534', marginTop: '0.2rem' }}>21 Normalized Features</div>
                   </div>
                 </div>
 
@@ -3115,7 +3194,7 @@ export default function App() {
                         const border = isMal ? '#FECACA' : isSusp ? '#FDE68A' : '#BBF7D0';
                         return (
                           <tr key={pred.prediction_id} style={{ borderBottom: '1px solid #E2E5E9' }}>
-                            <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#2563EB', fontWeight: 600 }}>
+                            <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>
                               {pred.prediction_id}
                             </td>
                             <td style={{ padding: '0.65rem 0.85rem', color: '#475467' }}>
@@ -3230,7 +3309,7 @@ export default function App() {
                       Active Case Threat Correlations ({threatMatches.length} Matches)
                     </h3>
                     <p style={{ fontSize: '0.82rem', color: '#667085', margin: '0.2rem 0 0 0' }}>
-                      Forensic indicators in case <strong style={{ color: '#2563EB', fontFamily: 'var(--font-mono)' }}>{selectedCaseId}</strong> corroborated by imported Threat Intelligence signatures.
+                      Forensic indicators in case <strong style={{ color: '#166534', fontFamily: 'var(--font-mono)' }}>{selectedCaseId}</strong> corroborated by imported Threat Intelligence signatures.
                     </p>
                   </div>
                   <span style={{ padding: '0.25rem 0.6rem', borderRadius: '4px', background: '#FEF2F2', color: '#DC2626', border: '1px solid #FECACA', fontSize: '0.75rem', fontWeight: 700 }}>
@@ -3260,7 +3339,7 @@ export default function App() {
                           </div>
                         </div>
                         <div style={{ display: 'flex', gap: '0.4rem' }}>
-                          <span style={{ padding: '0.15rem 0.5rem', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 700, background: '#EFF6FF', color: '#2563EB', border: '1px solid #BFDBFE' }}>
+                          <span style={{ padding: '0.15rem 0.5rem', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 700, background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0' }}>
                             MITRE: {m.mitre_attack_id}
                           </span>
                           <span style={{ padding: '0.15rem 0.5rem', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 700, background: '#FEF2F2', color: '#DC2626', border: '1px solid #FECACA' }}>
@@ -3269,7 +3348,7 @@ export default function App() {
                         </div>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', marginTop: '0.5rem', fontSize: '0.8rem', flexWrap: 'wrap' }}>
-                        <div>Matched IOC: <code style={{ color: '#2563EB', background: '#FFFFFF', border: '1px solid #D0D5DD', padding: '0.15rem 0.45rem', borderRadius: '4px', fontFamily: 'var(--font-mono)' }}>{m.matched_indicator}</code> <span style={{ color: '#667085' }}>({m.indicator_type})</span></div>
+                        <div>Matched IOC: <code style={{ color: '#166534', background: '#FFFFFF', border: '1px solid #D0D5DD', padding: '0.15rem 0.45rem', borderRadius: '4px', fontFamily: 'var(--font-mono)' }}>{m.matched_indicator}</code> <span style={{ color: '#667085' }}>({m.indicator_type})</span></div>
                         <div>Target Endpoint: <span style={{ color: '#1F2937', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>{m.agent_id}</span></div>
                       </div>
                     </div>
@@ -3350,10 +3429,10 @@ export default function App() {
                 </div>
 
                 {/* Safety Guarantee Notice */}
-                <div style={{ background: '#EFF6FF', border: '1px solid #BFDBFE', borderRadius: '8px', padding: '0.85rem 1rem', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                <div style={{ background: '#ECFDF3', border: '1px solid #BBF7D0', borderRadius: '8px', padding: '0.85rem 1rem', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
                   <Shield size={22} color="#2563EB" style={{ flexShrink: 0 }} />
                   <div style={{ fontSize: '0.82rem', color: '#1F2937', lineHeight: '1.45' }}>
-                    <strong style={{ color: '#2563EB' }}>Deterministic Defensive Allowlist Guarantee:</strong> Only explicitly authorized defensive actions (<code style={{ color: '#2563EB', fontFamily: 'var(--font-mono)' }}>collect.*</code>, <code style={{ color: '#2563EB', fontFamily: 'var(--font-mono)' }}>generate.report</code>, <code style={{ color: '#2563EB', fontFamily: 'var(--font-mono)' }}>isolate.endpoint.simulated</code>, <code style={{ color: '#2563EB', fontFamily: 'var(--font-mono)' }}>suspend.process.simulated</code>) are accepted. Destructive commands and arbitrary shell execution are strictly rejected (<code style={{ color: '#DC2626', fontFamily: 'var(--font-mono)' }}>UNSUPPORTED_RESPONSE_ACTION</code>). All playbooks require analyst approval prior to execution.
+                    <strong style={{ color: '#166534' }}>Deterministic Defensive Allowlist Guarantee:</strong> Only explicitly authorized defensive actions (<code style={{ color: '#166534', fontFamily: 'var(--font-mono)' }}>collect.*</code>, <code style={{ color: '#166534', fontFamily: 'var(--font-mono)' }}>generate.report</code>, <code style={{ color: '#166534', fontFamily: 'var(--font-mono)' }}>isolate.endpoint.simulated</code>, <code style={{ color: '#166534', fontFamily: 'var(--font-mono)' }}>suspend.process.simulated</code>) are accepted. Destructive commands and arbitrary shell execution are strictly rejected (<code style={{ color: '#DC2626', fontFamily: 'var(--font-mono)' }}>UNSUPPORTED_RESPONSE_ACTION</code>). All playbooks require analyst approval prior to execution.
                   </div>
                 </div>
               </div>
@@ -3451,7 +3530,7 @@ export default function App() {
                               fontSize: '0.78rem'
                             }}
                           >
-                            <span style={{ color: '#2563EB', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>#{act.step_number}</span>
+                            <span style={{ color: '#166534', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>#{act.step_number}</span>
                             <code style={{ color: '#1F2937', fontFamily: 'var(--font-mono)' }}>{act.action_type}</code>
                             {act.target_agent_id && (
                               <span style={{ color: '#667085', fontSize: '0.72rem' }}>({act.target_agent_id})</span>
@@ -3475,7 +3554,7 @@ export default function App() {
                     {/* Approvals Record */}
                     {pb.approvals && pb.approvals.length > 0 && (
                       <div style={{ marginTop: '0.75rem', fontSize: '0.78rem', color: '#475467', background: '#F8FAFC', border: '1px solid #E2E5E9', padding: '0.45rem 0.75rem', borderRadius: '4px' }}>
-                        Analyst Sign-Off: <strong style={{ color: '#2563EB' }}>{pb.approvals[0].approver_email}</strong> • Decision: <span style={{ color: '#16A34A', fontWeight: 700 }}>{pb.approvals[0].decision}</span> ({pb.approvals[0].comment})
+                        Analyst Sign-Off: <strong style={{ color: '#166534' }}>{pb.approvals[0].approver_email}</strong> • Decision: <span style={{ color: '#16A34A', fontWeight: 700 }}>{pb.approvals[0].decision}</span> ({pb.approvals[0].comment})
                       </div>
                     )}
                   </div>
@@ -3513,7 +3592,7 @@ export default function App() {
                       }}
                       onClick={() => handleScriptTypeChange('demo_persistence')}
                     >
-                      ★ Demo Persistence (.jocky)
+                      Persistence Investigation (.jocky)
                     </button>
                     <button 
                       className="btn-secondary" 
@@ -3608,8 +3687,8 @@ export default function App() {
                       id="run-jocky-btn-studio"
                       className="btn-primary"
                       style={{
-                        background: '#2563EB',
-                        border: '1px solid #2563EB',
+                        background: '#166534',
+                        border: '1px solid #166534',
                         fontWeight: 600
                       }}
                       onClick={() => setActiveTab('demo')}
@@ -3635,8 +3714,8 @@ export default function App() {
                 )}
 
                 {compileOutput && (
-                  <div style={{ marginTop: '1rem', padding: '1rem', background: '#EFF6FF', border: '1px solid #BFDBFE', borderRadius: '8px', fontSize: '0.82rem', color: '#1F2937' }}>
-                    <div style={{ color: '#2563EB', fontWeight: 600, marginBottom: '0.25rem' }}>Execution Plan Hash (SHA-256): <code style={{ fontFamily: 'var(--font-mono)' }}>{compileOutput.planHash}</code></div>
+                  <div style={{ marginTop: '1rem', padding: '1rem', background: '#ECFDF3', border: '1px solid #BBF7D0', borderRadius: '8px', fontSize: '0.82rem', color: '#1F2937' }}>
+                    <div style={{ color: '#166534', fontWeight: 600, marginBottom: '0.25rem' }}>Execution Plan Hash (SHA-256): <code style={{ fontFamily: 'var(--font-mono)' }}>{compileOutput.planHash}</code></div>
                     <div>Approved Collectors: <code style={{ color: '#16A34A', fontFamily: 'var(--font-mono)' }}>{compileOutput.approvedFunctions.join(', ')}</code></div>
                   </div>
                 )}
@@ -3699,7 +3778,7 @@ export default function App() {
                 <tbody>
                   {filteredAgents.map((agent) => (
                     <tr key={agent.id} style={{ borderBottom: '1px solid #E2E5E9' }}>
-                      <td style={{ padding: '0.75rem 1rem', fontFamily: 'var(--font-mono)', color: '#2563EB', fontWeight: 600 }}>{agent.id}</td>
+                      <td style={{ padding: '0.75rem 1rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>{agent.id}</td>
                       <td style={{ padding: '0.75rem 1rem', fontWeight: 500, color: '#1F2937' }}>{agent.hostname}</td>
                       <td style={{ padding: '0.75rem 1rem', color: '#475467' }}>{agent.platform} ({agent.os_ver})</td>
                       <td style={{ padding: '0.75rem 1rem', fontFamily: 'var(--font-mono)', color: '#475467' }}>{agent.ip}</td>
@@ -3733,9 +3812,9 @@ export default function App() {
             <div className="glass-panel" style={{ padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
                 <div>
-                  <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#1F2937' }}>Forensic Task Lifecycle Monitor</h2>
-                  <p style={{ fontSize: '0.85rem', color: '#667085', marginTop: '0.2rem' }}>
-                    Atomic lease tracking from PENDING → ASSIGNED → RUNNING → COMPLETED. Replay protected.
+                  <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#111827' }}>Forensic Task Lifecycle Monitor</h2>
+                  <p style={{ fontSize: '0.85rem', color: '#475569', marginTop: '0.2rem' }}>
+                    Atomic lease tracking: PENDING -&gt; ASSIGNED -&gt; RUNNING -&gt; COMPLETED. Replay protected.
                   </p>
                 </div>
               </div>
@@ -3754,7 +3833,7 @@ export default function App() {
                 <tbody>
                   {tasks.map((task) => (
                     <tr key={task.id} style={{ borderBottom: '1px solid #E2E5E9' }}>
-                      <td style={{ padding: '0.75rem 1rem', fontFamily: 'var(--font-mono)', color: '#2563EB', fontWeight: 600 }}>{task.id}</td>
+                      <td style={{ padding: '0.75rem 1rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>{task.id}</td>
                       <td style={{ padding: '0.75rem 1rem', color: '#475467' }}>{task.case_id}</td>
                       <td style={{ padding: '0.75rem 1rem', fontFamily: 'var(--font-mono)', color: '#475467' }}>{task.agent_id}</td>
                       <td style={{ padding: '0.75rem 1rem', fontWeight: 500, color: '#1F2937' }}>{task.name}</td>
@@ -3797,24 +3876,24 @@ export default function App() {
               }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.35rem' }}>
-                    <h1 style={{ fontSize: '1.5rem', fontWeight: 700, color: '#1F2937', margin: 0 }}>EVIDENCE</h1>
+                    <h1 style={{ fontSize: '1.4rem', fontWeight: 600, color: '#111827', margin: 0 }}>Evidence Management</h1>
                     <span style={{ 
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '0.35rem',
-                      background: '#EFF6FF', 
-                      color: '#2563EB', 
-                      border: '1px solid #BFDBFE', 
-                      padding: '0.25rem 0.75rem', 
-                      borderRadius: '6px', 
-                      fontSize: '0.85rem', 
+                      background: '#ECFDF3', 
+                      color: '#166534', 
+                      border: '1px solid #BBF7D0', 
+                      padding: '0.2rem 0.6rem', 
+                      borderRadius: '4px', 
+                      fontSize: '0.8rem', 
                       fontWeight: 600,
                       fontFamily: 'var(--font-mono)'
                     }}>
-                      Case: CASE-2026-001
+                      Case: {selectedCaseId || 'CASE-2026-001'}
                     </span>
                   </div>
-                  <p style={{ fontSize: '0.88rem', color: '#667085', margin: 0 }}>
+                  <p style={{ fontSize: '0.85rem', color: '#475569', margin: 0 }}>
                     Cryptographically sealed tamper-evident forensic artifacts categorized by origin and system vector.
                   </p>
                 </div>
@@ -3915,12 +3994,12 @@ export default function App() {
                             width: '32px', 
                             height: '32px', 
                             borderRadius: '6px', 
-                            background: '#EFF6FF', 
-                            border: '1px solid #BFDBFE',
+                            background: '#ECFDF3', 
+                            border: '1px solid #BBF7D0',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            color: '#2563EB'
+                            color: '#166534'
                           }}>
                             <Icon size={16} />
                           </div>
@@ -3961,7 +4040,7 @@ export default function App() {
                             <tbody>
                               {items.map((ev) => (
                                 <tr key={ev.id} style={{ borderBottom: '1px solid #E2E5E9' }}>
-                                  <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#2563EB', fontWeight: 600 }}>
+                                  <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>
                                     {ev.id}
                                   </td>
                                   <td style={{ padding: '0.65rem 0.85rem', fontWeight: 500, color: '#1F2937' }}>
@@ -3985,15 +4064,15 @@ export default function App() {
                                   </td>
                                   <td style={{ padding: '0.65rem 0.85rem' }}>
                                     <span style={{ 
-                                      padding: '0.2rem 0.6rem', 
-                                      borderRadius: '12px', 
-                                      fontSize: '0.75rem', 
+                                      padding: '0.2rem 0.55rem', 
+                                      borderRadius: '4px', 
+                                      fontSize: '0.72rem', 
                                       fontWeight: 600, 
-                                      background: '#F0FDF4', 
-                                      color: '#16A34A', 
+                                      background: '#ECFDF3', 
+                                      color: '#166534', 
                                       border: '1px solid #BBF7D0' 
                                     }}>
-                                      SEALED
+                                      VERIFIED
                                     </span>
                                   </td>
                                   <td style={{ padding: '0.65rem 0.85rem' }}>
@@ -4047,7 +4126,7 @@ export default function App() {
                 <div>
                   <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#1F2937' }}>Forensic Investigation Cases</h2>
                   <p style={{ fontSize: '0.85rem', color: '#667085', marginTop: '0.2rem' }}>
-                    Lifecycle tracking: OPEN → INVESTIGATING → CONTAINED → CLOSED.
+                    Lifecycle tracking: OPEN -&gt; INVESTIGATING -&gt; CONTAINED -&gt; CLOSED.
                   </p>
                 </div>
                 <button className="btn-primary" onClick={() => setShowNewCaseModal(true)}>
@@ -4069,7 +4148,7 @@ export default function App() {
                 <tbody>
                   {cases.map((c) => (
                     <tr key={c.id} style={{ borderBottom: '1px solid #E2E5E9' }}>
-                      <td style={{ padding: '0.75rem 1rem', fontFamily: 'var(--font-mono)', color: '#2563EB', fontWeight: 600 }}>{c.id}</td>
+                      <td style={{ padding: '0.75rem 1rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>{c.id}</td>
                       <td style={{ padding: '0.75rem 1rem', fontWeight: 500, color: '#1F2937' }}>{c.title}</td>
                       <td style={{ padding: '0.75rem 1rem' }}>
                         <span style={{
@@ -4085,7 +4164,7 @@ export default function App() {
                         </span>
                       </td>
                       <td style={{ padding: '0.75rem 1rem' }}>
-                        <span style={{ padding: '0.2rem 0.55rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600, background: '#EFF6FF', color: '#2563EB', border: '1px solid #BFDBFE' }}>
+                        <span style={{ padding: '0.2rem 0.55rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600, background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0' }}>
                           {c.status}
                         </span>
                       </td>
@@ -4177,7 +4256,7 @@ export default function App() {
                   <div style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', borderRadius: '6px', padding: '1.25rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem', fontSize: '0.88rem' }}>
                     <div>
                       <div style={{ color: '#667085', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Case Reference</div>
-                      <div style={{ fontWeight: 700, color: '#2563EB', fontFamily: 'var(--font-mono)', fontSize: '1.05rem', marginTop: '0.15rem' }}>
+                      <div style={{ fontWeight: 700, color: '#166534', fontFamily: 'var(--font-mono)', fontSize: '1.05rem', marginTop: '0.15rem' }}>
                         {currentCase?.id || 'CASE-2026-001'}
                       </div>
                     </div>
@@ -4199,7 +4278,7 @@ export default function App() {
                         <span style={{ background: '#FEF2F2', color: '#DC2626', border: '1px solid #FECACA', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>
                           HIGH SEVERITY
                         </span>
-                        <span style={{ background: '#EFF6FF', color: '#2563EB', border: '1px solid #BFDBFE', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
+                        <span style={{ background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
                           {currentCase?.status?.toUpperCase() || 'INVESTIGATING'}
                         </span>
                       </div>
@@ -4207,51 +4286,27 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* 2. Investigation Summary */}
+                {/* 01 Investigation Summary */}
                 <div style={{ marginBottom: '2rem' }}>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1F2937', borderBottom: '1px solid #E2E5E9', paddingBottom: '0.5rem', marginBottom: '0.85rem' }}>
-                    Investigation Summary
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#111827', borderBottom: '1px solid #E5E7EB', paddingBottom: '0.5rem', marginBottom: '0.85rem' }}>
+                    01 Investigation Summary
                   </h3>
-                  <p style={{ color: '#475467', fontSize: '0.9rem', marginBottom: '0.75rem' }}>
-                    An automated forensic acquisition was dispatched against target host <code style={{ fontFamily: 'var(--font-mono)', color: '#2563EB' }}>DEMO-WINDOWS-ENDPOINT</code> executing declarative JOCKY script <code style={{ fontFamily: 'var(--font-mono)' }}>demo_persistence.jocky</code>. The six-stage execution workflow (COLLECT → CORRELATE → ANALYZE → VERIFY → CHAIN → REPORT) completed in 1.62 ms with full envelope attestation.
+                  <p style={{ color: '#475569', fontSize: '0.9rem', marginBottom: '0.75rem' }}>
+                    An automated forensic acquisition was dispatched against target host <code style={{ fontFamily: 'var(--font-mono)', color: '#166534' }}>DEMO-WINDOWS-ENDPOINT</code> executing declarative JOCKY script <code style={{ fontFamily: 'var(--font-mono)' }}>demo_persistence.jocky</code>. The six-stage execution workflow (COLLECT - CORRELATE - ANALYZE - VERIFY - CHAIN - REPORT) completed in 1.62 ms with full envelope attestation.
                   </p>
-                  <p style={{ color: '#475467', fontSize: '0.9rem', margin: 0 }}>
+                  <p style={{ color: '#475569', fontSize: '0.9rem', margin: 0 }}>
                     Correlation identified anomalous registry run keys registered under <code style={{ fontFamily: 'var(--font-mono)' }}>HKLM_Run</code> referencing masqueraded system executables, concurrent rogue process spawning without parent linkage, and suspicious TCP socket bindings.
                   </p>
                 </div>
 
-                {/* 3. Threat Assessment */}
+                {/* 02 Evidence */}
                 <div style={{ marginBottom: '2rem' }}>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1F2937', borderBottom: '1px solid #E2E5E9', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
-                    Threat Assessment
-                  </h3>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
-                    <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '6px', padding: '1rem' }}>
-                      <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#DC2626', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Threat Score</div>
-                      <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#DC2626', margin: '0.25rem 0' }}>86 <span style={{ fontSize: '1rem', fontWeight: 500, color: '#667085' }}>/ 100</span></div>
-                      <div style={{ fontSize: '0.75rem', color: '#DC2626', fontWeight: 700 }}>HIGH THREAT SEVERITY</div>
-                    </div>
-                    <div style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', borderRadius: '6px', padding: '1rem' }}>
-                      <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#667085', textTransform: 'uppercase', letterSpacing: '0.04em' }}>MITRE ATT&CK Technique</div>
-                      <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#1F2937', margin: '0.25rem 0' }}>T1547.001</div>
-                      <div style={{ fontSize: '0.75rem', color: '#667085' }}>Boot/Logon Autostart Execution: Registry Run Keys</div>
-                    </div>
-                    <div style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', borderRadius: '6px', padding: '1rem' }}>
-                      <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#667085', textTransform: 'uppercase', letterSpacing: '0.04em' }}>ML Engine Confidence</div>
-                      <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#16A34A', margin: '0.25rem 0' }}>99.4%</div>
-                      <div style={{ fontSize: '0.75rem', color: '#16A34A', fontWeight: 600 }}>Random Forest Classifier (RFC-8785 Sealed)</div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* 4. Evidence Summary */}
-                <div style={{ marginBottom: '2rem' }}>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1F2937', borderBottom: '1px solid #E2E5E9', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
-                    Evidence Summary
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#111827', borderBottom: '1px solid #E5E7EB', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+                    02 Evidence
                   </h3>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem', marginBottom: '1rem' }}>
                     <thead>
-                      <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E5E9', textAlign: 'left', color: '#667085' }}>
+                      <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E5E7EB', textAlign: 'left', color: '#64748B' }}>
                         <th style={{ padding: '0.65rem 0.85rem' }}>Category</th>
                         <th style={{ padding: '0.65rem 0.85rem' }}>Evidence ID</th>
                         <th style={{ padding: '0.65rem 0.85rem' }}>Collector</th>
@@ -4260,54 +4315,54 @@ export default function App() {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr style={{ borderBottom: '1px solid #E2E5E9' }}>
-                        <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#1F2937' }}>Registry</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#2563EB', fontWeight: 600 }}>EV-31BA09C4</td>
+                      <tr style={{ borderBottom: '1px solid #E5E7EB' }}>
+                        <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#111827' }}>Registry</td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>EV-31BA09C4</td>
                         <td style={{ padding: '0.65rem 0.85rem' }}>persistence.startup</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475467' }}>9f82b714529a7019c81b29a80e41982736bfa8019a823471ef99a8bc00984712</td>
-                        <td style={{ padding: '0.65rem 0.85rem' }}><span style={{ background: '#F0FDF4', color: '#16A34A', border: '1px solid #BBF7D0', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 600 }}>SEALED</span></td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475569' }}>9f82b714529a7019c81b29a80e41982736bfa8019a823471ef99a8bc00984712</td>
+                        <td style={{ padding: '0.65rem 0.85rem' }}><span style={{ background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 600 }}>VERIFIED</span></td>
                       </tr>
-                      <tr style={{ borderBottom: '1px solid #E2E5E9' }}>
-                        <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#1F2937' }}>Process</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#2563EB', fontWeight: 600 }}>EV-8D92FA10</td>
+                      <tr style={{ borderBottom: '1px solid #E5E7EB' }}>
+                        <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#111827' }}>Process</td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>EV-8D92FA10</td>
                         <td style={{ padding: '0.65rem 0.85rem' }}>process.list</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475467' }}>4a7d189fec0a29b3c79124ae8019fb42a8b9281a02938471ef09a8bc12984712</td>
-                        <td style={{ padding: '0.65rem 0.85rem' }}><span style={{ background: '#F0FDF4', color: '#16A34A', border: '1px solid #BBF7D0', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 600 }}>SEALED</span></td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475569' }}>4a7d189fec0a29b3c79124ae8019fb42a8b9281a02938471ef09a8bc12984712</td>
+                        <td style={{ padding: '0.65rem 0.85rem' }}><span style={{ background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 600 }}>VERIFIED</span></td>
                       </tr>
-                      <tr style={{ borderBottom: '1px solid #E2E5E9' }}>
-                        <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#1F2937' }}>Network</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#2563EB', fontWeight: 600 }}>EV-44CA991B</td>
+                      <tr style={{ borderBottom: '1px solid #E5E7EB' }}>
+                        <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#111827' }}>Network</td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>EV-44CA991B</td>
                         <td style={{ padding: '0.65rem 0.85rem' }}>network.connections</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475467' }}>5d41402abc4b2a76b9719d911017c592b23ae41e4649b934ca495991b7852b85</td>
-                        <td style={{ padding: '0.65rem 0.85rem' }}><span style={{ background: '#F0FDF4', color: '#16A34A', border: '1px solid #BBF7D0', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 600 }}>SEALED</span></td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475569' }}>5d41402abc4b2a76b9719d911017c592b23ae41e4649b934ca495991b7852b85</td>
+                        <td style={{ padding: '0.65rem 0.85rem' }}><span style={{ background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 600 }}>VERIFIED</span></td>
                       </tr>
-                      <tr style={{ borderBottom: '1px solid #E2E5E9' }}>
-                        <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#1F2937' }}>Filesystem</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#2563EB', fontWeight: 600 }}>EV-PE-7721AA</td>
+                      <tr style={{ borderBottom: '1px solid #E5E7EB' }}>
+                        <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#111827' }}>Filesystem</td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>EV-PE-7721AA</td>
                         <td style={{ padding: '0.65rem 0.85rem' }}>malware.pe_info</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475467' }}>e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</td>
-                        <td style={{ padding: '0.65rem 0.85rem' }}><span style={{ background: '#F0FDF4', color: '#16A34A', border: '1px solid #BBF7D0', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 600 }}>SEALED</span></td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475569' }}>e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</td>
+                        <td style={{ padding: '0.65rem 0.85rem' }}><span style={{ background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 600 }}>VERIFIED</span></td>
                       </tr>
-                      <tr style={{ borderBottom: '1px solid #E2E5E9' }}>
-                        <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#1F2937' }}>Event Logs</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#2563EB', fontWeight: 600 }}>EV-EVT-9021B</td>
+                      <tr style={{ borderBottom: '1px solid #E5E7EB' }}>
+                        <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#111827' }}>Event Logs</td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>EV-EVT-9021B</td>
                         <td style={{ padding: '0.65rem 0.85rem' }}>system.eventlog</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475467' }}>7c91a38f01b92019c81b29a80e41982736bfa8019a823471ef99a8bc00984110</td>
-                        <td style={{ padding: '0.65rem 0.85rem' }}><span style={{ background: '#F0FDF4', color: '#16A34A', border: '1px solid #BBF7D0', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 600 }}>SEALED</span></td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475569' }}>7c91a38f01b92019c81b29a80e41982736bfa8019a823471ef99a8bc00984110</td>
+                        <td style={{ padding: '0.65rem 0.85rem' }}><span style={{ background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 600 }}>VERIFIED</span></td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
 
-                {/* 5. Forensic Vector */}
+                {/* 03 Analysis */}
                 <div style={{ marginBottom: '2rem' }}>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1F2937', borderBottom: '1px solid #E2E5E9', paddingBottom: '0.5rem', marginBottom: '0.85rem' }}>
-                    Forensic Vector
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#111827', borderBottom: '1px solid #E5E7EB', paddingBottom: '0.5rem', marginBottom: '0.85rem' }}>
+                    03 Analysis
                   </h3>
-                  <p style={{ color: '#475467', fontSize: '0.9rem', marginBottom: '0.85rem' }}>
-                    The 21-Dimensional Forensic Vector evaluates multi-modal telemetry across process dynamics, startup persistence, socket behaviors, and integrity metrics.
+                  <p style={{ color: '#475569', fontSize: '0.9rem', marginBottom: '0.85rem' }}>
+                    The 21-Dimensional Forensic Analysis evaluates multi-modal telemetry across process dynamics, startup persistence, socket behaviors, and integrity metrics.
                   </p>
-                  <div style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', borderRadius: '6px', padding: '1rem 1.25rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.85rem', fontSize: '0.84rem' }}>
+                  <div style={{ background: '#F8FAFC', border: '1px solid #E5E7EB', borderRadius: '6px', padding: '1rem 1.25rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.85rem', fontSize: '0.84rem' }}>
                     <div><strong>Total Dimensions:</strong> 21 Evaluated</div>
                     <div><strong>Anomalous Vectors:</strong> <span style={{ color: '#DC2626', fontWeight: 700 }}>7 Detected</span></div>
                     <div><strong>L2 Norm Magnitude:</strong> 0.8741</div>
@@ -4317,29 +4372,38 @@ export default function App() {
                   </div>
                 </div>
 
-                {/* 6. Integrity Verification */}
+                {/* 04 Findings */}
                 <div style={{ marginBottom: '2rem' }}>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1F2937', borderBottom: '1px solid #E2E5E9', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
-                    Integrity Verification
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#111827', borderBottom: '1px solid #E5E7EB', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+                    04 Findings
                   </h3>
-                  <div style={{ background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: '6px', padding: '1rem 1.25rem' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#16A34A', fontWeight: 700, fontSize: '0.92rem' }}>
-                      <CheckCircle2 size={18} /> 12 / 12 Integrity & Tamper Detectors Passed
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
+                    <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '6px', padding: '1rem' }}>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#DC2626', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Threat Score</div>
+                      <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#DC2626', margin: '0.25rem 0' }}>86 <span style={{ fontSize: '1rem', fontWeight: 500, color: '#64748B' }}>/ 100</span></div>
+                      <div style={{ fontSize: '0.75rem', color: '#DC2626', fontWeight: 700 }}>HIGH THREAT SEVERITY</div>
                     </div>
-                    <div style={{ color: '#15803D', fontSize: '0.84rem', marginTop: '0.35rem' }}>
-                      Zero tampering detected across envelope hashes, timestamps, monotonic lease sequence, or canonical serialization. All digital artifacts conform strictly to RFC-8785 standards.
+                    <div style={{ background: '#F8FAFC', border: '1px solid #E5E7EB', borderRadius: '6px', padding: '1rem' }}>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>MITRE ATT&amp;CK Technique</div>
+                      <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#111827', margin: '0.25rem 0' }}>T1547.001</div>
+                      <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Boot/Logon Autostart Execution: Registry Run Keys</div>
+                    </div>
+                    <div style={{ background: '#F8FAFC', border: '1px solid #E5E7EB', borderRadius: '6px', padding: '1rem' }}>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>ML Engine Confidence</div>
+                      <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#166534', margin: '0.25rem 0' }}>99.4%</div>
+                      <div style={{ fontSize: '0.75rem', color: '#166534', fontWeight: 600 }}>Random Forest Classifier (RFC-8785 Sealed)</div>
                     </div>
                   </div>
                 </div>
 
-                {/* 7. Chain of Custody */}
+                {/* 05 Chain of Custody */}
                 <div style={{ marginBottom: '2rem' }}>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1F2937', borderBottom: '1px solid #E2E5E9', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
-                    Chain of Custody
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#111827', borderBottom: '1px solid #E5E7EB', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+                    05 Chain of Custody
                   </h3>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.84rem' }}>
                     <thead>
-                      <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E5E9', textAlign: 'left', color: '#667085' }}>
+                      <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E5E7EB', textAlign: 'left', color: '#64748B' }}>
                         <th style={{ padding: '0.65rem 0.85rem' }}>Seq #</th>
                         <th style={{ padding: '0.65rem 0.85rem' }}>Timestamp</th>
                         <th style={{ padding: '0.65rem 0.85rem' }}>Custody Action</th>
@@ -4348,35 +4412,35 @@ export default function App() {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr style={{ borderBottom: '1px solid #E2E5E9' }}>
+                      <tr style={{ borderBottom: '1px solid #E5E7EB' }}>
                         <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600 }}>001</td>
-                        <td style={{ padding: '0.65rem 0.85rem', color: '#667085' }}>14:20:15 UTC</td>
+                        <td style={{ padding: '0.65rem 0.85rem', color: '#64748B' }}>14:20:15 UTC</td>
                         <td style={{ padding: '0.65rem 0.85rem', fontWeight: 500 }}>ACQUISITION_SEAL</td>
                         <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)' }}>AGENT-WIN-01</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475467' }}>4a7d189f...84712</td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475569' }}>4a7d189f...84712</td>
                       </tr>
-                      <tr style={{ borderBottom: '1px solid #E2E5E9' }}>
+                      <tr style={{ borderBottom: '1px solid #E5E7EB' }}>
                         <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600 }}>002</td>
-                        <td style={{ padding: '0.65rem 0.85rem', color: '#667085' }}>14:20:18 UTC</td>
+                        <td style={{ padding: '0.65rem 0.85rem', color: '#64748B' }}>14:20:18 UTC</td>
                         <td style={{ padding: '0.65rem 0.85rem', fontWeight: 500 }}>VAULT_INGEST</td>
                         <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)' }}>JOCKY_CORE_LEDGER</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475467' }}>9f82b714...984712</td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475569' }}>9f82b714...984712</td>
                       </tr>
-                      <tr style={{ borderBottom: '1px solid #E2E5E9' }}>
+                      <tr style={{ borderBottom: '1px solid #E5E7EB' }}>
                         <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600 }}>003</td>
-                        <td style={{ padding: '0.65rem 0.85rem', color: '#667085' }}>14:21:00 UTC</td>
+                        <td style={{ padding: '0.65rem 0.85rem', color: '#64748B' }}>14:21:00 UTC</td>
                         <td style={{ padding: '0.65rem 0.85rem', fontWeight: 500 }}>INTEGRITY_VERIFIED</td>
                         <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)' }}>lead-analyst@jocky.defense</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475467' }}>5d41402a...852b85</td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475569' }}>5d41402a...852b85</td>
                       </tr>
                     </tbody>
                   </table>
                 </div>
 
-                {/* 8. Conclusion */}
+                {/* 06 Conclusion */}
                 <div>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1F2937', borderBottom: '1px solid #E2E5E9', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
-                    Conclusion
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#111827', borderBottom: '1px solid #E5E7EB', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+                    06 Conclusion
                   </h3>
                   <p style={{ color: '#475467', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
                     Digital evidence confirms an unapproved startup registry run key persistence mechanism consistent with MITRE ATT&CK T1547.001. All digital artifacts are preserved with cryptographic SHA-256 integrity and verifiable chain of custody. Recommended remediation: isolate endpoint DEMO-WINDOWS-ENDPOINT, delete rogue HKLM_Run registry value, and terminate spawned worker process tree.
@@ -4391,7 +4455,7 @@ export default function App() {
                     </div>
                     <div style={{ textAlign: 'right' }}>
                       <div style={{ padding: '0.5rem 1rem', background: '#F8FAFC', border: '1px solid #E2E5E9', borderRadius: '6px', display: 'inline-block' }}>
-                        <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#2563EB', letterSpacing: '0.05em' }}>CRYPTOGRAPHICALLY SEALED</div>
+                        <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#166534', letterSpacing: '0.05em' }}>CRYPTOGRAPHICALLY SEALED</div>
                         <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.76rem', color: '#667085', marginTop: '0.15rem' }}>SHA-256: 7f83b165...ec49a712</div>
                       </div>
                     </div>
@@ -4477,7 +4541,7 @@ export default function App() {
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', maxHeight: '200px', overflowY: 'auto' }}>
               {capsModalAgent.caps.map(c => (
-                <span key={c} style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', color: '#2563EB', padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}>
+                <span key={c} style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', color: '#166534', padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}>
                   {c}
                 </span>
               ))}
@@ -4530,7 +4594,7 @@ export default function App() {
           <div className="glass-panel" style={{ width: '640px', maxHeight: '80vh', padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '10px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)', display: 'flex', flexDirection: 'column' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
               <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1F2937', margin: 0 }}>
-                Evidence Envelope: <span style={{ fontFamily: 'var(--font-mono)', color: '#2563EB' }}>{inspectEvidence.id}</span>
+                Evidence Envelope: <span style={{ fontFamily: 'var(--font-mono)', color: '#166534' }}>{inspectEvidence.id}</span>
               </h3>
               <button className="btn-secondary" style={{ padding: '0.2rem 0.5rem', fontSize: '0.78rem' }} onClick={() => setInspectEvidence(null)}>Close</button>
             </div>
@@ -4549,14 +4613,14 @@ export default function App() {
               Analyst Response Review & Sign-Off
             </h3>
             <p style={{ fontSize: '0.82rem', color: '#667085', marginBottom: '1rem' }}>
-              Playbook: <strong style={{ color: '#2563EB' }}>{approvalModalPlaybook.name}</strong> ({approvalModalPlaybook.actions?.length || 0} steps)
+              Playbook: <strong style={{ color: '#166534' }}>{approvalModalPlaybook.name}</strong> ({approvalModalPlaybook.actions?.length || 0} steps)
             </p>
 
             <div style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', borderRadius: '6px', padding: '0.75rem', marginBottom: '1rem' }}>
               <div style={{ fontSize: '0.75rem', color: '#667085', marginBottom: '0.35rem', fontWeight: 600 }}>Proposed Actions:</div>
               {approvalModalPlaybook.actions?.map(a => (
                 <div key={a.id} style={{ fontSize: '0.8rem', color: '#1F2937', display: 'flex', gap: '0.5rem', marginBottom: '0.25rem' }}>
-                  <span style={{ color: '#2563EB', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>#{a.step_number}</span>
+                  <span style={{ color: '#166534', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>#{a.step_number}</span>
                   <code style={{ fontFamily: 'var(--font-mono)' }}>{a.action_type}</code>
                   {a.target_agent_id && <span style={{ color: '#667085' }}>({a.target_agent_id})</span>}
                 </div>
@@ -4590,7 +4654,7 @@ export default function App() {
               <button 
                 className="btn-primary" 
                 onClick={() => handleApprovePlaybook('APPROVED')}
-                style={{ background: '#2563EB' }}
+                style={{ background: '#166534' }}
               >
                 Authorize & Approve
               </button>
@@ -4638,7 +4702,7 @@ export default function App() {
                 <select
                   value={newPbActionType}
                   onChange={(e) => setNewPbActionType(e.target.value)}
-                  style={{ width: '100%', padding: '0.5rem 0.75rem', background: '#FFFFFF', border: '1px solid #D0D5DD', borderRadius: '6px', color: '#2563EB', fontWeight: 600, fontSize: '0.85rem' }}
+                  style={{ width: '100%', padding: '0.5rem 0.75rem', background: '#FFFFFF', border: '1px solid #D0D5DD', borderRadius: '6px', color: '#166534', fontWeight: 600, fontSize: '0.85rem' }}
                 >
                   <option value="collect.processes">collect.processes (Volatile Process Snapshot)</option>
                   <option value="collect.network">collect.network (Active Sockets & Sinks)</option>
@@ -4717,7 +4781,7 @@ export default function App() {
 
               <div>
                 <label style={{ fontSize: '0.75rem', color: '#667085', display: 'block', marginBottom: '0.2rem' }}>Prediction ID</label>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: '#2563EB', background: '#F8FAFC', padding: '0.4rem 0.6rem', borderRadius: '4px', border: '1px solid #E2E5E9' }}>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: '#166534', background: '#F8FAFC', padding: '0.4rem 0.6rem', borderRadius: '4px', border: '1px solid #E2E5E9' }}>
                   {mlVerifyResult.prediction_id}
                 </div>
               </div>

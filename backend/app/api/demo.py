@@ -295,32 +295,61 @@ def save_history_record(payload: HistoryRecordRequest, db: Session = Depends(get
     """
     Explicitly saves or syncs an execution record to the history database.
     """
-    eid = payload.execution_id or get_next_execution_id(db)
-    now = datetime.now(timezone.utc)
-    record = ExecutionHistory(
-        execution_id=eid,
-        case_id=payload.case_id or "CASE-2026-001",
-        script_name=payload.script_name or "demo_persistence.jocky",
-        script_content=payload.script_content,
-        target=payload.target or "DEMO-WINDOWS-ENDPOINT",
-        status=payload.status,
-        started_at=now,
-        completed_at=now,
-        duration_ms=payload.duration_ms or 0.0,
-        threat_score=payload.threat_score,
-        risk_level=payload.risk_level,
-        evidence_categories=payload.evidence_categories or [],
-        forensic_vector_dimensions=payload.forensic_vector_dimensions or 21,
-        tamper_checks_passed=payload.tamper_checks_passed or 12,
-        tamper_checks_total=payload.tamper_checks_total or 12,
-        chain_status=payload.chain_status or "VERIFIED",
-        error_message=payload.error_message,
-        result_data=payload.result_data
-    )
-    db.add(record)
-    db.commit()
-    db.refresh(record)
-    return {"status": "SAVED", "execution_id": eid, "id": record.id}
+    try:
+        eid = payload.execution_id or get_next_execution_id(db)
+
+        # Check if record already exists to prevent UNIQUE constraint violation
+        existing = db.query(ExecutionHistory).filter(ExecutionHistory.execution_id == eid).first()
+        if existing:
+            if payload.status:
+                existing.status = payload.status
+            if payload.duration_ms is not None:
+                existing.duration_ms = payload.duration_ms
+            if payload.threat_score is not None:
+                existing.threat_score = payload.threat_score
+            if payload.risk_level:
+                existing.risk_level = payload.risk_level
+            if payload.evidence_categories:
+                existing.evidence_categories = payload.evidence_categories
+            if payload.result_data:
+                existing.result_data = payload.result_data
+            if payload.error_message:
+                existing.error_message = payload.error_message
+            db.commit()
+            db.refresh(existing)
+            return {"status": "UPDATED", "execution_id": eid, "id": existing.id}
+
+        now = datetime.now(timezone.utc)
+        record = ExecutionHistory(
+            execution_id=eid,
+            case_id=payload.case_id or "CASE-2026-001",
+            script_name=payload.script_name or "demo_persistence.jocky",
+            script_content=payload.script_content,
+            target=payload.target or "DEMO-WINDOWS-ENDPOINT",
+            status=payload.status,
+            started_at=now,
+            completed_at=now,
+            duration_ms=payload.duration_ms or 0.0,
+            threat_score=payload.threat_score,
+            risk_level=payload.risk_level,
+            evidence_categories=payload.evidence_categories or [],
+            forensic_vector_dimensions=payload.forensic_vector_dimensions or 21,
+            tamper_checks_passed=payload.tamper_checks_passed or 12,
+            tamper_checks_total=payload.tamper_checks_total or 12,
+            chain_status=payload.chain_status or "VERIFIED",
+            error_message=payload.error_message,
+            result_data=payload.result_data
+        )
+        db.add(record)
+        db.commit()
+        db.refresh(record)
+        return {"status": "SAVED", "execution_id": eid, "id": record.id}
+    except Exception as e:
+        db.rollback()
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail=f"Could not persist history record: {str(e)}"
+        )
 
 
 @router.delete("/history")

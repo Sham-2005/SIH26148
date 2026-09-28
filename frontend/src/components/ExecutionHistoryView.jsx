@@ -20,7 +20,8 @@ import {
   AlertTriangle,
   FileCode,
   Layers,
-  Activity
+  Activity,
+  ArrowRight
 } from 'lucide-react';
 
 export default function ExecutionHistoryView({
@@ -134,7 +135,7 @@ export default function ExecutionHistoryView({
               padding: '0.45rem 0.85rem'
             }}
           >
-            <ArrowLeft size={15} /> ← Back to Execution History
+            <ArrowLeft size={15} /> Back to Execution History
           </button>
 
           <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
@@ -143,9 +144,9 @@ export default function ExecutionHistoryView({
                 id="open-workspace-btn-detail"
                 onClick={() => onOpenWorkspace(exec)}
                 style={{
-                  background: '#EFF6FF',
-                  color: '#2563EB',
-                  border: '1px solid #BFDBFE',
+                  background: '#ECFDF3',
+                  color: '#166534',
+                  border: '1px solid #BBF7D0',
                   padding: '0.55rem 1.15rem',
                   borderRadius: '6px',
                   fontWeight: 600,
@@ -157,16 +158,16 @@ export default function ExecutionHistoryView({
                   transition: 'background-color 0.15s ease'
                 }}
               >
-                <span>🔬</span> Investigation Workspace →
+                <Activity size={14} /> Investigation Workspace <ArrowRight size={13} />
               </button>
             )}
             <button
               id="rerun-script-btn-top"
               onClick={() => onReRun(exec)}
               style={{
-                background: '#2563EB',
+                background: '#166534',
                 color: '#FFFFFF',
-                border: '1px solid #2563EB',
+                border: '1px solid #166534',
                 padding: '0.55rem 1.35rem',
                 borderRadius: '6px',
                 fontWeight: 600,
@@ -180,7 +181,7 @@ export default function ExecutionHistoryView({
               }}
             >
               <Play size={15} fill="#FFFFFF" />
-              ▶ RE-RUN SCRIPT
+              Re-Run Script
             </button>
           </div>
         </div>
@@ -195,7 +196,7 @@ export default function ExecutionHistoryView({
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1.25rem' }}>
             <div>
-              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#2563EB', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#166534', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
                 EXECUTION DETAILS
               </span>
               <h1 style={{ fontSize: '28px', fontWeight: 600, color: '#1F2937', marginTop: '0.2rem', fontFamily: 'var(--font-mono)' }} data-mono>
@@ -221,7 +222,7 @@ export default function ExecutionHistoryView({
                 border: isSuccess ? '1px solid #BBF7D0' : '1px solid #FECACA'
               }}>
                 {isSuccess ? <CheckCircle2 size={16} color="#16A34A" /> : <XCircle size={16} color="#DC2626" />}
-                {isSuccess ? '✓ SUCCESS' : '✕ FAILED'}
+                {isSuccess ? 'SUCCESS' : 'FAILED'}
               </span>
             </div>
           </div>
@@ -236,7 +237,7 @@ export default function ExecutionHistoryView({
           }}>
             <div>
               <span style={{ fontSize: '0.72rem', color: '#667085', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 500 }}>Execution ID</span>
-              <div style={{ fontSize: '0.92rem', fontWeight: 600, color: '#2563EB', fontFamily: 'var(--font-mono)', marginTop: '0.15rem' }} data-mono>
+              <div style={{ fontSize: '0.92rem', fontWeight: 600, color: '#166534', fontFamily: 'var(--font-mono)', marginTop: '0.15rem' }} data-mono>
                 {exec.execution_id}
               </div>
             </div>
@@ -293,7 +294,7 @@ export default function ExecutionHistoryView({
                 {exec.error_message || 'Investigation execution encountered an error during script execution or pipeline validation.'}
               </div>
               <div style={{ color: '#667085', fontSize: '0.75rem', marginTop: '0.4rem' }}>
-                Click "[ ▶ RE-RUN SCRIPT ]" to load this script into JOCKY Studio, inspect/edit parameters, and re-execute.
+                Click "[ Re-Run Script ]" to load this script into JOCKY Studio, inspect/edit parameters, and re-execute.
               </div>
             </div>
           </div>
@@ -358,7 +359,7 @@ export default function ExecutionHistoryView({
             {/* Header + Expand All Toggle */}
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <div>
-                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#2563EB', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 600, color: '#166534', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
                   FORENSIC OUTCOME
                 </span>
                 <h2 style={{ fontSize: '22px', fontWeight: 600, color: '#1F2937', marginTop: '0.15rem' }}>
@@ -393,7 +394,7 @@ export default function ExecutionHistoryView({
                   THREAT SCORE
                 </span>
                 <div style={{ fontSize: '3.2rem', fontWeight: 700, color: '#DC2626', lineHeight: 1.1, margin: '0.35rem 0', fontFamily: 'var(--font-mono)' }} data-mono>
-                  {exec.threat_score ?? 86} <span style={{ fontSize: '1.25rem', color: '#991B1B', fontWeight: 500 }}>/ 100</span>
+                  {exec.threat_score !== null && exec.threat_score !== undefined ? exec.threat_score : '--'} <span style={{ fontSize: '1.25rem', color: '#991B1B', fontWeight: 500 }}>/ 100</span>
                 </div>
                 <div style={{
                   display: 'inline-block',
@@ -418,13 +419,13 @@ export default function ExecutionHistoryView({
                   <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#1F2937', margin: '0.2rem 0' }}>
                     {(exec.evidence_categories?.length || 5)} Categories
                   </div>
-                  <span style={{ fontSize: '0.75rem', color: '#16A34A', fontWeight: 600 }}>✓ 100% Corroborated</span>
+                  <span style={{ fontSize: '0.75rem', color: '#16A34A', fontWeight: 600 }}>100% Corroborated</span>
                 </div>
 
                 {/* Forensic Vector */}
                 <div className="glass-panel" style={{ background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', padding: '1rem', boxShadow: '0 1px 2px rgba(16, 24, 40, 0.04)' }}>
                   <span style={{ fontSize: '0.75rem', color: '#667085', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 500 }}>Forensic Vector</span>
-                  <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#2563EB', margin: '0.2rem 0', fontFamily: 'var(--font-mono)' }} data-mono>
+                  <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#166534', margin: '0.2rem 0', fontFamily: 'var(--font-mono)' }} data-mono>
                     {exec.forensic_vector_dimensions || 21} Dimensions
                   </div>
                   <span style={{ fontSize: '0.75rem', color: '#667085' }}>Deterministic numeric vector</span>
@@ -436,16 +437,16 @@ export default function ExecutionHistoryView({
                   <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#16A34A', margin: '0.2rem 0', fontFamily: 'var(--font-mono)' }} data-mono>
                     {exec.tamper_checks_passed || 12} / {exec.tamper_checks_total || 12} Passed
                   </div>
-                  <span style={{ fontSize: '0.75rem', color: '#16A34A', fontWeight: 600 }}>✓ 12/12 Checks Validated</span>
+                  <span style={{ fontSize: '0.75rem', color: '#16A34A', fontWeight: 600 }}>12/12 Checks Validated</span>
                 </div>
 
                 {/* Chain of Custody */}
                 <div className="glass-panel" style={{ background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', padding: '1rem', boxShadow: '0 1px 2px rgba(16, 24, 40, 0.04)' }}>
                   <span style={{ fontSize: '0.75rem', color: '#667085', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 500 }}>Chain of Custody</span>
-                  <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#2563EB', margin: '0.2rem 0' }}>
+                  <div style={{ fontSize: '1.25rem', fontWeight: 700, color: '#166534', margin: '0.2rem 0' }}>
                     {exec.chain_status || 'VERIFIED'}
                   </div>
-                  <span style={{ fontSize: '0.75rem', color: '#2563EB', fontWeight: 600 }}>✓ Cryptographic Hash Chain</span>
+                  <span style={{ fontSize: '0.75rem', color: '#166534', fontWeight: 600 }}>Cryptographic Hash Chain</span>
                 </div>
               </div>
             </div>
@@ -472,11 +473,11 @@ export default function ExecutionHistoryView({
                       Forensic Analysis — 21 Dimensions
                     </span>
                     <span style={{ fontSize: '0.78rem', color: '#667085', marginLeft: '0.5rem' }}>
-                      Threat Score: <strong style={{ color: '#DC2626', fontFamily: 'var(--font-mono)' }} data-mono>{exec.threat_score ?? 86} / 100</strong>
+                      Threat Score: <strong style={{ color: '#DC2626', fontFamily: 'var(--font-mono)' }} data-mono>{exec.threat_score !== null && exec.threat_score !== undefined ? `${exec.threat_score} / 100` : '--'}</strong>
                     </span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ fontSize: '0.78rem', color: '#2563EB', fontWeight: 600 }}>
+                    <span style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 600 }}>
                       {detailSections.vector ? 'Hide Details' : 'View 21 Dimensions'}
                     </span>
                     {detailSections.vector ? <ChevronUp size={16} color="#2563EB" /> : <ChevronDown size={16} color="#2563EB" />}
@@ -525,7 +526,7 @@ export default function ExecutionHistoryView({
                         }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <span style={{ color: '#1F2937' }}>
-                              <strong style={{ color: '#2563EB', marginRight: '0.35rem', fontFamily: 'var(--font-mono)' }} data-mono>{String(f.id).padStart(2, '0')}</strong>
+                              <strong style={{ color: '#166534', marginRight: '0.35rem', fontFamily: 'var(--font-mono)' }} data-mono>{String(f.id).padStart(2, '0')}</strong>
                               {f.name}
                             </span>
                             <span style={{
@@ -572,7 +573,7 @@ export default function ExecutionHistoryView({
                       Evidence Integrity — 12 Detectors
                     </span>
                     <span style={{ fontSize: '0.78rem', color: '#16A34A', fontWeight: 600, marginLeft: '0.5rem' }}>
-                      ✓ 12 / 12 CHECKS PASSED
+                      12 / 12 CHECKS PASSED
                     </span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
@@ -658,7 +659,7 @@ export default function ExecutionHistoryView({
                     </span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ fontSize: '0.78rem', color: '#2563EB', fontWeight: 600 }}>
+                    <span style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 600 }}>
                       {detailSections.evidence ? 'Hide Artifacts' : 'View Artifacts & Correlation'}
                     </span>
                     {detailSections.evidence ? <ChevronUp size={16} color="#2563EB" /> : <ChevronDown size={16} color="#2563EB" />}
@@ -751,12 +752,12 @@ export default function ExecutionHistoryView({
                     <span style={{ fontWeight: 600, fontSize: '0.95rem', color: '#1F2937' }}>
                       Chain of Custody
                     </span>
-                    <span style={{ fontSize: '0.78rem', color: '#2563EB', fontWeight: 600, marginLeft: '0.5rem' }}>
-                      Evidence → SHA-256 → Cryptographic Hash Chain → ✓ VERIFIED
+                    <span style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 600, marginLeft: '0.5rem' }}>
+                      {'Evidence -> SHA-256 -> Cryptographic Hash Chain -> Verified'}
                     </span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ fontSize: '0.78rem', color: '#2563EB', fontWeight: 600 }}>
+                    <span style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 600 }}>
                       {detailSections.chain ? 'Hide Cryptography' : 'View Cryptographic Details'}
                     </span>
                     {detailSections.chain ? <ChevronUp size={16} color="#2563EB" /> : <ChevronDown size={16} color="#2563EB" />}
@@ -812,13 +813,13 @@ export default function ExecutionHistoryView({
                           gap: '0.35rem'
                         }} data-mono>
                           <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '1px solid #E2E5E9', paddingBottom: '0.35rem' }}>
-                            <span style={{ color: '#2563EB', fontWeight: 700 }}>Block #{block.block_number}</span>
+                            <span style={{ color: '#166534', fontWeight: 700 }}>Block #{block.block_number}</span>
                             <span style={{ color: '#667085' }}>{block.evidence_id}</span>
                           </div>
                           <div><span style={{ color: '#667085' }}>Timestamp:</span> <span style={{ color: '#1F2937' }}>{block.timestamp}</span></div>
                           <div><span style={{ color: '#667085' }}>Previous Hash:</span> <code style={{ color: '#667085', fontSize: '0.7rem', display: 'block', wordBreak: 'break-all' }}>{block.previous_hash}</code></div>
                           <div><span style={{ color: '#667085' }}>Evidence Hash:</span> <code style={{ color: '#16A34A', fontSize: '0.7rem', display: 'block', wordBreak: 'break-all' }}>{block.evidence_hash}</code></div>
-                          <div><span style={{ color: '#667085' }}>Current Hash:</span> <code style={{ color: '#2563EB', fontSize: '0.7rem', display: 'block', wordBreak: 'break-all' }}>{block.current_hash}</code></div>
+                          <div><span style={{ color: '#667085' }}>Current Hash:</span> <code style={{ color: '#166534', fontSize: '0.7rem', display: 'block', wordBreak: 'break-all' }}>{block.current_hash}</code></div>
                         </div>
                       ))}
                     </div>
@@ -850,7 +851,7 @@ export default function ExecutionHistoryView({
                     </span>
                   </div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span style={{ fontSize: '0.78rem', color: '#2563EB', fontWeight: 600 }}>
+                    <span style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 600 }}>
                       {detailSections.telemetry ? 'Hide Logs' : 'View Stream Logs'}
                     </span>
                     {detailSections.telemetry ? <ChevronUp size={16} color="#2563EB" /> : <ChevronDown size={16} color="#2563EB" />}
@@ -880,7 +881,7 @@ export default function ExecutionHistoryView({
                       "[JOCKY] Collecting filesystem artifacts... DONE",
                       "[JOCKY] Correlating evidence... DONE",
                       "[JOCKY] Generating forensic vector... 21 dimensions",
-                      `[JOCKY] Calculating threat score... DONE (${exec.threat_score ?? 86}/100, ${exec.risk_level || 'HIGH'})`,
+                      `[JOCKY] Calculating threat score... DONE (${exec.threat_score ?? '--'}/100, ${exec.risk_level || 'HIGH'})`,
                       "[JOCKY] Running tamper detectors... 12/12",
                       "[JOCKY] Hashing evidence... DONE (EV-2026-001)",
                       "[JOCKY] Building evidence chain... DONE",
@@ -894,7 +895,7 @@ export default function ExecutionHistoryView({
                         alignItems: 'baseline',
                         gap: '0.35rem'
                       }}>
-                        <span style={{ color: '#2563EB', userSelect: 'none', fontWeight: 700 }}>&gt;</span>
+                        <span style={{ color: '#166534', userSelect: 'none', fontWeight: 700 }}>&gt;</span>
                         <span>{log}</span>
                       </div>
                     ))}
@@ -927,7 +928,7 @@ export default function ExecutionHistoryView({
         gap: '1rem'
       }}>
         <div>
-          <span style={{ fontSize: '0.75rem', color: '#2563EB', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600 }}>
+          <span style={{ fontSize: '0.75rem', color: '#166534', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 600 }}>
             JOCKY STUDIO AUDIT
           </span>
           <h1 style={{ fontSize: '28px', fontWeight: 600, color: '#1F2937', marginTop: '0.2rem', letterSpacing: '-0.02em', lineHeight: 1.3 }}>
@@ -942,9 +943,9 @@ export default function ExecutionHistoryView({
           id="history-new-investigation-btn"
           onClick={onNewInvestigation}
           style={{
-            background: '#2563EB',
+            background: '#166534',
             color: '#FFFFFF',
-            border: '1px solid #2563EB',
+            border: '1px solid #166534',
             padding: '0.65rem 1.4rem',
             borderRadius: '6px',
             fontWeight: 600,
@@ -958,7 +959,7 @@ export default function ExecutionHistoryView({
           }}
         >
           <Play size={14} fill="#FFFFFF" />
-          ▶ NEW INVESTIGATION
+          New Investigation
         </button>
       </div>
 
@@ -980,8 +981,8 @@ export default function ExecutionHistoryView({
             width: '64px',
             height: '64px',
             borderRadius: '50%',
-            background: '#EFF6FF',
-            border: '1px solid #BFDBFE',
+            background: '#ECFDF3',
+            border: '1px solid #BBF7D0',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center'
@@ -1000,9 +1001,9 @@ export default function ExecutionHistoryView({
             id="empty-state-new-investigation-btn"
             onClick={onNewInvestigation}
             style={{
-              background: '#2563EB',
+              background: '#166534',
               color: '#FFFFFF',
-              border: '1px solid #2563EB',
+              border: '1px solid #166534',
               padding: '0.75rem 2rem',
               borderRadius: '6px',
               fontWeight: 600,
@@ -1067,7 +1068,7 @@ export default function ExecutionHistoryView({
                   onClick={() => setSearchQuery('')}
                   style={{ background: 'transparent', border: 'none', color: '#667085', cursor: 'pointer', fontSize: '0.8rem' }}
                 >
-                  ✕
+                  Close
                 </button>
               )}
             </div>
@@ -1175,7 +1176,7 @@ export default function ExecutionHistoryView({
                         onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = idx % 2 === 0 ? '#FFFFFF' : '#F8FAFC'; }}
                       >
                         {/* Execution ID */}
-                        <td style={{ padding: '0.85rem 1rem', fontWeight: 600, color: '#2563EB', fontFamily: 'var(--font-mono)' }} data-mono>
+                        <td style={{ padding: '0.85rem 1rem', fontWeight: 600, color: '#166534', fontFamily: 'var(--font-mono)' }} data-mono>
                           {item.execution_id}
                         </td>
 
@@ -1212,8 +1213,8 @@ export default function ExecutionHistoryView({
                             color: isSuccess ? '#16A34A' : isFailed ? '#DC2626' : '#D97706',
                             border: isSuccess ? '1px solid #BBF7D0' : isFailed ? '1px solid #FECACA' : '1px solid #FDE68A'
                           }}>
-                            {isSuccess && '✓ SUCCESS'}
-                            {isFailed && '✕ FAILED'}
+                            {isSuccess && 'SUCCESS'}
+                            {isFailed && 'FAILED'}
                             {isRunning && '● RUNNING'}
                           </span>
                         </td>
@@ -1253,9 +1254,9 @@ export default function ExecutionHistoryView({
                                 }}
                                 title="Open in 8-Tab Investigation Workspace"
                                 style={{
-                                  background: '#EFF6FF',
-                                  border: '1px solid #BFDBFE',
-                                  color: '#2563EB',
+                                  background: '#ECFDF3',
+                                  border: '1px solid #BBF7D0',
+                                  color: '#166534',
                                   padding: '0.25rem 0.55rem',
                                   borderRadius: '4px',
                                   fontSize: '0.75rem',
@@ -1263,18 +1264,18 @@ export default function ExecutionHistoryView({
                                   cursor: 'pointer'
                                 }}
                               >
-                                🔬 Workspace
+                                Workspace
                               </button>
                             )}
                             <span style={{
-                              color: '#2563EB',
+                              color: '#166534',
                               fontSize: '0.8rem',
                               fontWeight: 600,
                               display: 'inline-flex',
                               alignItems: 'center',
                               gap: '0.25rem'
                             }}>
-                              Details →
+                              Details
                             </span>
                           </div>
                         </td>
