@@ -94,7 +94,7 @@ const SAMPLE_SCRIPTS = {
 export default function App() {
   const [activeTab, setActiveTab] = useState('demo');
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [advancedOpen, setAdvancedOpen] = useState(false);
+  const [advancedOpen, setAdvancedOpen] = useState(true);
   
   // Real-time Event Feed
   const [events, setEvents] = useState([
@@ -546,6 +546,14 @@ export default function App() {
       if (pollInterval) clearInterval(pollInterval);
     };
   }, []);
+
+  // Ensure extended modules dropdown is automatically kept open when an extended module is active
+  useEffect(() => {
+    const extendedTabs = ['agents', 'threat_intel', 'response_center', 'cases', 'studio'];
+    if (extendedTabs.includes(activeTab) && !advancedOpen) {
+      setAdvancedOpen(true);
+    }
+  }, [activeTab]);
 
   const fetchInvestigationData = async (caseId) => {
     try {
@@ -1078,11 +1086,11 @@ export default function App() {
   const filteredAgents = agents.filter(a => selectedAgentFilter === 'ALL' || a.platform.toUpperCase() === selectedAgentFilter);
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ height: '100vh', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
       {/* Top Navbar */}
       <header style={{ 
-        borderBottom: '1px solid #E2E5E9', 
-        background: '#FFFFFF',
+        borderBottom: '1px solid #1C2833', 
+        background: '#0E151C',
         padding: '0.85rem 2rem',
         display: 'flex',
         justifyContent: 'space-between',
@@ -1090,37 +1098,38 @@ export default function App() {
         position: 'sticky',
         top: 0,
         zIndex: 50,
-        boxShadow: '0 1px 2px rgba(16, 24, 40, 0.04)'
+        boxShadow: '0 1px 2px rgba(16, 24, 40, 0.04)',
+        flexShrink: 0
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           <div style={{ 
-            background: '#166534', 
-            padding: '0.5rem', 
-            borderRadius: '6px',
-            display: 'flex',
-            alignItems: 'center'
+            background: '#2587E8', 
+            padding: '0.45rem', 
+            borderRadius: '4px', 
+            display: 'flex', 
+            alignItems: 'center' 
           }}>
             <Shield size={20} color="#ffffff" />
           </div>
           <div>
-            <div style={{ fontWeight: 700, fontSize: '1.15rem', letterSpacing: '0.02em', color: '#111827' }}>
+            <div style={{ fontWeight: 700, fontSize: '1.15rem', letterSpacing: '0.02em', color: '#F1F5F9' }}>
               JOCKY
             </div>
-            <div style={{ fontSize: '0.74rem', color: '#475569', fontWeight: 500 }}>Cyber Investigation &amp; Forensics Platform</div>
+            <div style={{ fontSize: '0.74rem', color: '#94A3B8', fontWeight: 500 }}>Endpoint Security &amp; Forensics Platform</div>
           </div>
         </div>
 
         {/* Center Active Case Selector */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#F8FAFC', padding: '0.35rem 0.75rem', borderRadius: '6px', border: '1px solid #E2E5E9', fontSize: '0.85rem' }}>
-            <span style={{ color: '#667085', fontWeight: 500 }}>Case:</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#111A22', padding: '0.35rem 0.75rem', borderRadius: '4px', border: '1px solid #1C2833', fontSize: '0.85rem' }}>
+            <span style={{ color: '#64748B', fontWeight: 500 }}>Case:</span>
             <select
               value={selectedCaseId}
               onChange={(e) => setSelectedCaseId(e.target.value)}
               style={{
-                background: '#FFFFFF',
-                color: '#1F2937',
-                border: '1px solid #D0D5DD',
+                background: '#0E151C',
+                color: '#F1F5F9',
+                border: '1px solid #1C2833',
                 borderRadius: '4px',
                 padding: '0.2rem 0.5rem',
                 fontSize: '0.8rem',
@@ -1135,12 +1144,12 @@ export default function App() {
             </select>
             <span style={{ 
               padding: '0.15rem 0.5rem', 
-              borderRadius: '4px', 
+              borderRadius: '3px', 
               fontSize: '0.7rem', 
               fontWeight: 700,
-              background: currentCase?.severity === 'critical' ? '#FEF2F2' : '#FFFBEB',
-              color: currentCase?.severity === 'critical' ? '#DC2626' : '#D97706',
-              border: `1px solid ${currentCase?.severity === 'critical' ? '#FECACA' : '#FDE68A'}`
+              background: currentCase?.severity === 'critical' ? 'rgba(239, 68, 68, 0.15)' : 'rgba(245, 158, 11, 0.15)',
+              color: currentCase?.severity === 'critical' ? '#EF4444' : '#F59E0B',
+              border: `1px solid ${currentCase?.severity === 'critical' ? 'rgba(239, 68, 68, 0.3)' : 'rgba(245, 158, 11, 0.3)'}`
             }}>
               {currentCase?.severity?.toUpperCase()}
             </span>
@@ -1149,12 +1158,12 @@ export default function App() {
           <button 
             onClick={() => setShowNewCaseModal(true)}
             style={{ 
-              background: '#ECFDF3', 
-              color: '#166534', 
-              border: '1px solid #BBF7D0', 
+              background: '#2587E8', 
+              color: '#FFFFFF', 
+              border: '1px solid #2587E8', 
               padding: '0.35rem 0.75rem', 
-              borderRadius: '6px', 
-              fontSize: '0.8rem',
+              borderRadius: '4px', 
+              fontSize: '0.8rem', 
               fontWeight: 600,
               display: 'flex',
               alignItems: 'center',
@@ -1167,50 +1176,68 @@ export default function App() {
           </button>
         </div>
 
+        {/* Console Search (Section 5) */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', background: '#111A22', border: '1px solid #1C2833', borderRadius: '4px', padding: '0.3rem 0.75rem', width: '250px' }}>
+          <Search size={14} color="#64748B" />
+          <input
+            type="text"
+            placeholder="Console Search (IOC, Hash, Host)..."
+            style={{ background: 'transparent', border: 'none', color: '#F1F5F9', fontSize: '0.78rem', width: '100%', outline: 'none' }}
+          />
+        </div>
+
         {/* Right Status */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontSize: '0.8rem' }}>
-            <span style={{ height: '8px', width: '8px', borderRadius: '50%', background: '#166534', display: 'inline-block' }}></span>
-            <span style={{ color: '#111827', fontWeight: 600 }}>System Status: Operational</span>
+            <span style={{ height: '8px', width: '8px', borderRadius: '50%', background: '#10B981', display: 'inline-block' }}></span>
+            <span style={{ color: '#F1F5F9', fontWeight: 600 }}>System Status: Operational</span>
             <span style={{ color: '#64748B', fontSize: '0.75rem' }}>({wsConnected ? 'WebSocket Live' : 'Polling Active'})</span>
           </div>
-          <div style={{ height: '14px', width: '1px', background: '#D9E0E7' }}></div>
-          <div style={{ fontSize: '0.82rem', color: '#475569' }}>
-            Analyst: <span style={{ color: '#111827', fontWeight: 600 }}>Lead Investigator</span> <span style={{ color: '#64748B', fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}>(JCK-SEC-01)</span>
+          <div style={{ height: '14px', width: '1px', background: '#1C2833' }}></div>
+          <div style={{ fontSize: '0.82rem', color: '#94A3B8' }}>
+            Analyst: <span style={{ color: '#F1F5F9', fontWeight: 600 }}>Lead Investigator</span> <span style={{ color: '#64748B', fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}>(JCK-SEC-01)</span>
           </div>
         </div>
       </header>
 
       {/* Main Workspace */}
-      <div style={{ display: 'flex', flex: 1 }}>
+      <div style={{ display: 'flex', flex: 1, minHeight: 0, overflow: 'hidden' }}>
         {/* Sidebar (Requirement 4) */}
-        <aside style={{ 
-          width: sidebarCollapsed ? '64px' : '230px', 
-          borderRight: '1px solid #E2E5E9', 
-          background: '#FFFFFF',
-          padding: sidebarCollapsed ? '1rem 0.35rem' : '1.25rem 0.75rem',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: '0.35rem',
-          transition: 'width 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
-          flexShrink: 0
-        }}>
+        <aside 
+          className="navy-sidebar"
+          style={{ 
+            width: sidebarCollapsed ? '64px' : '230px', 
+            borderRight: '1px solid #1E293B', 
+            background: '#0A1016',
+            padding: sidebarCollapsed ? '1rem 0.35rem' : '1.25rem 0.75rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.35rem',
+            transition: 'width 0.2s cubic-bezier(0.4, 0, 0.2, 1)',
+            flexShrink: 0,
+            position: 'sticky',
+            top: 0,
+            height: '100%',
+            overflowY: 'auto',
+            zIndex: 40
+          }}
+        >
           {/* Sidebar Top: JOCKY Brand & Collapse Toggle Button */}
           <div style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: sidebarCollapsed ? 'center' : 'space-between',
             padding: sidebarCollapsed ? '0 0 0.5rem' : '0 0.4rem 0.6rem',
-            borderBottom: '1px solid #E2E5E9',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.08)',
             marginBottom: '0.4rem'
           }}>
             {!sidebarCollapsed && (
               <div style={{ display: 'flex', flexDirection: 'column' }}>
-                <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#111827', letterSpacing: '0.04em' }}>
+                <span style={{ fontSize: '0.95rem', fontWeight: 700, color: '#F1F5F9', letterSpacing: '0.04em' }}>
                   JOCKY
                 </span>
-                <span style={{ fontSize: '0.68rem', color: '#64748B', fontWeight: 500 }}>
-                  Cyber Forensics Console
+                <span style={{ fontSize: '0.68rem', color: '#94A3B8', fontWeight: 500 }}>
+                  Endpoint Security &amp; Forensics Console
                 </span>
               </div>
             )}
@@ -1219,10 +1246,10 @@ export default function App() {
               onClick={() => setSidebarCollapsed(!sidebarCollapsed)}
               title={sidebarCollapsed ? "Expand Sidebar (Labels + Icons)" : "Collapse Sidebar (Icons Only)"}
               style={{
-                background: '#F8FAFC',
-                border: '1px solid #E2E5E9',
+                background: 'rgba(255, 255, 255, 0.06)',
+                border: '1px solid rgba(255, 255, 255, 0.12)',
                 borderRadius: '6px',
-                color: '#667085',
+                color: '#94A3B8',
                 padding: '0.25rem 0.35rem',
                 cursor: 'pointer',
                 display: 'flex',
@@ -1245,6 +1272,7 @@ export default function App() {
                   id={`nav-item-${id}`}
                   onClick={() => setActiveTab(id)}
                   title={sidebarCollapsed ? label : undefined}
+                  className={`sidebar-nav-btn ${isActive ? 'active-nav-btn' : ''}`}
                   style={{
                     display: 'flex',
                     alignItems: 'center',
@@ -1252,12 +1280,12 @@ export default function App() {
                     gap: '0.65rem',
                     padding: sidebarCollapsed ? '0.6rem 0' : '0.5rem 0.75rem',
                     borderRadius: '5px',
-                    borderLeft: isActive ? '3px solid #166534' : '3px solid transparent',
+                    borderLeft: isActive ? '3px solid #2587E8' : '3px solid transparent',
                     borderTop: '1px solid transparent',
                     borderRight: '1px solid transparent',
                     borderBottom: '1px solid transparent',
-                    background: isActive ? '#ECFDF3' : highlight ? '#F8FAFC' : 'transparent',
-                    color: isActive ? '#166534' : highlight ? '#111827' : '#475569',
+                    background: isActive ? 'rgba(37, 135, 232, 0.14)' : highlight ? 'rgba(255, 255, 255, 0.05)' : 'transparent',
+                    color: isActive ? '#FFFFFF' : highlight ? '#F1F5F9' : '#94A3B8',
                     fontWeight: isActive ? 600 : 500,
                     fontSize: '0.84rem',
                     cursor: 'pointer',
@@ -1266,7 +1294,7 @@ export default function App() {
                     transition: 'all 0.15s ease'
                   }}
                 >
-                  <Icon size={16} style={{ flexShrink: 0, color: isActive ? '#166534' : '#64748B' }} />
+                  <Icon size={16} style={{ flexShrink: 0, color: isActive ? '#2587E8' : '#64748B' }} />
                   {!sidebarCollapsed && <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{label}</span>}
                 </button>
               );
@@ -1274,13 +1302,13 @@ export default function App() {
 
             const renderHeader = (title) => {
               if (sidebarCollapsed) {
-                return <div style={{ height: '1px', background: '#E2E5E9', margin: '0.35rem 0.25rem' }} />;
+                return <div style={{ height: '1px', background: 'rgba(255, 255, 255, 0.08)', margin: '0.35rem 0.25rem' }} />;
               }
               return (
                 <div style={{
                   fontSize: '0.68rem',
                   fontWeight: 700,
-                  color: '#98A2B3',
+                  color: '#64748B',
                   letterSpacing: '0.08em',
                   textTransform: 'uppercase',
                   padding: '0.55rem 0.5rem 0.2rem',
@@ -1317,7 +1345,7 @@ export default function App() {
                 {/* EXTENDED CAPABILITIES (Collapsible) */}
                 {sidebarCollapsed ? (
                   <>
-                    <div style={{ height: '1px', background: '#D9E0E7', margin: '0.35rem 0.25rem' }} />
+                    <div style={{ height: '1px', background: 'rgba(255, 255, 255, 0.08)', margin: '0.35rem 0.25rem' }} />
                     <button
                       id="advanced-toggle-btn-collapsed"
                       onClick={() => setAdvancedOpen(!advancedOpen)}
@@ -1328,9 +1356,9 @@ export default function App() {
                         justifyContent: 'center',
                         padding: '0.6rem 0',
                         borderRadius: '5px',
-                        border: advancedOpen ? '1px solid #BBF7D0' : '1px solid transparent',
-                        background: advancedOpen ? '#ECFDF3' : 'transparent',
-                        color: advancedOpen ? '#166534' : '#64748B',
+                        border: advancedOpen ? '1px solid rgba(56, 189, 248, 0.3)' : '1px solid transparent',
+                        background: advancedOpen ? 'rgba(56, 189, 248, 0.12)' : 'transparent',
+                        color: advancedOpen ? '#38BDF8' : '#94A3B8',
                         cursor: 'pointer',
                         width: '100%'
                       }}
@@ -1358,7 +1386,7 @@ export default function App() {
                         justifyContent: 'space-between',
                         fontSize: '0.68rem',
                         fontWeight: 700,
-                        color: advancedOpen ? '#166534' : '#64748B',
+                        color: advancedOpen ? '#38BDF8' : '#64748B',
                         letterSpacing: '0.08em',
                         textTransform: 'uppercase',
                         padding: '0.55rem 0.5rem 0.2rem',
@@ -1368,11 +1396,19 @@ export default function App() {
                       }}
                     >
                       <span>EXTENDED MODULES</span>
-                      {advancedOpen ? <ChevronDown size={14} /> : <ChevronRight size={14} />}
+                      {advancedOpen ? <ChevronDown size={14} color="#38BDF8" /> : <ChevronRight size={14} color="#64748B" />}
                     </div>
 
                     {advancedOpen && (
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', paddingLeft: '0.2rem' }}>
+                      <div style={{ 
+                        display: 'flex', 
+                        flexDirection: 'column', 
+                        gap: '0.2rem', 
+                        padding: '0.25rem 0.2rem',
+                        background: 'rgba(2, 6, 23, 0.35)',
+                        borderRadius: '6px',
+                        border: '1px solid rgba(255, 255, 255, 0.05)'
+                      }}>
                         {renderItem('agents', 'Fleet Agents', Server)}
                         {renderItem('threat_intel', 'Threat Intel (STIX)', Network)}
                         {renderItem('response_center', 'Response Center', Shield)}
@@ -1388,66 +1424,66 @@ export default function App() {
         </aside>
 
         {/* Content Area */}
-        <main style={{ flex: 1, padding: '1.75rem 2rem', overflowY: 'auto', background: '#F7F8FA' }}>
+        <main style={{ flex: 1, padding: '1.75rem 2rem', overflowY: 'auto', background: '#080C10', minHeight: 0, height: '100%' }}>
           {/* TAB 1: SOC OVERVIEW */}
           {activeTab === 'dashboard' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               {/* Dashboard Operational Header (Section 8) */}
-              <div style={{ background: '#FFFFFF', border: '1px solid #D9E0E7', borderRadius: '6px', padding: '1.25rem 1.5rem' }}>
-                <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#111827', margin: 0 }}>
+              <div style={{ background: '#0E151C', border: '1px solid #1C2833', borderRadius: '6px', padding: '1.25rem 1.5rem' }}>
+                <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#F1F5F9', margin: 0 }}>
                   Security Operations Overview
                 </h1>
-                <p style={{ fontSize: '0.85rem', color: '#475569', margin: '0.2rem 0 0 0' }}>
+                <p style={{ fontSize: '0.85rem', color: '#94A3B8', margin: '0.2rem 0 0 0' }}>
                   System activity, investigations and evidence status
                 </p>
               </div>
 
               {/* Concise Operational Metrics (Section 8) */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '1rem' }}>
-                <div className="glass-panel stat-card" style={{ background: '#FFFFFF', border: '1px solid #D9E0E7', borderRadius: '6px', padding: '1.15rem 1.25rem' }}>
+                <div className="glass-panel stat-card" style={{ background: '#0E151C', border: '1px solid #1C2833', borderRadius: '6px', padding: '1.15rem 1.25rem' }}>
                   <span style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                     ACTIVE INVESTIGATIONS
                   </span>
-                  <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#111827', margin: '0.2rem 0' }}>
+                  <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#F1F5F9', margin: '0.2rem 0' }}>
                     12
                   </div>
-                  <span style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 500 }}>
+                  <span style={{ fontSize: '0.78rem', color: '#10B981', fontWeight: 500 }}>
                     3 updated today
                   </span>
                 </div>
 
-                <div className="glass-panel stat-card" style={{ background: '#FFFFFF', border: '1px solid #D9E0E7', borderRadius: '6px', padding: '1.15rem 1.25rem' }}>
+                <div className="glass-panel stat-card" style={{ background: '#0E151C', border: '1px solid #1C2833', borderRadius: '6px', padding: '1.15rem 1.25rem' }}>
                   <span style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                     EVIDENCE ITEMS
                   </span>
-                  <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#111827', margin: '0.2rem 0' }}>
+                  <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#F1F5F9', margin: '0.2rem 0' }}>
                     {evidenceList.length || 18}
                   </div>
-                  <span style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 500 }}>
+                  <span style={{ fontSize: '0.78rem', color: '#10B981', fontWeight: 500 }}>
                     100% integrity verified
                   </span>
                 </div>
 
-                <div className="glass-panel stat-card" style={{ background: '#FFFFFF', border: '1px solid #D9E0E7', borderRadius: '6px', padding: '1.15rem 1.25rem' }}>
+                <div className="glass-panel stat-card" style={{ background: '#0E151C', border: '1px solid #1C2833', borderRadius: '6px', padding: '1.15rem 1.25rem' }}>
                   <span style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                     THREAT FINDINGS
                   </span>
-                  <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#B91C1C', margin: '0.2rem 0' }}>
+                  <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#EF4444', margin: '0.2rem 0' }}>
                     {findings.length || 5}
                   </div>
-                  <span style={{ fontSize: '0.78rem', color: '#475569', fontWeight: 500 }}>
+                  <span style={{ fontSize: '0.78rem', color: '#94A3B8', fontWeight: 500 }}>
                     {findings.filter(f => f.status === 'OPEN').length || 1} requiring review
                   </span>
                 </div>
 
-                <div className="glass-panel stat-card" style={{ background: '#FFFFFF', border: '1px solid #D9E0E7', borderRadius: '6px', padding: '1.15rem 1.25rem' }}>
+                <div className="glass-panel stat-card" style={{ background: '#0E151C', border: '1px solid #1C2833', borderRadius: '6px', padding: '1.15rem 1.25rem' }}>
                   <span style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, letterSpacing: '0.05em', textTransform: 'uppercase' }}>
                     PENDING ANALYSIS
                   </span>
-                  <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#111827', margin: '0.2rem 0' }}>
+                  <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#F1F5F9', margin: '0.2rem 0' }}>
                     0
                   </div>
-                  <span style={{ fontSize: '0.78rem', color: '#166534', fontWeight: 500 }}>
+                  <span style={{ fontSize: '0.78rem', color: '#10B981', fontWeight: 500 }}>
                     All pipelines operational
                   </span>
                 </div>
@@ -1455,16 +1491,16 @@ export default function App() {
 
               <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '1.5rem' }}>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                <div className="glass-panel" style={{ padding: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px' }}>
+                <div className="glass-panel" style={{ padding: '1.25rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '6px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                    <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#1F2937' }}>5+ Agent Fleet Overview</h3>
+                    <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#F1F5F9' }}>5+ Agent Fleet Overview</h3>
                     <button className="btn-secondary" style={{ fontSize: '0.75rem', padding: '0.3rem 0.6rem' }} onClick={() => setActiveTab('agents')}>
                       Manage Fleet
                     </button>
                   </div>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
                     <thead>
-                      <tr style={{ background: '#F8FAFC', color: '#667085', borderBottom: '1px solid #E2E5E9', textAlign: 'left' }}>
+                      <tr style={{ background: '#111A22', color: '#64748B', borderBottom: '1px solid #1C2833', textAlign: 'left' }}>
                         <th style={{ padding: '0.6rem 0.75rem' }}>Agent ID</th>
                         <th style={{ padding: '0.6rem 0.75rem' }}>Platform</th>
                         <th style={{ padding: '0.6rem 0.75rem' }}>Hostname</th>
@@ -1473,12 +1509,12 @@ export default function App() {
                     </thead>
                     <tbody>
                       {agents.slice(0, 5).map(a => (
-                        <tr key={a.id} style={{ borderBottom: '1px solid #E2E5E9' }}>
-                          <td style={{ padding: '0.6rem 0.75rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>{a.id}</td>
-                          <td style={{ padding: '0.6rem 0.75rem', color: '#1F2937' }}>{a.platform}</td>
-                          <td style={{ padding: '0.6rem 0.75rem', color: '#1F2937' }}>{a.hostname}</td>
+                        <tr key={a.id} style={{ borderBottom: '1px solid #1C2833' }}>
+                          <td style={{ padding: '0.6rem 0.75rem', fontFamily: 'var(--font-mono)', color: '#3B9CFF', fontWeight: 600 }}>{a.id}</td>
+                          <td style={{ padding: '0.6rem 0.75rem', color: '#F1F5F9' }}>{a.platform}</td>
+                          <td style={{ padding: '0.6rem 0.75rem', color: '#F1F5F9' }}>{a.hostname}</td>
                           <td style={{ padding: '0.6rem 0.75rem' }}>
-                            <span className={a.status === 'online' ? 'badge-online' : 'badge-offline'} style={{ padding: '0.15rem 0.5rem', borderRadius: '10px', fontSize: '0.72rem', fontWeight: 600 }}>
+                            <span className={a.status === 'online' ? 'badge-online' : 'badge-offline'} style={{ padding: '0.15rem 0.5rem', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 600 }}>
                               {a.status.toUpperCase()}
                             </span>
                           </td>
@@ -1488,16 +1524,16 @@ export default function App() {
                   </table>
                 </div>
 
-                <div className="glass-panel" style={{ padding: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px' }}>
+                <div className="glass-panel" style={{ padding: '1.25rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '6px' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                    <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#1F2937' }}>Recent Evidence Ledger</h3>
+                    <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#F1F5F9' }}>Recent Evidence Ledger</h3>
                     <button className="btn-secondary" style={{ fontSize: '0.75rem', padding: '0.3rem 0.6rem' }} onClick={() => setActiveTab('evidence')}>
                       Evidence Vault
                     </button>
                   </div>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
                     <thead>
-                      <tr style={{ background: '#F8FAFC', color: '#667085', borderBottom: '1px solid #E2E5E9', textAlign: 'left' }}>
+                      <tr style={{ background: '#111A22', color: '#64748B', borderBottom: '1px solid #1C2833', textAlign: 'left' }}>
                         <th style={{ padding: '0.6rem 0.75rem' }}>Evidence ID</th>
                         <th style={{ padding: '0.6rem 0.75rem' }}>Collector</th>
                         <th style={{ padding: '0.6rem 0.75rem' }}>Origin Agent</th>
@@ -1506,10 +1542,10 @@ export default function App() {
                     </thead>
                     <tbody>
                       {evidenceList.map(ev => (
-                        <tr key={ev.id} style={{ borderBottom: '1px solid #E2E5E9' }}>
-                          <td style={{ padding: '0.6rem 0.75rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>{ev.id}</td>
-                          <td style={{ padding: '0.6rem 0.75rem', fontWeight: 500, color: '#1F2937' }}>{ev.collector}</td>
-                          <td style={{ padding: '0.6rem 0.75rem', color: '#667085' }}>{ev.agent_id}</td>
+                        <tr key={ev.id} style={{ borderBottom: '1px solid #1C2833' }}>
+                          <td style={{ padding: '0.6rem 0.75rem', fontFamily: 'var(--font-mono)', color: '#3B9CFF', fontWeight: 600 }}>{ev.id}</td>
+                          <td style={{ padding: '0.6rem 0.75rem', fontWeight: 500, color: '#F1F5F9' }}>{ev.collector}</td>
+                          <td style={{ padding: '0.6rem 0.75rem', color: '#64748B' }}>{ev.agent_id}</td>
                           <td style={{ padding: '0.6rem 0.75rem' }}>
                             <button className="btn-secondary" style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem' }} onClick={() => handleVerifyEvidence(ev)}>
                               Verify SHA-256
@@ -1522,23 +1558,94 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Live Activity Stream */}
-              <div className="glass-panel" style={{ padding: '1.25rem', display: 'flex', flexDirection: 'column', background: '#FFFFFF', border: '1px solid #D9E0E7', borderRadius: '6px' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                  <Activity size={18} color="#166534" />
-                  <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#111827' }}>Live Telemetry &amp; Activity Stream</h3>
+              {/* Right Column: System Status, Quick Actions & Live Stream */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                {/* System Status (Section 8) */}
+                <div className="glass-panel" style={{ padding: '1.15rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '6px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem' }}>
+                      <ShieldCheck size={16} color="#2587E8" />
+                      <h3 style={{ fontSize: '0.92rem', fontWeight: 600, color: '#F1F5F9', margin: 0 }}>System Status</h3>
+                    </div>
+                    <span style={{ fontSize: '0.7rem', color: '#10B981', fontFamily: 'var(--font-mono)', fontWeight: 600 }}>MONITORED</span>
+                  </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.45rem', fontSize: '0.8rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.25rem 0', borderBottom: '1px solid #16202A' }}>
+                      <span style={{ color: '#94A3B8' }}>EDR Protection</span>
+                      <span style={{ color: '#F1F5F9', display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 500 }}><span style={{ height: '6px', width: '6px', borderRadius: '50%', background: '#10B981', display: 'inline-block' }}></span> Active</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.25rem 0', borderBottom: '1px solid #16202A' }}>
+                      <span style={{ color: '#94A3B8' }}>Real-time Monitoring</span>
+                      <span style={{ color: '#F1F5F9', display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 500 }}><span style={{ height: '6px', width: '6px', borderRadius: '50%', background: '#10B981', display: 'inline-block' }}></span> Active</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.25rem 0', borderBottom: '1px solid #16202A' }}>
+                      <span style={{ color: '#94A3B8' }}>Threat Intelligence</span>
+                      <span style={{ color: '#F1F5F9', display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 500 }}><span style={{ height: '6px', width: '6px', borderRadius: '50%', background: '#10B981', display: 'inline-block' }}></span> Active</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.25rem 0', borderBottom: '1px solid #16202A' }}>
+                      <span style={{ color: '#94A3B8' }}>Forensic Collection</span>
+                      <span style={{ color: '#F1F5F9', display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 500 }}><span style={{ height: '6px', width: '6px', borderRadius: '50%', background: '#2587E8', display: 'inline-block' }}></span> Ready</span>
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.25rem 0' }}>
+                      <span style={{ color: '#94A3B8' }}>System Integrity</span>
+                      <span style={{ color: '#F1F5F9', display: 'flex', alignItems: 'center', gap: '0.35rem', fontWeight: 500 }}><span style={{ height: '6px', width: '6px', borderRadius: '50%', background: '#10B981', display: 'inline-block' }}></span> Secure</span>
+                    </div>
+                  </div>
                 </div>
 
-                <div style={{ flex: 1, overflowY: 'auto', maxHeight: '480px', display: 'flex', flexDirection: 'column', gap: '0.65rem', paddingRight: '0.35rem' }}>
-                  {events.map((e, idx) => (
-                    <div key={idx} style={{ background: '#F8FAFC', border: '1px solid #E5E7EB', borderRadius: '5px', padding: '0.6rem 0.75rem', fontSize: '0.8rem' }}>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', color: '#64748B', fontSize: '0.72rem', marginBottom: '0.25rem' }}>
-                        <span style={{ color: '#166534', fontWeight: 600 }}>{e.type}</span>
-                        <span>{e.timestamp}</span>
+                {/* Quick Actions (Section 9) */}
+                <div className="glass-panel" style={{ padding: '1.15rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '6px' }}>
+                  <h3 style={{ fontSize: '0.92rem', fontWeight: 600, color: '#F1F5F9', marginBottom: '0.65rem' }}>Quick Actions</h3>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem' }}>
+                    <button
+                      onClick={() => setActiveTab('studio')}
+                      className="btn-secondary"
+                      style={{ padding: '0.5rem 0.65rem', justifyContent: 'flex-start', fontSize: '0.78rem', background: '#111A22', border: '1px solid #1C2833', borderRadius: '4px', color: '#F1F5F9' }}
+                    >
+                      <Terminal size={14} color="#2587E8" /> Open Studio
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('reports')}
+                      className="btn-secondary"
+                      style={{ padding: '0.5rem 0.65rem', justifyContent: 'flex-start', fontSize: '0.78rem', background: '#111A22', border: '1px solid #1C2833', borderRadius: '4px', color: '#F1F5F9' }}
+                    >
+                      <FileText size={14} color="#2587E8" /> Generate Report
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('evidence')}
+                      className="btn-secondary"
+                      style={{ padding: '0.5rem 0.65rem', justifyContent: 'flex-start', fontSize: '0.78rem', background: '#111A22', border: '1px solid #1C2833', borderRadius: '4px', color: '#F1F5F9' }}
+                    >
+                      <Lock size={14} color="#2587E8" /> View Evidence
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('demo')}
+                      className="btn-secondary"
+                      style={{ padding: '0.5rem 0.65rem', justifyContent: 'flex-start', fontSize: '0.78rem', background: '#111A22', border: '1px solid #1C2833', borderRadius: '4px', color: '#F1F5F9' }}
+                    >
+                      <Play size={14} color="#2587E8" /> Run Triage
+                    </button>
+                  </div>
+                </div>
+
+                {/* Live Activity Stream */}
+                <div className="glass-panel" style={{ padding: '1.15rem', display: 'flex', flexDirection: 'column', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '6px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                    <Activity size={16} color="#2587E8" />
+                    <h3 style={{ fontSize: '0.92rem', fontWeight: 600, color: '#F1F5F9' }}>Live Telemetry &amp; Activity Stream</h3>
+                  </div>
+
+                  <div style={{ flex: 1, overflowY: 'auto', maxHeight: '280px', display: 'flex', flexDirection: 'column', gap: '0.5rem', paddingRight: '0.25rem' }}>
+                    {events.map((e, idx) => (
+                      <div key={idx} style={{ background: '#111A22', border: '1px solid #1C2833', borderRadius: '4px', padding: '0.5rem 0.65rem', fontSize: '0.78rem' }}>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', color: '#64748B', fontSize: '0.7rem', marginBottom: '0.2rem' }}>
+                          <span style={{ color: '#3B9CFF', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>{e.type}</span>
+                          <span>{e.timestamp}</span>
+                        </div>
+                        <div style={{ color: '#F1F5F9' }}>{e.message}</div>
                       </div>
-                      <div style={{ color: '#111827' }}>{e.message}</div>
-                    </div>
-                  ))}
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -1551,8 +1658,8 @@ export default function App() {
               {/* Alert Notification Banner */}
               {verifyNotice && (
                 <div style={{
-                  background: verifyNotice.type === 'success' ? '#F0FDF4' : verifyNotice.type === 'warning' ? '#FFFBEB' : '#FEF2F2',
-                  border: `1px solid ${verifyNotice.type === 'success' ? '#BBF7D0' : verifyNotice.type === 'warning' ? '#FDE68A' : '#FECACA'}`,
+                  background: verifyNotice.type === 'success' ? 'rgba(16, 185, 129, 0.12)' : verifyNotice.type === 'warning' ? 'rgba(245, 158, 11, 0.12)' : 'rgba(239, 68, 68, 0.12)',
+                  border: `1px solid ${verifyNotice.type === 'success' ? '#1C2833' : verifyNotice.type === 'warning' ? 'rgba(245, 158, 11, 0.25)' : 'rgba(239, 68, 68, 0.25)'}`,
                   borderRadius: '8px',
                   padding: '0.85rem 1.25rem',
                   display: 'flex',
@@ -1560,12 +1667,12 @@ export default function App() {
                   alignItems: 'center'
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-                    {verifyNotice.type === 'success' ? <CheckCircle2 size={18} color="#16A34A" /> : <AlertTriangle size={18} color="#D97706" />}
-                    <span style={{ fontSize: '0.85rem', color: '#1F2937', fontWeight: 500 }}>{verifyNotice.text}</span>
+                    {verifyNotice.type === 'success' ? <CheckCircle2 size={18} color="#16A34A" /> : <AlertTriangle size={18} color="#F59E0B" />}
+                    <span style={{ fontSize: '0.85rem', color: '#F1F5F9', fontWeight: 500 }}>{verifyNotice.text}</span>
                   </div>
                   <button 
                     onClick={() => setVerifyNotice(null)} 
-                    style={{ background: 'transparent', border: 'none', color: '#667085', cursor: 'pointer', fontSize: '0.8rem' }}
+                    style={{ background: 'transparent', border: 'none', color: '#64748B', cursor: 'pointer', fontSize: '0.8rem' }}
                   >
                     <X size={16} />
                   </button>
@@ -1573,23 +1680,23 @@ export default function App() {
               )}
 
               {/* Header & Verification Controls */}
-              <div className="glass-panel" style={{ padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px' }}>
+              <div className="glass-panel" style={{ padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '1rem' }}>
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-                      <ShieldCheck size={24} color="#2563EB" />
-                      <h2 style={{ fontSize: '1.3rem', fontWeight: 600, color: '#1F2937' }}>
+                      <ShieldCheck size={24} color="#2587E8" />
+                      <h2 style={{ fontSize: '1.3rem', fontWeight: 600, color: '#F1F5F9' }}>
                         Security Hardening & Forensic Integrity Center
                       </h2>
                     </div>
-                    <p style={{ fontSize: '0.85rem', color: '#667085' }}>
-                      Active Case: <strong style={{ color: '#166534' }}>{selectedCaseId}</strong> • Cryptographic evidence verification, append-only audit chains, and tamper-detection engine.
+                    <p style={{ fontSize: '0.85rem', color: '#64748B' }}>
+                      Active Case: <strong style={{ color: '#3B9CFF' }}>{selectedCaseId}</strong> • Cryptographic evidence verification, append-only audit chains, and tamper-detection engine.
                     </p>
                   </div>
                   <div style={{ display: 'flex', gap: '0.65rem' }}>
                     <button
                       className="btn-secondary"
-                      style={{ fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '0.4rem', border: '1px solid #D0D5DD', color: '#D97706' }}
+                      style={{ fontSize: '0.82rem', display: 'flex', alignItems: 'center', gap: '0.4rem', border: '1px solid #1C2833', color: '#F59E0B' }}
                       onClick={handleSimulateTamperEvent}
                     >
                       <ShieldAlert size={15} /> Simulate Tamper Alert
@@ -1608,8 +1715,8 @@ export default function App() {
 
                 {/* Measurable Security Scorecard */}
                 <div style={{
-                  background: '#F8FAFC',
-                  border: `1px solid ${securityScorecard.status === 'VERIFIED' ? '#BBF7D0' : '#FECACA'}`,
+                  background: '#111A22',
+                  border: `1px solid ${securityScorecard.status === 'VERIFIED' ? '#1C2833' : 'rgba(239, 68, 68, 0.25)'}`,
                   borderRadius: '8px',
                   padding: '1.25rem',
                   display: 'flex',
@@ -1618,7 +1725,7 @@ export default function App() {
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
                     <div>
-                      <span style={{ fontSize: '0.75rem', color: '#667085', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
+                      <span style={{ fontSize: '0.75rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
                         Deterministic Forensic Security Scorecard
                       </span>
                       <div style={{ fontSize: '1.35rem', fontWeight: 700, color: securityScorecard.status === 'VERIFIED' ? '#16A34A' : '#DC2626', display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
@@ -1630,22 +1737,22 @@ export default function App() {
                           borderRadius: '12px',
                           background: securityScorecard.status === 'VERIFIED' ? '#DCFCE7' : '#FEE2E2',
                           color: securityScorecard.status === 'VERIFIED' ? '#16A34A' : '#DC2626',
-                          border: `1px solid ${securityScorecard.status === 'VERIFIED' ? '#BBF7D0' : '#FCA5A5'}`
+                          border: `1px solid ${securityScorecard.status === 'VERIFIED' ? '#1C2833' : '#FCA5A5'}`
                         }}>
                           {securityScorecard.status === 'VERIFIED' ? 'ALL CONTROLS VERIFIED' : 'COMPROMISED: REVIEW REQUIRED'}
                         </span>
                       </div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <span style={{ fontSize: '0.75rem', color: '#667085' }}>Verification Timestamp</span>
-                      <div style={{ fontSize: '0.85rem', color: '#1F2937', fontFamily: 'var(--font-mono)' }}>
+                      <span style={{ fontSize: '0.75rem', color: '#64748B' }}>Verification Timestamp</span>
+                      <div style={{ fontSize: '0.85rem', color: '#F1F5F9', fontFamily: 'var(--font-mono)' }}>
                         {new Date().toLocaleTimeString()} UTC
                       </div>
                     </div>
                   </div>
 
                   {/* Visual Progress Bar */}
-                  <div style={{ width: '100%', height: '8px', background: '#E2E5E9', borderRadius: '4px', overflow: 'hidden' }}>
+                  <div style={{ width: '100%', height: '8px', background: '#1C2833', borderRadius: '4px', overflow: 'hidden' }}>
                     <div style={{
                       width: `${(securityScorecard.verified_controls / 7) * 100}%`,
                       height: '100%',
@@ -1653,7 +1760,7 @@ export default function App() {
                       transition: 'width 0.4s ease'
                     }} />
                   </div>
-                  <p style={{ fontSize: '0.75rem', color: '#667085', margin: 0 }}>
+                  <p style={{ fontSize: '0.75rem', color: '#64748B', margin: 0 }}>
                     Technical integrity controls provide deterministic verification of non-tampering; legal admissibility depends on jurisdiction and strict procedural governance.
                   </p>
                 </div>
@@ -1661,8 +1768,8 @@ export default function App() {
 
               {/* 7 Measurable Controls Grid */}
               <div>
-                <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#1F2937', marginBottom: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Shield size={18} color="#2563EB" /> 7 Active Forensic Integrity Controls
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#F1F5F9', marginBottom: '0.85rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Shield size={18} color="#2587E8" /> 7 Active Forensic Integrity Controls
                 </h3>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem' }}>
                   {Object.entries(securityScorecard.controls || {}).map(([key, ctrl]) => {
@@ -1670,15 +1777,15 @@ export default function App() {
                     return (
                       <div key={key} className="glass-panel" style={{
                         padding: '1rem',
-                        border: `1px solid ${isOk ? '#BBF7D0' : '#FECACA'}`,
-                        background: '#FFFFFF',
+                        border: `1px solid ${isOk ? '#1C2833' : 'rgba(239, 68, 68, 0.25)'}`,
+                        background: '#0E151C',
                         borderRadius: '8px',
                         display: 'flex',
                         flexDirection: 'column',
                         gap: '0.5rem'
                       }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ fontWeight: 600, fontSize: '0.9rem', color: '#1F2937' }}>{ctrl.name}</span>
+                          <span style={{ fontWeight: 600, fontSize: '0.9rem', color: '#F1F5F9' }}>{ctrl.name}</span>
                           <span style={{
                             fontSize: '0.7rem',
                             fontWeight: 700,
@@ -1686,15 +1793,15 @@ export default function App() {
                             borderRadius: '4px',
                             background: isOk ? '#DCFCE7' : '#FEE2E2',
                             color: isOk ? '#16A34A' : '#DC2626',
-                            border: `1px solid ${isOk ? '#BBF7D0' : '#FCA5A5'}`
+                            border: `1px solid ${isOk ? '#1C2833' : '#FCA5A5'}`
                           }}>
                             {isOk ? 'VERIFIED' : 'COMPROMISED'}
                           </span>
                         </div>
-                        <p style={{ fontSize: '0.78rem', color: '#667085', margin: 0 }}>
+                        <p style={{ fontSize: '0.78rem', color: '#64748B', margin: 0 }}>
                           {ctrl.description}
                         </p>
-                        <div style={{ fontSize: '0.75rem', color: isOk ? '#2563EB' : '#D97706', fontFamily: 'var(--font-mono)', marginTop: 'auto', fontWeight: 500 }}>
+                        <div style={{ fontSize: '0.75rem', color: isOk ? '#2587E8' : '#F59E0B', fontFamily: 'var(--font-mono)', marginTop: 'auto', fontWeight: 500 }}>
                           Control Status: {ctrl.score}
                         </div>
                       </div>
@@ -1704,9 +1811,9 @@ export default function App() {
               </div>
 
               {/* Forensic Integrity Chain-of-Custody Timeline */}
-              <div className="glass-panel" style={{ padding: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px' }}>
-                <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#1F2937', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <Clock size={18} color="#2563EB" /> Forensic Integrity Timeline & Chain-of-Custody
+              <div className="glass-panel" style={{ padding: '1.25rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px' }}>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#F1F5F9', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <Clock size={18} color="#2587E8" /> Forensic Integrity Timeline & Chain-of-Custody
                 </h3>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', position: 'relative' }}>
                   {[
@@ -1721,8 +1828,8 @@ export default function App() {
                     { step: '9. Report Generated', actor: 'Report Exporter', object: 'REP-COMP-001', desc: 'Court-admissible report sealed with canonical integrity manifest', hash: '0987654321fedcba0987654321fedcba0987654321fedcba0987654321fedc', status: 'VERIFIED' }
                   ].map((node, i) => (
                     <div key={i} style={{
-                      background: '#F8FAFC',
-                      border: '1px solid #E2E5E9',
+                      background: '#111A22',
+                      border: '1px solid #1C2833',
                       borderRadius: '8px',
                       padding: '0.85rem 1rem',
                       display: 'flex',
@@ -1736,26 +1843,26 @@ export default function App() {
                           width: '28px',
                           height: '28px',
                           borderRadius: '50%',
-                          background: '#ECFDF3',
-                          border: '1px solid #BBF7D0',
+                          background: 'rgba(37, 135, 232, 0.12)',
+                          border: '1px solid rgba(37, 135, 232, 0.3)',
                           display: 'flex',
                           alignItems: 'center',
                           justifyContent: 'center',
                           fontSize: '0.75rem',
                           fontWeight: 700,
-                          color: '#166534'
+                          color: '#3B9CFF'
                         }}>
                           {i + 1}
                         </div>
                         <div>
-                          <div style={{ fontSize: '0.88rem', fontWeight: 600, color: '#1F2937' }}>
-                            {node.step} <span style={{ fontSize: '0.75rem', color: '#667085', fontWeight: 400 }}>({node.object})</span>
+                          <div style={{ fontSize: '0.88rem', fontWeight: 600, color: '#F1F5F9' }}>
+                            {node.step} <span style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 400 }}>({node.object})</span>
                           </div>
-                          <div style={{ fontSize: '0.75rem', color: '#667085' }}>{node.desc} • Actor: <strong style={{ color: '#1F2937' }}>{node.actor}</strong></div>
+                          <div style={{ fontSize: '0.75rem', color: '#64748B' }}>{node.desc} • Actor: <strong style={{ color: '#F1F5F9' }}>{node.actor}</strong></div>
                         </div>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
-                        <span style={{ fontSize: '0.72rem', color: '#667085', fontFamily: 'var(--font-mono)' }}>
+                        <span style={{ fontSize: '0.72rem', color: '#64748B', fontFamily: 'var(--font-mono)' }}>
                           {node.hash.substring(0, 16)}...
                         </span>
                         <span style={{
@@ -1765,7 +1872,7 @@ export default function App() {
                           borderRadius: '4px',
                           background: '#DCFCE7',
                           color: '#16A34A',
-                          border: '1px solid #BBF7D0'
+                          border: '1px solid rgba(37, 135, 232, 0.3)'
                         }}>
                           {node.status}
                         </span>
@@ -1776,11 +1883,11 @@ export default function App() {
               </div>
 
               {/* Security & Tamper Detection Events Ledger */}
-              <div className="glass-panel" style={{ padding: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px' }}>
+              <div className="glass-panel" style={{ padding: '1.25rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.75rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <ShieldAlert size={18} color="#DC2626" />
-                    <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#1F2937' }}>
+                    <ShieldAlert size={18} color="#EF4444" />
+                    <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#F1F5F9' }}>
                       Tamper Detection & Security Event Ledger ({securityEvents.length})
                     </h3>
                   </div>
@@ -1789,7 +1896,7 @@ export default function App() {
                     <select
                       value={secSeverityFilter}
                       onChange={(e) => setSecSeverityFilter(e.target.value)}
-                      style={{ background: '#FFFFFF', color: '#1F2937', border: '1px solid #D0D5DD', borderRadius: '6px', padding: '0.35rem 0.6rem', fontSize: '0.78rem' }}
+                      style={{ background: '#0E151C', color: '#F1F5F9', border: '1px solid #1C2833', borderRadius: '6px', padding: '0.35rem 0.6rem', fontSize: '0.78rem' }}
                     >
                       <option value="ALL">All Severities</option>
                       <option value="CRITICAL">Critical</option>
@@ -1799,7 +1906,7 @@ export default function App() {
                     <select
                       value={secResolvedFilter}
                       onChange={(e) => setSecResolvedFilter(e.target.value)}
-                      style={{ background: '#FFFFFF', color: '#1F2937', border: '1px solid #D0D5DD', borderRadius: '6px', padding: '0.35rem 0.6rem', fontSize: '0.78rem' }}
+                      style={{ background: '#0E151C', color: '#F1F5F9', border: '1px solid #1C2833', borderRadius: '6px', padding: '0.35rem 0.6rem', fontSize: '0.78rem' }}
                     >
                       <option value="ALL">All Statuses</option>
                       <option value="UNRESOLVED">Unresolved</option>
@@ -1812,7 +1919,7 @@ export default function App() {
                 <div style={{ overflowX: 'auto' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8rem', textAlign: 'left' }}>
                     <thead>
-                      <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E5E9', color: '#667085' }}>
+                      <tr style={{ background: '#111A22', borderBottom: '1px solid #1C2833', color: '#64748B' }}>
                         <th style={{ padding: '0.6rem' }}>Time</th>
                         <th style={{ padding: '0.6rem' }}>Severity</th>
                         <th style={{ padding: '0.6rem' }}>Event Type</th>
@@ -1828,8 +1935,8 @@ export default function App() {
                         .filter(ev => secSeverityFilter === 'ALL' || ev.severity === secSeverityFilter)
                         .filter(ev => secResolvedFilter === 'ALL' || (secResolvedFilter === 'RESOLVED' ? ev.resolved : !ev.resolved))
                         .map((ev, i) => (
-                          <tr key={i} style={{ borderBottom: '1px solid #E2E5E9', background: ev.resolved ? 'transparent' : '#FEF2F2' }}>
-                            <td style={{ padding: '0.6rem', color: '#667085', whiteSpace: 'nowrap' }}>
+                          <tr key={i} style={{ borderBottom: '1px solid #1C2833', background: ev.resolved ? 'transparent' : 'rgba(239, 68, 68, 0.12)' }}>
+                            <td style={{ padding: '0.6rem', color: '#64748B', whiteSpace: 'nowrap' }}>
                               {ev.detected_at ? new Date(ev.detected_at).toLocaleTimeString() : 'Recent'}
                             </td>
                             <td style={{ padding: '0.6rem' }}>
@@ -1838,25 +1945,25 @@ export default function App() {
                                 fontWeight: 700,
                                 padding: '0.15rem 0.45rem',
                                 borderRadius: '4px',
-                                background: ev.severity === 'CRITICAL' ? '#FEE2E2' : ev.severity === 'HIGH' ? '#FEF3C7' : '#EFF6FF',
-                                color: ev.severity === 'CRITICAL' ? '#DC2626' : ev.severity === 'HIGH' ? '#D97706' : '#2563EB',
-                                border: `1px solid ${ev.severity === 'CRITICAL' ? '#FECACA' : ev.severity === 'HIGH' ? '#FDE68A' : '#BFDBFE'}`
+                                background: ev.severity === 'CRITICAL' ? '#FEE2E2' : ev.severity === 'HIGH' ? '#FEF3C7' : 'rgba(37, 135, 232, 0.12)',
+                                color: ev.severity === 'CRITICAL' ? '#DC2626' : ev.severity === 'HIGH' ? '#F59E0B' : '#2587E8',
+                                border: `1px solid ${ev.severity === 'CRITICAL' ? 'rgba(239, 68, 68, 0.25)' : ev.severity === 'HIGH' ? 'rgba(245, 158, 11, 0.25)' : 'rgba(37, 135, 232, 0.25)'}`
                               }}>
                                 {ev.severity}
                               </span>
                             </td>
-                            <td style={{ padding: '0.6rem', fontWeight: 600, color: '#1F2937' }}>
+                            <td style={{ padding: '0.6rem', fontWeight: 600, color: '#F1F5F9' }}>
                               {ev.event_type}
                             </td>
-                            <td style={{ padding: '0.6rem', color: '#166534' }}>{ev.case_id || 'Global'}</td>
-                            <td style={{ padding: '0.6rem', color: '#1F2937', fontFamily: 'var(--font-mono)' }}>
+                            <td style={{ padding: '0.6rem', color: '#3B9CFF' }}>{ev.case_id || 'Global'}</td>
+                            <td style={{ padding: '0.6rem', color: '#F1F5F9', fontFamily: 'var(--font-mono)' }}>
                               {ev.object_id}
                             </td>
-                            <td style={{ padding: '0.6rem', color: '#1F2937', maxWidth: '350px' }}>
+                            <td style={{ padding: '0.6rem', color: '#F1F5F9', maxWidth: '350px' }}>
                               {ev.description}
                               {ev.expected_value && (
-                                <div style={{ fontSize: '0.7rem', color: '#667085', marginTop: '0.2rem' }}>
-                                  Expected: <span style={{ color: '#16A34A' }}>{String(ev.expected_value).substring(0, 24)}...</span> | Observed: <span style={{ color: '#DC2626' }}>{String(ev.observed_value).substring(0, 24)}...</span>
+                                <div style={{ fontSize: '0.7rem', color: '#64748B', marginTop: '0.2rem' }}>
+                                  Expected: <span style={{ color: '#16A34A' }}>{String(ev.expected_value).substring(0, 24)}...</span> | Observed: <span style={{ color: '#EF4444' }}>{String(ev.observed_value).substring(0, 24)}...</span>
                                 </div>
                               )}
                             </td>
@@ -1864,7 +1971,7 @@ export default function App() {
                               <span style={{
                                 fontSize: '0.7rem',
                                 fontWeight: 600,
-                                color: ev.resolved ? '#16A34A' : '#D97706'
+                                color: ev.resolved ? '#16A34A' : '#F59E0B'
                               }}>
                                 {ev.resolved ? 'Resolved' : 'Active'}
                               </span>
@@ -1879,7 +1986,7 @@ export default function App() {
                                   Resolve
                                 </button>
                               ) : (
-                                <span style={{ fontSize: '0.7rem', color: '#667085' }}>By {ev.resolved_by || 'analyst'}</span>
+                                <span style={{ fontSize: '0.7rem', color: '#64748B' }}>By {ev.resolved_by || 'analyst'}</span>
                               )}
                             </td>
                           </tr>
@@ -1891,7 +1998,7 @@ export default function App() {
 
               {/* System Security & Configuration Posture */}
               <div className="glass-panel" style={{ padding: '1.25rem' }}>
-                <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#111827', marginBottom: '0.85rem' }}>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#F1F5F9', marginBottom: '0.85rem' }}>
                   Defensive Platform Configuration Posture
                 </h3>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.75rem', marginBottom: '1rem' }}>
@@ -1904,17 +2011,17 @@ export default function App() {
                     { label: 'Task Replay Guard', value: securityConfig.replay_protection },
                     { label: 'Configuration Integrity', value: securityConfig.configuration_integrity }
                   ].map((item, idx) => (
-                    <div key={idx} style={{ background: '#F8FAFC', border: '1px solid #E5E7EB', borderRadius: '6px', padding: '0.65rem' }}>
-                      <span style={{ fontSize: '0.72rem', color: '#475569' }}>{item.label}</span>
-                      <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#166534', textTransform: 'uppercase', marginTop: '0.15rem' }}>
+                    <div key={idx} style={{ background: '#111A22', border: '1px solid #1C2833', borderRadius: '6px', padding: '0.65rem' }}>
+                      <span style={{ fontSize: '0.72rem', color: '#94A3B8' }}>{item.label}</span>
+                      <div style={{ fontSize: '0.85rem', fontWeight: 700, color: '#3B9CFF', textTransform: 'uppercase', marginTop: '0.15rem' }}>
                         {item.value}
                       </div>
                     </div>
                   ))}
                 </div>
-                <div style={{ fontSize: '0.75rem', color: '#475569', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                <div style={{ fontSize: '0.75rem', color: '#94A3B8', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
                   <span>Baseline Configuration Fingerprint:</span>
-                  <code style={{ color: '#166534', background: '#F8FAFC', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>
+                  <code style={{ color: '#3B9CFF', background: '#111A22', padding: '0.2rem 0.5rem', borderRadius: '4px' }}>
                     {securityConfig.configuration_fingerprint}
                   </code>
                 </div>
@@ -1934,12 +2041,12 @@ export default function App() {
                   justifyContent: 'center',
                   zIndex: 9999
                 }}>
-                  <div className="glass-panel" style={{ width: '450px', padding: '1.5rem', background: '#FFFFFF', border: '1px solid #D9E0E7', borderRadius: '6px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
-                    <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#111827', marginBottom: '0.5rem' }}>
+                  <div className="glass-panel" style={{ width: '450px', padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '6px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
+                    <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#F1F5F9', marginBottom: '0.5rem' }}>
                       Resolve Security Event
                     </h3>
-                    <p style={{ fontSize: '0.8rem', color: '#475569', marginBottom: '1rem' }}>
-                      Event ID: <strong style={{ color: '#166534' }}>{resolvingEventId}</strong>. Provide analyst verification disposition.
+                    <p style={{ fontSize: '0.8rem', color: '#94A3B8', marginBottom: '1rem' }}>
+                      Event ID: <strong style={{ color: '#3B9CFF' }}>{resolvingEventId}</strong>. Provide analyst verification disposition.
                     </p>
                     <textarea
                       value={resolveComment}
@@ -1948,10 +2055,10 @@ export default function App() {
                       style={{
                         width: '100%',
                         height: '90px',
-                        background: '#FFFFFF',
-                        border: '1px solid #D9E0E7',
+                        background: '#0E151C',
+                        border: '1px solid #1C2833',
                         borderRadius: '5px',
-                        color: '#111827',
+                        color: '#F1F5F9',
                         padding: '0.6rem',
                         fontSize: '0.82rem',
                         marginBottom: '1rem',
@@ -1971,16 +2078,16 @@ export default function App() {
           {activeTab === 'investigation' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               {/* Investigation Header & Structured Metadata Panel (Section 9) */}
-              <div className="glass-panel" style={{ padding: '1.5rem', background: '#FFFFFF', border: '1px solid #D9E0E7', borderRadius: '6px', boxShadow: 'var(--shadow-card)' }}>
+              <div className="glass-panel" style={{ padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '6px', boxShadow: 'var(--shadow-card)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '1rem' }}>
                   <div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.25rem' }}>
-                      <Compass size={20} color="#166534" />
-                      <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#111827', margin: 0 }}>
+                      <Compass size={20} color="#2587E8" />
+                      <h1 style={{ fontSize: '24px', fontWeight: 600, color: '#F1F5F9', margin: 0 }}>
                         Investigation
                       </h1>
                     </div>
-                    <p style={{ fontSize: '0.85rem', color: '#475569', margin: '0.2rem 0 0 0' }}>
+                    <p style={{ fontSize: '0.85rem', color: '#94A3B8', margin: '0.2rem 0 0 0' }}>
                       Automated multi-endpoint telemetry correlation, IOC extraction, and explainable forensic analysis.
                     </p>
                   </div>
@@ -2004,8 +2111,8 @@ export default function App() {
 
                 {/* Structured Investigation Information Panel (Section 9) */}
                 <div style={{
-                  background: '#F8FAFC',
-                  border: '1px solid #E5E7EB',
+                  background: '#111A22',
+                  border: '1px solid #1C2833',
                   borderRadius: '6px',
                   padding: '1rem 1.25rem',
                   display: 'grid',
@@ -2015,28 +2122,28 @@ export default function App() {
                 }}>
                   <div>
                     <div style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Investigation ID</div>
-                    <div style={{ fontWeight: 700, color: '#166534', fontFamily: 'var(--font-mono)', fontSize: '0.95rem', marginTop: '0.15rem' }}>
+                    <div style={{ fontWeight: 700, color: '#3B9CFF', fontFamily: 'var(--font-mono)', fontSize: '0.95rem', marginTop: '0.15rem' }}>
                       {selectedCaseId || 'JCK-2026-00142'}
                     </div>
                   </div>
                   <div>
                     <div style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Status</div>
-                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', marginTop: '0.15rem', color: '#166534', fontWeight: 600 }}>
-                      <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#166534', display: 'inline-block' }}></span>
+                    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem', marginTop: '0.15rem', color: '#3B9CFF', fontWeight: 600 }}>
+                      <span style={{ width: '7px', height: '7px', borderRadius: '50%', background: '#10B981', display: 'inline-block' }}></span>
                       Active
                     </div>
                   </div>
                   <div>
                     <div style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Analyst</div>
-                    <div style={{ fontWeight: 600, color: '#111827', marginTop: '0.15rem' }}>Security Analyst</div>
+                    <div style={{ fontWeight: 600, color: '#F1F5F9', marginTop: '0.15rem' }}>Security Analyst</div>
                   </div>
                   <div>
                     <div style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Created</div>
-                    <div style={{ fontWeight: 500, color: '#111827', marginTop: '0.15rem' }}>28 Sep 2026</div>
+                    <div style={{ fontWeight: 500, color: '#F1F5F9', marginTop: '0.15rem' }}>28 Sep 2026</div>
                   </div>
                   <div>
                     <div style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Evidence</div>
-                    <div style={{ fontWeight: 600, color: '#111827', marginTop: '0.15rem' }}>{evidenceList.length || 18} items</div>
+                    <div style={{ fontWeight: 600, color: '#F1F5F9', marginTop: '0.15rem' }}>{evidenceList.length || 18} items</div>
                   </div>
                   <div>
                     <div style={{ fontSize: '0.72rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.04em' }}>Threat Findings</div>
@@ -2046,35 +2153,35 @@ export default function App() {
 
                 {/* Case Summary Cards */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '0.85rem' }}>
-                  <div style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', padding: '0.75rem', borderRadius: '8px' }}>
-                    <div style={{ fontSize: '0.75rem', color: '#667085' }}>Investigated Endpoints</div>
-                    <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#1F2937' }}>{investigationSummary.total_agents}</div>
-                    <div style={{ fontSize: '0.7rem', color: '#166534', fontWeight: 500 }}>Heterogeneous Fleet</div>
+                  <div style={{ background: '#111A22', border: '1px solid #1C2833', padding: '0.75rem', borderRadius: '8px' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Investigated Endpoints</div>
+                    <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#F1F5F9' }}>{investigationSummary.total_agents}</div>
+                    <div style={{ fontSize: '0.7rem', color: '#3B9CFF', fontWeight: 500 }}>Heterogeneous Fleet</div>
                   </div>
-                  <div style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', padding: '0.75rem', borderRadius: '8px' }}>
-                    <div style={{ fontSize: '0.75rem', color: '#667085' }}>Evidence Envelopes</div>
+                  <div style={{ background: '#111A22', border: '1px solid #1C2833', padding: '0.75rem', borderRadius: '8px' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Evidence Envelopes</div>
                     <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#16A34A' }}>{evidenceList.length}</div>
                     <div style={{ fontSize: '0.7rem', color: '#16A34A', fontWeight: 500 }}>RFC-8785 Sealed</div>
                   </div>
-                  <div style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', padding: '0.75rem', borderRadius: '8px' }}>
-                    <div style={{ fontSize: '0.75rem', color: '#667085' }}>Extracted IOCs</div>
-                    <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#D97706' }}>{indicators.length}</div>
-                    <div style={{ fontSize: '0.7rem', color: '#D97706', fontWeight: 500 }}>Normalized & Typed</div>
+                  <div style={{ background: '#111A22', border: '1px solid #1C2833', padding: '0.75rem', borderRadius: '8px' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Extracted IOCs</div>
+                    <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#F59E0B' }}>{indicators.length}</div>
+                    <div style={{ fontSize: '0.7rem', color: '#F59E0B', fontWeight: 500 }}>Normalized & Typed</div>
                   </div>
-                  <div style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', padding: '0.75rem', borderRadius: '8px' }}>
-                    <div style={{ fontSize: '0.75rem', color: '#667085' }}>Timeline Events</div>
-                    <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#166534' }}>{timelineEvents.length}</div>
-                    <div style={{ fontSize: '0.7rem', color: '#667085' }}>Chronological Stream</div>
+                  <div style={{ background: '#111A22', border: '1px solid #1C2833', padding: '0.75rem', borderRadius: '8px' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Timeline Events</div>
+                    <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#3B9CFF' }}>{timelineEvents.length}</div>
+                    <div style={{ fontSize: '0.7rem', color: '#64748B' }}>Chronological Stream</div>
                   </div>
-                  <div style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', padding: '0.75rem', borderRadius: '8px' }}>
-                    <div style={{ fontSize: '0.75rem', color: '#667085' }}>Correlated Findings</div>
-                    <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#DC2626' }}>{findings.length}</div>
-                    <div style={{ fontSize: '0.7rem', color: '#DC2626', fontWeight: 500 }}>{findings.filter(f => f.status === 'OPEN').length} Open for Review</div>
+                  <div style={{ background: '#111A22', border: '1px solid #1C2833', padding: '0.75rem', borderRadius: '8px' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Correlated Findings</div>
+                    <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#EF4444' }}>{findings.length}</div>
+                    <div style={{ fontSize: '0.7rem', color: '#EF4444', fontWeight: 500 }}>{findings.filter(f => f.status === 'OPEN').length} Open for Review</div>
                   </div>
-                  <div style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', padding: '0.75rem', borderRadius: '8px' }}>
-                    <div style={{ fontSize: '0.75rem', color: '#667085' }}>Analyst Notes</div>
-                    <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#1F2937' }}>{analystNotes.length}</div>
-                    <div style={{ fontSize: '0.7rem', color: '#667085' }}>Audited Thread</div>
+                  <div style={{ background: '#111A22', border: '1px solid #1C2833', padding: '0.75rem', borderRadius: '8px' }}>
+                    <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Analyst Notes</div>
+                    <div style={{ fontSize: '1.4rem', fontWeight: 700, color: '#F1F5F9' }}>{analystNotes.length}</div>
+                    <div style={{ fontSize: '0.7rem', color: '#64748B' }}>Audited Thread</div>
                   </div>
                 </div>
 
@@ -2091,10 +2198,10 @@ export default function App() {
                         style={{
                           width: '100%',
                           padding: '0.6rem 0.75rem 0.6rem 2.25rem',
-                          background: '#FFFFFF',
-                          border: '1px solid #D0D5DD',
+                          background: '#0E151C',
+                          border: '1px solid #1C2833',
                           borderRadius: '6px',
-                          color: '#1F2937',
+                          color: '#F1F5F9',
                           fontSize: '0.85rem',
                           outline: 'none'
                         }}
@@ -2113,7 +2220,7 @@ export default function App() {
 
                   {/* Quick Filter Pills */}
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap', fontSize: '0.75rem' }}>
-                    <span style={{ color: '#667085' }}>Quick Filters:</span>
+                    <span style={{ color: '#64748B' }}>Quick Filters:</span>
                     {[
                       'process:beacon.exe',
                       'ip:198.51.100.25',
@@ -2125,11 +2232,11 @@ export default function App() {
                         key={pill}
                         onClick={() => handleSearchInvestigation(pill)}
                         style={{
-                          background: '#F8FAFC',
-                          border: '1px solid #E2E5E9',
+                          background: '#111A22',
+                          border: '1px solid #1C2833',
                           borderRadius: '4px',
                           padding: '0.15rem 0.45rem',
-                          color: '#166534',
+                          color: '#3B9CFF',
                           cursor: 'pointer',
                           fontFamily: 'var(--font-mono)',
                           fontSize: '0.72rem',
@@ -2143,15 +2250,15 @@ export default function App() {
 
                   {/* Search Results Summary Banner */}
                   {searchResults && (
-                    <div style={{ background: '#ECFDF3', border: '1px solid #BBF7D0', borderRadius: '6px', padding: '0.6rem 0.85rem', fontSize: '0.8rem', color: '#1F2937', marginTop: '0.25rem' }}>
-                      Search results for <strong style={{ color: '#166534' }}>"{searchQuery}"</strong>: Found {searchResults.matching_findings.length} findings, {searchResults.matching_indicators.length} indicators, {searchResults.matching_timeline_events.length} timeline events, and {searchResults.matching_evidence_ids.length} evidence envelopes.
+                    <div style={{ background: 'rgba(37, 135, 232, 0.12)', border: '1px solid rgba(37, 135, 232, 0.3)', borderRadius: '6px', padding: '0.6rem 0.85rem', fontSize: '0.8rem', color: '#F1F5F9', marginTop: '0.25rem' }}>
+                      Search results for <strong style={{ color: '#3B9CFF' }}>"{searchQuery}"</strong>: Found {searchResults.matching_findings.length} findings, {searchResults.matching_indicators.length} indicators, {searchResults.matching_timeline_events.length} timeline events, and {searchResults.matching_evidence_ids.length} evidence envelopes.
                     </div>
                   )}
                 </div>
               </div>
 
               {/* Sub-Navigation Tabs */}
-              <div style={{ display: 'flex', gap: '0.5rem', borderBottom: '1px solid #E2E5E9', paddingBottom: '0.5rem' }}>
+              <div style={{ display: 'flex', gap: '0.5rem', borderBottom: '1px solid #1C2833', paddingBottom: '0.5rem' }}>
                 {[
                   { id: 'findings', label: `Correlated Findings (${findings.length})`, icon: AlertTriangle },
                   { id: 'timeline', label: `Unified Timeline (${timelineEvents.length})`, icon: Clock },
@@ -2173,9 +2280,9 @@ export default function App() {
                         gap: '0.4rem',
                         padding: '0.5rem 0.85rem',
                         borderRadius: '6px',
-                        border: isActive ? '1px solid #BFDBFE' : '1px solid transparent',
-                        background: isActive ? '#EFF6FF' : 'transparent',
-                        color: isActive ? '#2563EB' : '#667085',
+                        border: isActive ? '1px solid #1C2833' : '1px solid transparent',
+                        background: isActive ? 'rgba(37, 135, 232, 0.12)' : 'transparent',
+                        color: isActive ? '#2587E8' : '#667085',
                         fontWeight: isActive ? 600 : 500,
                         fontSize: '0.85rem',
                         cursor: 'pointer'
@@ -2197,46 +2304,46 @@ export default function App() {
                       className="glass-panel"
                       style={{
                         padding: '1.25rem',
-                        background: '#FFFFFF',
-                        border: '1px solid #E2E5E9',
+                        background: '#0E151C',
+                        border: '1px solid #1C2833',
                         borderRadius: '8px',
                         boxShadow: 'var(--shadow-card)',
                         borderLeft: `4px solid ${
-                          fnd.priority === 'CRITICAL' ? '#DC2626' : (fnd.priority === 'HIGH' ? '#D97706' : '#2563EB')
+                          fnd.priority === 'CRITICAL' ? '#DC2626' : (fnd.priority === 'HIGH' ? '#F59E0B' : '#2587E8')
                         }`
                       }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.5rem' }}>
                         <div>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                            <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#1F2937' }}>{fnd.title}</h3>
+                            <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#F1F5F9' }}>{fnd.title}</h3>
                             <span style={{
                               padding: '0.15rem 0.45rem',
                               borderRadius: '4px',
                               fontSize: '0.72rem',
                               fontWeight: 700,
-                              background: fnd.priority === 'CRITICAL' ? '#FEF2F2' : (fnd.priority === 'HIGH' ? '#FFFBEB' : '#EFF6FF'),
-                              color: fnd.priority === 'CRITICAL' ? '#DC2626' : (fnd.priority === 'HIGH' ? '#D97706' : '#2563EB'),
-                              border: `1px solid ${fnd.priority === 'CRITICAL' ? '#FECACA' : (fnd.priority === 'HIGH' ? '#FDE68A' : '#BFDBFE')}`
+                              background: fnd.priority === 'CRITICAL' ? 'rgba(239, 68, 68, 0.12)' : (fnd.priority === 'HIGH' ? 'rgba(245, 158, 11, 0.12)' : 'rgba(37, 135, 232, 0.12)'),
+                              color: fnd.priority === 'CRITICAL' ? '#DC2626' : (fnd.priority === 'HIGH' ? '#F59E0B' : '#2587E8'),
+                              border: `1px solid ${fnd.priority === 'CRITICAL' ? 'rgba(239, 68, 68, 0.25)' : (fnd.priority === 'HIGH' ? 'rgba(245, 158, 11, 0.25)' : 'rgba(37, 135, 232, 0.25)')}`
                             }}>
                               {fnd.priority} ({fnd.priority_score}/100)
                             </span>
                           </div>
-                          <div style={{ fontSize: '0.75rem', color: '#667085', marginTop: '0.2rem' }}>
-                            Reason: <span style={{ color: '#1F2937' }}>{fnd.reason}</span>
+                          <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '0.2rem' }}>
+                            Reason: <span style={{ color: '#F1F5F9' }}>{fnd.reason}</span>
                           </div>
                         </div>
 
                         {/* Status Transition Selector */}
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                          <span style={{ fontSize: '0.75rem', color: '#667085' }}>Status:</span>
+                          <span style={{ fontSize: '0.75rem', color: '#64748B' }}>Status:</span>
                           <select
                             value={fnd.status}
                             onChange={(e) => handleUpdateFindingStatus(fnd.id, e.target.value)}
                             style={{
-                              background: '#FFFFFF',
-                              color: fnd.status === 'CONFIRMED' ? '#16A34A' : (fnd.status === 'DISMISSED' ? '#667085' : '#D97706'),
-                              border: '1px solid #D0D5DD',
+                              background: '#0E151C',
+                              color: fnd.status === 'CONFIRMED' ? '#16A34A' : (fnd.status === 'DISMISSED' ? '#667085' : '#F59E0B'),
+                              border: '1px solid #1C2833',
                               borderRadius: '4px',
                               padding: '0.25rem 0.5rem',
                               fontSize: '0.75rem',
@@ -2253,14 +2360,14 @@ export default function App() {
                         </div>
                       </div>
 
-                      <p style={{ fontSize: '0.85rem', color: '#475467', lineHeight: '1.5', margin: '0.5rem 0' }}>
+                      <p style={{ fontSize: '0.85rem', color: '#94A3B8', lineHeight: '1.5', margin: '0.5rem 0' }}>
                         {fnd.description}
                       </p>
 
                       {/* Explainable Reasons */}
                       {fnd.priority_reasons && fnd.priority_reasons.length > 0 && (
                         <div style={{ marginTop: '0.65rem' }}>
-                          <div style={{ fontSize: '0.75rem', color: '#667085', marginBottom: '0.3rem' }}>
+                          <div style={{ fontSize: '0.75rem', color: '#64748B', marginBottom: '0.3rem' }}>
                             Explainable Priority Factors:
                           </div>
                           <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
@@ -2268,9 +2375,9 @@ export default function App() {
                               <span 
                                 key={idx}
                                 style={{
-                                  background: '#F8FAFC',
-                                  border: '1px solid #E2E5E9',
-                                  color: '#166534',
+                                  background: '#111A22',
+                                  border: '1px solid #1C2833',
+                                  color: '#3B9CFF',
                                   padding: '0.15rem 0.5rem',
                                   borderRadius: '4px',
                                   fontSize: '0.72rem',
@@ -2285,9 +2392,9 @@ export default function App() {
                       )}
 
                       {/* Supporting Evidence Chain */}
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.85rem', paddingTop: '0.65rem', borderTop: '1px solid #E2E5E9', fontSize: '0.75rem' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '0.85rem', paddingTop: '0.65rem', borderTop: '1px solid #1C2833', fontSize: '0.75rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                          <span style={{ color: '#667085' }}>Supporting Evidence:</span>
+                          <span style={{ color: '#64748B' }}>Supporting Evidence:</span>
                           {(fnd.evidence_ids || []).map(eid => (
                             <span 
                               key={eid}
@@ -2296,9 +2403,9 @@ export default function App() {
                                 setInspectEvidence(ev);
                               }}
                               style={{
-                                background: '#F8FAFC',
-                                border: '1px solid #D0D5DD',
-                                color: '#166534',
+                                background: '#111A22',
+                                border: '1px solid #1C2833',
+                                color: '#3B9CFF',
                                 padding: '0.1rem 0.4rem',
                                 borderRadius: '3px',
                                 fontFamily: 'var(--font-mono)',
@@ -2312,7 +2419,7 @@ export default function App() {
                         </div>
 
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                          <span style={{ color: '#667085' }}>Endpoints:</span>
+                          <span style={{ color: '#64748B' }}>Endpoints:</span>
                           {(fnd.related_agents || []).map(a => (
                             <span key={a} style={{ color: '#16A34A', fontWeight: 600 }}>{a}</span>
                           ))}
@@ -2325,15 +2432,15 @@ export default function App() {
 
               {/* SUB-TAB 2: UNIFIED TIMELINE */}
               {investigationSubTab === 'timeline' && (
-                <div className="glass-panel" style={{ padding: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
+                <div className="glass-panel" style={{ padding: '1.25rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                    <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#1F2937' }}>Chronological Investigation Event Stream</h3>
+                    <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#F1F5F9' }}>Chronological Investigation Event Stream</h3>
                     <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                       <Filter size={14} color="#667085" />
                       <select
                         value={timelineFilterType}
                         onChange={(e) => setTimelineFilterType(e.target.value)}
-                        style={{ background: '#FFFFFF', color: '#1F2937', border: '1px solid #D0D5DD', borderRadius: '4px', padding: '0.25rem 0.5rem', fontSize: '0.75rem' }}
+                        style={{ background: '#0E151C', color: '#F1F5F9', border: '1px solid #1C2833', borderRadius: '4px', padding: '0.25rem 0.5rem', fontSize: '0.75rem' }}
                       >
                         <option value="ALL">All Event Types</option>
                         <option value="PROCESS">PROCESS</option>
@@ -2351,8 +2458,8 @@ export default function App() {
                         <div 
                           key={evt.id}
                           style={{
-                            background: '#F8FAFC',
-                            border: '1px solid #E2E5E9',
+                            background: '#111A22',
+                            border: '1px solid #1C2833',
                             borderRadius: '6px',
                             padding: '0.75rem',
                             display: 'flex',
@@ -2366,22 +2473,22 @@ export default function App() {
                               borderRadius: '4px',
                               fontSize: '0.7rem',
                               fontWeight: 700,
-                              background: evt.event_type === 'PERSISTENCE' ? '#FEF2F2' : (evt.event_type === 'NETWORK' ? '#EFF6FF' : '#F0FDF4'),
-                              color: evt.event_type === 'PERSISTENCE' ? '#DC2626' : (evt.event_type === 'NETWORK' ? '#2563EB' : '#16A34A'),
-                              border: `1px solid ${evt.event_type === 'PERSISTENCE' ? '#FECACA' : (evt.event_type === 'NETWORK' ? '#BFDBFE' : '#BBF7D0')}`
+                              background: evt.event_type === 'PERSISTENCE' ? 'rgba(239, 68, 68, 0.12)' : (evt.event_type === 'NETWORK' ? 'rgba(37, 135, 232, 0.12)' : 'rgba(16, 185, 129, 0.12)'),
+                              color: evt.event_type === 'PERSISTENCE' ? '#DC2626' : (evt.event_type === 'NETWORK' ? '#2587E8' : '#16A34A'),
+                              border: `1px solid ${evt.event_type === 'PERSISTENCE' ? 'rgba(239, 68, 68, 0.25)' : (evt.event_type === 'NETWORK' ? 'rgba(37, 135, 232, 0.25)' : '#1C2833')}`
                             }}>
                               {evt.event_type}
                             </span>
                             <div>
-                              <div style={{ fontSize: '0.85rem', color: '#1F2937', fontWeight: 500 }}>{evt.description}</div>
-                              <div style={{ fontSize: '0.72rem', color: '#667085', marginTop: '0.15rem' }}>
-                                Agent: <span style={{ color: '#166534', fontWeight: 500 }}>{evt.agent_id}</span> • Evidence: <span style={{ fontFamily: 'var(--font-mono)' }}>{evt.evidence_id || 'N/A'}</span>
+                              <div style={{ fontSize: '0.85rem', color: '#F1F5F9', fontWeight: 500 }}>{evt.description}</div>
+                              <div style={{ fontSize: '0.72rem', color: '#64748B', marginTop: '0.15rem' }}>
+                                Agent: <span style={{ color: '#3B9CFF', fontWeight: 500 }}>{evt.agent_id}</span> • Evidence: <span style={{ fontFamily: 'var(--font-mono)' }}>{evt.evidence_id || 'N/A'}</span>
                               </div>
                             </div>
                           </div>
 
                           <div style={{ textAlign: 'right' }}>
-                            <div style={{ fontSize: '0.75rem', color: '#667085' }}>{evt.timestamp}</div>
+                            <div style={{ fontSize: '0.75rem', color: '#64748B' }}>{evt.timestamp}</div>
                             <span style={{ fontSize: '0.7rem', color: evt.severity === 'HIGH' ? '#DC2626' : '#667085', fontWeight: 600 }}>
                               {evt.severity}
                             </span>
@@ -2394,11 +2501,11 @@ export default function App() {
 
               {/* SUB-TAB 3: EXTRACTED IOCS */}
               {investigationSubTab === 'iocs' && (
-                <div className="glass-panel" style={{ padding: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
-                  <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#1F2937', marginBottom: '1rem' }}>Normalized Indicators of Compromise (IOC Ledger)</h3>
+                <div className="glass-panel" style={{ padding: '1.25rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
+                  <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#F1F5F9', marginBottom: '1rem' }}>Normalized Indicators of Compromise (IOC Ledger)</h3>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
                     <thead>
-                      <tr style={{ color: '#667085', background: '#F8FAFC', borderBottom: '1px solid #E2E5E9', textAlign: 'left' }}>
+                      <tr style={{ color: '#64748B', background: '#111A22', borderBottom: '1px solid #1C2833', textAlign: 'left' }}>
                         <th style={{ padding: '0.6rem' }}>Type</th>
                         <th style={{ padding: '0.6rem' }}>Normalized Value</th>
                         <th style={{ padding: '0.6rem' }}>Status</th>
@@ -2408,13 +2515,13 @@ export default function App() {
                     </thead>
                     <tbody>
                       {indicators.map(ioc => (
-                        <tr key={ioc.id} style={{ borderBottom: '1px solid #E2E5E9' }}>
+                        <tr key={ioc.id} style={{ borderBottom: '1px solid #1C2833' }}>
                           <td style={{ padding: '0.6rem' }}>
-                            <span style={{ fontSize: '0.72rem', padding: '0.15rem 0.4rem', borderRadius: '4px', background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0', fontWeight: 600 }}>
+                            <span style={{ fontSize: '0.72rem', padding: '0.15rem 0.4rem', borderRadius: '4px', background: 'rgba(37, 135, 232, 0.12)', color: '#3B9CFF', border: '1px solid rgba(37, 135, 232, 0.3)', fontWeight: 600 }}>
                               {ioc.type}
                             </span>
                           </td>
-                          <td style={{ padding: '0.6rem', fontFamily: 'var(--font-mono)', color: '#1F2937' }}>
+                          <td style={{ padding: '0.6rem', fontFamily: 'var(--font-mono)', color: '#F1F5F9' }}>
                             {ioc.normalized_value}
                           </td>
                           <td style={{ padding: '0.6rem' }}>
@@ -2422,16 +2529,16 @@ export default function App() {
                               fontSize: '0.72rem',
                               padding: '0.15rem 0.4rem',
                               borderRadius: '4px',
-                              background: ioc.status === 'suspicious' ? '#FEF2F2' : '#F8FAFC',
-                              color: ioc.status === 'suspicious' ? '#DC2626' : '#667085',
-                              border: `1px solid ${ioc.status === 'suspicious' ? '#FECACA' : '#E2E5E9'}`,
+                              background: ioc.status === 'suspicious' ? 'rgba(239, 68, 68, 0.12)' : '#111A22',
+                              color: ioc.status === 'suspicious' ? '#EF4444' : '#94A3B8',
+                              border: `1px solid ${ioc.status === 'suspicious' ? 'rgba(239, 68, 68, 0.25)' : '#1C2833'}`,
                               fontWeight: 600
                             }}>
                               {ioc.status}
                             </span>
                           </td>
-                          <td style={{ padding: '0.6rem', color: '#667085' }}>{ioc.agent_id || 'N/A'}</td>
-                          <td style={{ padding: '0.6rem', color: '#667085' }}>{ioc.first_seen}</td>
+                          <td style={{ padding: '0.6rem', color: '#64748B' }}>{ioc.agent_id || 'N/A'}</td>
+                          <td style={{ padding: '0.6rem', color: '#64748B' }}>{ioc.first_seen}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -2441,67 +2548,67 @@ export default function App() {
 
               {/* SUB-TAB 4: CORRELATION GRAPH */}
               {investigationSubTab === 'graph' && (
-                <div className="glass-panel" style={{ padding: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
+                <div className="glass-panel" style={{ padding: '1.25rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                     <div>
-                      <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#1F2937' }}>Multi-Endpoint Investigation Topology</h3>
-                      <p style={{ fontSize: '0.75rem', color: '#667085' }}>Node-edge correlation linking agents, processes, files, hashes, and network sockets.</p>
+                      <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#F1F5F9' }}>Multi-Endpoint Investigation Topology</h3>
+                      <p style={{ fontSize: '0.75rem', color: '#64748B' }}>Node-edge correlation linking agents, processes, files, hashes, and network sockets.</p>
                     </div>
                     <div style={{ display: 'flex', gap: '0.5rem', fontSize: '0.72rem' }}>
-                      <span style={{ color: '#166534', fontWeight: 500 }}>● Agent</span>
+                      <span style={{ color: '#3B9CFF', fontWeight: 500 }}>● Agent</span>
                       <span style={{ color: '#16A34A', fontWeight: 500 }}>● Process</span>
-                      <span style={{ color: '#D97706', fontWeight: 500 }}>● Hash</span>
-                      <span style={{ color: '#DC2626', fontWeight: 500 }}>● IP Socket</span>
+                      <span style={{ color: '#F59E0B', fontWeight: 500 }}>● Hash</span>
+                      <span style={{ color: '#EF4444', fontWeight: 500 }}>● IP Socket</span>
                       <span style={{ color: '#7C3AED', fontWeight: 500 }}>● Evidence</span>
                     </div>
                   </div>
 
                   {/* SVG Node Graph Canvas */}
-                  <div style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', borderRadius: '8px', padding: '1rem', minHeight: '340px', position: 'relative', overflow: 'hidden' }}>
+                  <div style={{ background: '#111A22', border: '1px solid #1C2833', borderRadius: '8px', padding: '1rem', minHeight: '340px', position: 'relative', overflow: 'hidden' }}>
                     <svg style={{ width: '100%', height: '340px' }}>
                       {/* Connection Lines */}
-                      <line x1="120" y1="80" x2="320" y2="80" stroke="#CBD5E1" strokeWidth="2" strokeDasharray="4 2" />
-                      <line x1="120" y1="220" x2="320" y2="80" stroke="#CBD5E1" strokeWidth="2" strokeDasharray="4 2" />
-                      <line x1="320" y1="80" x2="520" y2="80" stroke="#FDE68A" strokeWidth="2" />
-                      <line x1="520" y1="80" x2="720" y2="80" stroke="#BBF7D0" strokeWidth="2" />
-                      <line x1="720" y1="80" x2="720" y2="220" stroke="#FECACA" strokeWidth="2" />
+                      <line x1="120" y1="80" x2="320" y2="80" stroke="#1C2833" strokeWidth="2" strokeDasharray="4 2" />
+                      <line x1="120" y1="220" x2="320" y2="80" stroke="#1C2833" strokeWidth="2" strokeDasharray="4 2" />
+                      <line x1="320" y1="80" x2="520" y2="80" stroke='rgba(245, 158, 11, 0.25)' strokeWidth="2" />
+                      <line x1="520" y1="80" x2="720" y2="80" stroke="#1C2833" strokeWidth="2" />
+                      <line x1="720" y1="80" x2="720" y2="220" stroke='rgba(239, 68, 68, 0.25)' strokeWidth="2" />
                       <line x1="120" y1="150" x2="720" y2="220" stroke="#E9D5FF" strokeWidth="1.5" />
 
                       {/* Edge Labels */}
-                      <text x="210" y="70" fill="#667085" fontSize="10" textAnchor="middle">shared_hash</text>
-                      <text x="210" y="160" fill="#667085" fontSize="10" textAnchor="middle">shared_hash</text>
-                      <text x="420" y="70" fill="#667085" fontSize="10" textAnchor="middle">contains</text>
-                      <text x="620" y="70" fill="#667085" fontSize="10" textAnchor="middle">executes</text>
-                      <text x="730" y="150" fill="#667085" fontSize="10">connected_to</text>
+                      <text x="210" y="70" fill="#94A3B8" fontSize="10" textAnchor="middle">shared_hash</text>
+                      <text x="210" y="160" fill="#94A3B8" fontSize="10" textAnchor="middle">shared_hash</text>
+                      <text x="420" y="70" fill="#94A3B8" fontSize="10" textAnchor="middle">contains</text>
+                      <text x="620" y="70" fill="#94A3B8" fontSize="10" textAnchor="middle">executes</text>
+                      <text x="730" y="150" fill="#94A3B8" fontSize="10">connected_to</text>
 
                       {/* Nodes */}
                       {/* Agent 1 */}
-                      <circle cx="120" cy="80" r="28" fill="#EFF6FF" stroke="#2563EB" strokeWidth="2" />
-                      <text x="120" y="84" fill="#1E40AF" fontSize="10" fontWeight="bold" textAnchor="middle">WIN-01</text>
+                      <circle cx="120" cy="80" r="28" fill='rgba(37, 135, 232, 0.15)' stroke="#2587E8" strokeWidth="2" />
+                      <text x="120" y="84" fill="#3B9CFF" fontSize="10" fontWeight="bold" textAnchor="middle">WIN-01</text>
 
                       {/* Agent 2 */}
-                      <circle cx="120" cy="220" r="28" fill="#EFF6FF" stroke="#2563EB" strokeWidth="2" />
-                      <text x="120" y="224" fill="#1E40AF" fontSize="10" fontWeight="bold" textAnchor="middle">WIN-02</text>
+                      <circle cx="120" cy="220" r="28" fill='rgba(37, 135, 232, 0.15)' stroke="#2587E8" strokeWidth="2" />
+                      <text x="120" y="224" fill="#3B9CFF" fontSize="10" fontWeight="bold" textAnchor="middle">WIN-02</text>
 
                       {/* Agent Linux */}
-                      <circle cx="120" cy="150" r="24" fill="#F0FDF4" stroke="#16A34A" strokeWidth="2" />
-                      <text x="120" y="154" fill="#166534" fontSize="9" fontWeight="bold" textAnchor="middle">LINUX-01</text>
+                      <circle cx="120" cy="150" r="24" fill="rgba(16, 185, 129, 0.15)" stroke="#10B981" strokeWidth="2" />
+                      <text x="120" y="154" fill="#10B981" fontSize="9" fontWeight="bold" textAnchor="middle">LINUX-01</text>
 
                       {/* SHA256 Node */}
-                      <rect x="270" y="60" width="100" height="40" rx="6" fill="#FFFBEB" stroke="#D97706" strokeWidth="2" />
-                      <text x="320" y="84" fill="#92400E" fontSize="10" fontWeight="bold" textAnchor="middle">SHA: 4a7d189f</text>
+                      <rect x="270" y="60" width="100" height="40" rx="6" fill='rgba(245, 158, 11, 0.15)' stroke="#F59E0B" strokeWidth="2" />
+                      <text x="320" y="84" fill="#F59E0B" fontSize="10" fontWeight="bold" textAnchor="middle">SHA: 4a7d189f</text>
 
                       {/* File Node */}
-                      <rect x="470" y="60" width="100" height="40" rx="6" fill="#FAF5FF" stroke="#7C3AED" strokeWidth="2" />
-                      <text x="520" y="84" fill="#5B21B6" fontSize="10" fontWeight="bold" textAnchor="middle">C:/Temp/beacon</text>
+                      <rect x="470" y="60" width="100" height="40" rx="6" fill="rgba(124, 58, 237, 0.15)" stroke="#8B5CF6" strokeWidth="2" />
+                      <text x="520" y="84" fill="#C084FC" fontSize="10" fontWeight="bold" textAnchor="middle">C:/Temp/beacon</text>
 
                       {/* Process Node */}
-                      <circle cx="720" cy="80" r="28" fill="#F0FDF4" stroke="#16A34A" strokeWidth="2" />
-                      <text x="720" y="84" fill="#166534" fontSize="9" fontWeight="bold" textAnchor="middle">beacon.exe</text>
+                      <circle cx="720" cy="80" r="28" fill="rgba(16, 185, 129, 0.15)" stroke="#10B981" strokeWidth="2" />
+                      <text x="720" y="84" fill="#10B981" fontSize="9" fontWeight="bold" textAnchor="middle">beacon.exe</text>
 
                       {/* IP Socket Node */}
-                      <rect x="670" y="200" width="100" height="40" rx="6" fill="#FEF2F2" stroke="#DC2626" strokeWidth="2" />
-                      <text x="720" y="224" fill="#991B1B" fontSize="10" fontWeight="bold" textAnchor="middle">198.51.100.25</text>
+                      <rect x="670" y="200" width="100" height="40" rx="6" fill='rgba(239, 68, 68, 0.15)' stroke="#EF4444" strokeWidth="2" />
+                      <text x="720" y="224" fill="#EF4444" fontSize="10" fontWeight="bold" textAnchor="middle">198.51.100.25</text>
                     </svg>
                   </div>
                 </div>
@@ -2511,21 +2618,21 @@ export default function App() {
               {investigationSubTab === 'notes' && (
                 <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: '1.5rem' }}>
                   {/* Notes Feed */}
-                  <div className="glass-panel" style={{ padding: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
-                    <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#1F2937', marginBottom: '1rem' }}>Analyst Hypotheses & Notes Ledger</h3>
+                  <div className="glass-panel" style={{ padding: '1.25rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
+                    <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#F1F5F9', marginBottom: '1rem' }}>Analyst Hypotheses & Notes Ledger</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', maxHeight: '420px', overflowY: 'auto' }}>
                       {analystNotes.map(n => (
-                        <div key={n.id} style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', borderRadius: '6px', padding: '0.85rem' }}>
+                        <div key={n.id} style={{ background: '#111A22', border: '1px solid #1C2833', borderRadius: '6px', padding: '0.85rem' }}>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem', fontSize: '0.75rem' }}>
                             <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                              <strong style={{ color: '#166534' }}>{n.analyst_name}</strong>
-                              <span style={{ padding: '0.1rem 0.4rem', borderRadius: '3px', background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0', fontSize: '0.7rem', fontWeight: 600 }}>
+                              <strong style={{ color: '#3B9CFF' }}>{n.analyst_name}</strong>
+                              <span style={{ padding: '0.1rem 0.4rem', borderRadius: '3px', background: 'rgba(37, 135, 232, 0.12)', color: '#3B9CFF', border: '1px solid rgba(37, 135, 232, 0.3)', fontSize: '0.7rem', fontWeight: 600 }}>
                                 {n.note_type.toUpperCase()}
                               </span>
                             </div>
-                            <span style={{ color: '#667085' }}>{n.created_at}</span>
+                            <span style={{ color: '#64748B' }}>{n.created_at}</span>
                           </div>
-                          <div style={{ fontSize: '0.85rem', color: '#1F2937', lineHeight: '1.5' }}>
+                          <div style={{ fontSize: '0.85rem', color: '#F1F5F9', lineHeight: '1.5' }}>
                             {n.content}
                           </div>
                         </div>
@@ -2534,15 +2641,15 @@ export default function App() {
                   </div>
 
                   {/* Add Note Form */}
-                  <div className="glass-panel" style={{ padding: '1.25rem', height: 'fit-content', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
-                    <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#1F2937', marginBottom: '0.85rem' }}>Record Investigation Note</h3>
+                  <div className="glass-panel" style={{ padding: '1.25rem', height: 'fit-content', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
+                    <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#F1F5F9', marginBottom: '0.85rem' }}>Record Investigation Note</h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
                       <div>
-                        <label style={{ fontSize: '0.75rem', color: '#667085', display: 'block', marginBottom: '0.25rem' }}>Note Type</label>
+                        <label style={{ fontSize: '0.75rem', color: '#64748B', display: 'block', marginBottom: '0.25rem' }}>Note Type</label>
                         <select
                           value={newNoteType}
                           onChange={(e) => setNewNoteType(e.target.value)}
-                          style={{ width: '100%', padding: '0.45rem', background: '#FFFFFF', border: '1px solid #D0D5DD', borderRadius: '6px', color: '#1F2937', fontSize: '0.8rem' }}
+                          style={{ width: '100%', padding: '0.45rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '6px', color: '#F1F5F9', fontSize: '0.8rem' }}
                         >
                           <option value="hypothesis">Hypothesis (Investigation Theory)</option>
                           <option value="observation">Forensic Observation</option>
@@ -2551,13 +2658,13 @@ export default function App() {
                         </select>
                       </div>
                       <div>
-                        <label style={{ fontSize: '0.75rem', color: '#667085', display: 'block', marginBottom: '0.25rem' }}>Note Content</label>
+                        <label style={{ fontSize: '0.75rem', color: '#64748B', display: 'block', marginBottom: '0.25rem' }}>Note Content</label>
                         <textarea
                           rows={5}
                           value={newNoteContent}
                           onChange={(e) => setNewNoteContent(e.target.value)}
                           placeholder="Record observations, forensic corroborations, or theories..."
-                          style={{ width: '100%', padding: '0.5rem', background: '#FFFFFF', border: '1px solid #D0D5DD', borderRadius: '6px', color: '#1F2937', fontSize: '0.8rem', resize: 'vertical', outline: 'none' }}
+                          style={{ width: '100%', padding: '0.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '6px', color: '#F1F5F9', fontSize: '0.8rem', resize: 'vertical', outline: 'none' }}
                         />
                       </div>
                       <button
@@ -2576,21 +2683,21 @@ export default function App() {
               {investigationSubTab === 'heatmap' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
                   {/* Heatmap Metrics Banner */}
-                  <div className="glass-panel" style={{ padding: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
+                  <div className="glass-panel" style={{ padding: '1.25rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
                       <div>
-                        <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1F2937' }}>
+                        <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#F1F5F9' }}>
                           Temporal Activity Density & Anomaly Concurrency
                         </h3>
-                        <p style={{ fontSize: '0.8rem', color: '#667085' }}>
+                        <p style={{ fontSize: '0.8rem', color: '#64748B' }}>
                           Bucketed chronological distribution of forensic events across fleet endpoints. Highlights attack bursts and lateral staging windows.
                         </p>
                       </div>
                       <div style={{ display: 'flex', gap: '0.5rem' }}>
-                        <span style={{ padding: '0.3rem 0.65rem', borderRadius: '4px', background: '#FEF2F2', color: '#DC2626', border: '1px solid #FECACA', fontSize: '0.75rem', fontWeight: 600 }}>
+                        <span style={{ padding: '0.3rem 0.65rem', borderRadius: '4px', background: 'rgba(239, 68, 68, 0.12)', color: '#EF4444', border: '1px solid #1C2833', fontSize: '0.75rem', fontWeight: 600 }}>
                           Peak Burst: 14:00 UTC (15 Events)
                         </span>
-                        <span style={{ padding: '0.3rem 0.65rem', borderRadius: '4px', background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0', fontSize: '0.75rem', fontWeight: 600 }}>
+                        <span style={{ padding: '0.3rem 0.65rem', borderRadius: '4px', background: 'rgba(37, 135, 232, 0.12)', color: '#3B9CFF', border: '1px solid rgba(37, 135, 232, 0.3)', fontSize: '0.75rem', fontWeight: 600 }}>
                           Total Buckets: {timelineHeatmapData.length} Intervals
                         </span>
                       </div>
@@ -2609,18 +2716,18 @@ export default function App() {
                               display: 'flex', 
                               flexDirection: 'column', 
                               alignItems: 'center',
-                              background: '#F8FAFC',
-                              border: isPeak ? '1px solid #DC2626' : '1px solid #E2E5E9',
+                              background: '#111A22',
+                              border: isPeak ? '1px solid #DC2626' : '1px solid #1C2833',
                               borderRadius: '8px',
                               padding: '0.75rem 0.5rem',
                               position: 'relative'
                             }}
                           >
-                            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: isPeak ? '#DC2626' : '#2563EB', marginBottom: '0.5rem' }}>
+                            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: isPeak ? '#DC2626' : '#2587E8', marginBottom: '0.5rem' }}>
                               {bucket.count}
                             </div>
                             {/* Bar visualization */}
-                            <div style={{ width: '100%', height: '120px', background: '#E2E5E9', borderRadius: '4px', display: 'flex', alignItems: 'flex-end', padding: '3px' }}>
+                            <div style={{ width: '100%', height: '120px', background: '#1C2833', borderRadius: '4px', display: 'flex', alignItems: 'flex-end', padding: '3px' }}>
                               <div 
                                 style={{ 
                                   width: '100%', 
@@ -2628,21 +2735,21 @@ export default function App() {
                                   borderRadius: '3px',
                                   background: isPeak 
                                     ? '#DC2626' 
-                                    : '#2563EB',
+                                    : '#2587E8',
                                   transition: 'height 0.3s ease'
                                 }}
                               />
                             </div>
-                            <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#1F2937', marginTop: '0.5rem' }}>
+                            <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#F1F5F9', marginTop: '0.5rem' }}>
                               {bucket.bucket}
                             </div>
                             {/* Severities pill */}
                             <div style={{ display: 'flex', gap: '3px', marginTop: '0.4rem', fontSize: '0.65rem' }}>
                               {bucket.severities.CRITICAL > 0 && (
-                                <span style={{ color: '#DC2626', fontWeight: 600 }}>{bucket.severities.CRITICAL}C</span>
+                                <span style={{ color: '#EF4444', fontWeight: 600 }}>{bucket.severities.CRITICAL}C</span>
                               )}
                               {bucket.severities.HIGH > 0 && (
-                                <span style={{ color: '#D97706', fontWeight: 600 }}>{bucket.severities.HIGH}H</span>
+                                <span style={{ color: '#F59E0B', fontWeight: 600 }}>{bucket.severities.HIGH}H</span>
                               )}
                             </div>
                           </div>
@@ -2652,13 +2759,13 @@ export default function App() {
                   </div>
 
                   {/* Hourly Breakdown Details */}
-                  <div className="glass-panel" style={{ padding: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
-                    <h4 style={{ fontSize: '0.95rem', fontWeight: 600, color: '#1F2937', marginBottom: '0.75rem' }}>
+                  <div className="glass-panel" style={{ padding: '1.25rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
+                    <h4 style={{ fontSize: '0.95rem', fontWeight: 600, color: '#F1F5F9', marginBottom: '0.75rem' }}>
                       Temporal Anomaly Concurrency Analysis
                     </h4>
                     <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.82rem' }}>
                       <thead>
-                        <tr style={{ borderBottom: '1px solid #E2E5E9', background: '#F8FAFC', textAlign: 'left', color: '#667085' }}>
+                        <tr style={{ borderBottom: '1px solid #1C2833', background: '#111A22', textAlign: 'left', color: '#64748B' }}>
                           <th style={{ padding: '0.5rem' }}>Time Interval</th>
                           <th style={{ padding: '0.5rem' }}>Event Volume</th>
                           <th style={{ padding: '0.5rem' }}>Severity Breakdown</th>
@@ -2668,19 +2775,19 @@ export default function App() {
                       </thead>
                       <tbody>
                         {timelineHeatmapData.map((b, idx) => (
-                          <tr key={idx} style={{ borderBottom: '1px solid #E2E5E9' }}>
-                            <td style={{ padding: '0.5rem', fontWeight: 600, color: '#1F2937' }}>{b.bucket}</td>
+                          <tr key={idx} style={{ borderBottom: '1px solid #1C2833' }}>
+                            <td style={{ padding: '0.5rem', fontWeight: 600, color: '#F1F5F9' }}>{b.bucket}</td>
                             <td style={{ padding: '0.5rem' }}>
-                              <span style={{ fontWeight: 700, color: b.count >= 10 ? '#DC2626' : '#2563EB' }}>{b.count} events</span>
+                              <span style={{ fontWeight: 700, color: b.count >= 10 ? '#DC2626' : '#2587E8' }}>{b.count} events</span>
                             </td>
                             <td style={{ padding: '0.5rem' }}>
                               <div style={{ display: 'flex', gap: '0.4rem' }}>
-                                <span style={{ color: '#DC2626', fontWeight: 600 }}>{b.severities.CRITICAL || 0} Critical</span> • 
-                                <span style={{ color: '#D97706', fontWeight: 600 }}>{b.severities.HIGH || 0} High</span> • 
-                                <span style={{ color: '#667085' }}>{b.severities.INFO || 0} Info</span>
+                                <span style={{ color: '#EF4444', fontWeight: 600 }}>{b.severities.CRITICAL || 0} Critical</span> • 
+                                <span style={{ color: '#F59E0B', fontWeight: 600 }}>{b.severities.HIGH || 0} High</span> • 
+                                <span style={{ color: '#64748B' }}>{b.severities.INFO || 0} Info</span>
                               </div>
                             </td>
-                            <td style={{ padding: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#166534' }}>
+                            <td style={{ padding: '0.5rem', fontFamily: 'var(--font-mono)', fontSize: '0.75rem', color: '#3B9CFF' }}>
                               {Object.entries(b.event_types).map(([k, v]) => `${k}:${v}`).join(', ')}
                             </td>
                             <td style={{ padding: '0.5rem' }}>
@@ -2689,9 +2796,9 @@ export default function App() {
                                 borderRadius: '4px', 
                                 fontSize: '0.7rem', 
                                 fontWeight: 700,
-                                background: b.count >= 12 ? '#FEF2F2' : '#F0FDF4',
+                                background: b.count >= 12 ? 'rgba(239, 68, 68, 0.12)' : 'rgba(16, 185, 129, 0.12)',
                                 color: b.count >= 12 ? '#DC2626' : '#16A34A',
-                                border: `1px solid ${b.count >= 12 ? '#FECACA' : '#BBF7D0'}`
+                                border: `1px solid ${b.count >= 12 ? 'rgba(239, 68, 68, 0.25)' : '#1C2833'}`
                               }}>
                                 {b.count >= 12 ? 'SURGE ANOMALY' : 'NOMINAL BASELINE'}
                               </span>
@@ -2707,17 +2814,17 @@ export default function App() {
               {/* SUB-TAB: MITRE ATT&CK MATRIX */}
               {investigationSubTab === 'attack' && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                  <div className="glass-panel" style={{ padding: '1.25rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
+                  <div className="glass-panel" style={{ padding: '1.25rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
                       <div>
-                        <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1F2937' }}>
+                        <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#F1F5F9' }}>
                           MITRE ATT&CK Enterprise Matrix & Technique Alignment
                         </h3>
-                        <p style={{ fontSize: '0.8rem', color: '#667085' }}>
+                        <p style={{ fontSize: '0.8rem', color: '#64748B' }}>
                           Maps correlated forensic indicators, process executions, and network behaviors to standard MITRE tactics and techniques.
                         </p>
                       </div>
-                      <span style={{ padding: '0.3rem 0.65rem', borderRadius: '4px', background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0', fontSize: '0.75rem', fontWeight: 600 }}>
+                      <span style={{ padding: '0.3rem 0.65rem', borderRadius: '4px', background: 'rgba(37, 135, 232, 0.12)', color: '#3B9CFF', border: '1px solid rgba(37, 135, 232, 0.3)', fontSize: '0.75rem', fontWeight: 600 }}>
                         {attackMatrix.length} Techniques Mapped
                       </span>
                     </div>
@@ -2728,8 +2835,8 @@ export default function App() {
                         <div 
                           key={item.technique_id}
                           style={{
-                            background: '#F8FAFC',
-                            border: '1px solid #E2E5E9',
+                            background: '#111A22',
+                            border: '1px solid #1C2833',
                             borderRadius: '8px',
                             padding: '1rem',
                             display: 'flex',
@@ -2740,9 +2847,9 @@ export default function App() {
                           <div>
                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.4rem' }}>
                               <span style={{ 
-                                background: '#ECFDF3', 
-                                border: '1px solid #BBF7D0', 
-                                color: '#166534', 
+                                background: 'rgba(37, 135, 232, 0.12)', 
+                                border: '1px solid rgba(37, 135, 232, 0.3)', 
+                                color: '#3B9CFF', 
                                 padding: '0.15rem 0.45rem', 
                                 borderRadius: '4px', 
                                 fontSize: '0.75rem', 
@@ -2756,23 +2863,23 @@ export default function App() {
                                 borderRadius: '4px', 
                                 fontSize: '0.7rem', 
                                 fontWeight: 700,
-                                background: '#FEF2F2',
-                                color: '#DC2626',
-                                border: '1px solid #FECACA'
+                                background: 'rgba(239, 68, 68, 0.12)',
+                                color: '#EF4444',
+                                border: '1px solid #1C2833'
                               }}>
                                 {item.matched_count} Occurrences
                               </span>
                             </div>
-                            <h4 style={{ fontSize: '0.95rem', fontWeight: 600, color: '#1F2937', marginBottom: '0.2rem' }}>
+                            <h4 style={{ fontSize: '0.95rem', fontWeight: 600, color: '#F1F5F9', marginBottom: '0.2rem' }}>
                               {item.technique_name}
                             </h4>
-                            <div style={{ fontSize: '0.75rem', color: '#667085', marginBottom: '0.6rem' }}>
-                              Tactic: <strong style={{ color: '#1F2937' }}>{item.tactic}</strong>
+                            <div style={{ fontSize: '0.75rem', color: '#64748B', marginBottom: '0.6rem' }}>
+                              Tactic: <strong style={{ color: '#F1F5F9' }}>{item.tactic}</strong>
                             </div>
                           </div>
 
                           <div>
-                            <div style={{ fontSize: '0.72rem', color: '#667085', marginBottom: '0.3rem' }}>
+                            <div style={{ fontSize: '0.72rem', color: '#64748B', marginBottom: '0.3rem' }}>
                               Associated Forensic Indicators:
                             </div>
                             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
@@ -2780,9 +2887,9 @@ export default function App() {
                                 <span 
                                   key={i} 
                                   style={{ 
-                                    background: '#FFFFFF', 
-                                    border: '1px solid #D0D5DD', 
-                                    color: '#166534', 
+                                    background: '#0E151C', 
+                                    border: '1px solid #1C2833', 
+                                    color: '#3B9CFF', 
                                     padding: '0.15rem 0.35rem', 
                                     borderRadius: '3px', 
                                     fontSize: '0.7rem', 
@@ -2808,27 +2915,27 @@ export default function App() {
           {activeTab === 'ml_threat' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               {/* Header Banner */}
-              <div className="glass-panel" style={{ padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
+              <div className="glass-panel" style={{ padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
                     <div style={{ 
                       width: '44px', 
                       height: '44px', 
                       borderRadius: '8px', 
-                      background: '#ECFDF3', 
-                      border: '1px solid #BBF7D0',
+                      background: 'rgba(37, 135, 232, 0.12)', 
+                      border: '1px solid rgba(37, 135, 232, 0.3)',
                       display: 'flex', 
                       alignItems: 'center', 
                       justifyContent: 'center',
-                      color: '#166534'
+                      color: '#3B9CFF'
                     }}>
                       <Cpu size={24} />
                     </div>
                     <div>
-                      <h2 style={{ fontSize: '1.35rem', fontWeight: 600, color: '#1F2937', margin: 0 }}>
+                      <h2 style={{ fontSize: '1.35rem', fontWeight: 600, color: '#F1F5F9', margin: 0 }}>
                         Machine Learning Forensic Threat Engine
                       </h2>
-                      <p style={{ fontSize: '0.85rem', color: '#667085', margin: '0.2rem 0 0 0' }}>
+                      <p style={{ fontSize: '0.85rem', color: '#64748B', margin: '0.2rem 0 0 0' }}>
                         Level 3 Forensic Intelligence • Random Forest Classifier • Explainable Feature Attribution • RFC-8785 Sealed
                       </p>
                     </div>
@@ -2842,8 +2949,8 @@ export default function App() {
                       gap: '0.4rem', 
                       padding: '0.4rem 0.8rem', 
                       borderRadius: '6px', 
-                      background: mlModelStatus?.status === 'READY' ? '#F0FDF4' : '#FEF2F2',
-                      border: mlModelStatus?.status === 'READY' ? '1px solid #BBF7D0' : '1px solid #FECACA',
+                      background: mlModelStatus?.status === 'READY' ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)',
+                      border: mlModelStatus?.status === 'READY' ? '1px solid #1C2833' : '1px solid #1C2833',
                       fontSize: '0.8rem'
                     }}>
                       <span style={{ 
@@ -2864,10 +2971,10 @@ export default function App() {
                       gap: '0.4rem', 
                       padding: '0.4rem 0.8rem', 
                       borderRadius: '6px', 
-                      background: '#ECFDF3',
-                      border: '1px solid #BBF7D0',
+                      background: 'rgba(37, 135, 232, 0.12)',
+                      border: '1px solid rgba(37, 135, 232, 0.3)',
                       fontSize: '0.8rem',
-                      color: '#166534',
+                      color: '#3B9CFF',
                       fontWeight: 600
                     }}>
                       <ShieldCheck size={14} />
@@ -2901,16 +3008,16 @@ export default function App() {
                   const score = latest.threat_score;
                   const isMal = latest.classification === 'MALICIOUS';
                   const isSusp = latest.classification === 'SUSPICIOUS';
-                  const statusColor = isMal ? '#DC2626' : isSusp ? '#D97706' : '#16A34A';
-                  const statusBg = isMal ? '#FEF2F2' : isSusp ? '#FFFBEB' : '#F0FDF4';
-                  const statusBorder = isMal ? '#FECACA' : isSusp ? '#FDE68A' : '#BBF7D0';
+                  const statusColor = isMal ? '#DC2626' : isSusp ? '#F59E0B' : '#16A34A';
+                  const statusBg = isMal ? 'rgba(239, 68, 68, 0.12)' : isSusp ? 'rgba(245, 158, 11, 0.12)' : 'rgba(16, 185, 129, 0.12)';
+                  const statusBorder = isMal ? 'rgba(239, 68, 68, 0.25)' : isSusp ? 'rgba(245, 158, 11, 0.25)' : '#1C2833';
 
                   return (
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.2rem' }}>
                       {/* Gauge Card */}
-                      <div className="glass-panel" style={{ padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)', borderLeft: `4px solid ${statusColor}` }}>
+                      <div className="glass-panel" style={{ padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)', borderLeft: `4px solid ${statusColor}` }}>
                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
-                          <span style={{ fontSize: '0.82rem', color: '#667085', fontWeight: 600 }}>CURRENT CASE THREAT ASSESSMENT</span>
+                          <span style={{ fontSize: '0.82rem', color: '#64748B', fontWeight: 600 }}>CURRENT CASE THREAT ASSESSMENT</span>
                           <span style={{ 
                             padding: '0.2rem 0.6rem', 
                             borderRadius: '4px', 
@@ -2928,54 +3035,54 @@ export default function App() {
                           <span style={{ fontSize: '2.5rem', fontWeight: 700, color: statusColor, fontFamily: 'var(--font-mono)' }}>
                             {(score * 100).toFixed(1)}%
                           </span>
-                          <span style={{ fontSize: '0.88rem', color: '#667085' }}>
+                          <span style={{ fontSize: '0.88rem', color: '#64748B' }}>
                             Threat Score ({score.toFixed(4)} / 1.0000)
                           </span>
                         </div>
 
                         {/* Progress Bar */}
-                        <div style={{ width: '100%', height: '8px', background: '#E2E5E9', borderRadius: '4px', overflow: 'hidden', marginBottom: '1rem' }}>
+                        <div style={{ width: '100%', height: '8px', background: '#1C2833', borderRadius: '4px', overflow: 'hidden', marginBottom: '1rem' }}>
                           <div style={{ 
                             width: `${Math.max(5, score * 100)}%`, 
                             height: '100%', 
-                            background: `linear-gradient(90deg, #16A34A 0%, #D97706 50%, #DC2626 100%)`,
+                            background: `linear-gradient(90deg, #16A34A 0%, #F59E0B 50%, #DC2626 100%)`,
                             borderRadius: '4px',
                             transition: 'width 0.4s ease'
                           }} />
                         </div>
 
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: '#475467' }}>
-                          <span>Confidence: <strong style={{ color: '#1F2937' }}>{(latest.confidence * 100).toFixed(1)}%</strong></span>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.82rem', color: '#94A3B8' }}>
+                          <span>Confidence: <strong style={{ color: '#F1F5F9' }}>{(latest.confidence * 100).toFixed(1)}%</strong></span>
                           <span>Assessed: {new Date(latest.created_at).toLocaleTimeString()}</span>
                         </div>
                       </div>
 
                       {/* Cryptographic Seal Card */}
-                      <div className="glass-panel" style={{ padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                      <div className="glass-panel" style={{ padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)', display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                         <div>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.8rem' }}>
-                            <span style={{ fontSize: '0.82rem', color: '#667085', fontWeight: 600 }}>CRYPTOGRAPHIC INTEGRITY SEAL</span>
+                            <span style={{ fontSize: '0.82rem', color: '#64748B', fontWeight: 600 }}>CRYPTOGRAPHIC INTEGRITY SEAL</span>
                             <span style={{ 
                               padding: '0.2rem 0.6rem', 
                               borderRadius: '4px', 
                               fontSize: '0.75rem', 
                               fontWeight: 600, 
-                              background: latest.integrity_status === 'VERIFIED' ? '#F0FDF4' : '#FEF2F2',
+                              background: latest.integrity_status === 'VERIFIED' ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)',
                               color: latest.integrity_status === 'VERIFIED' ? '#16A34A' : '#DC2626',
-                              border: latest.integrity_status === 'VERIFIED' ? '1px solid #BBF7D0' : '1px solid #FECACA'
+                              border: latest.integrity_status === 'VERIFIED' ? '1px solid #1C2833' : '1px solid #1C2833'
                             }}>
                               {latest.integrity_status}
                             </span>
                           </div>
 
                           <div style={{ marginBottom: '0.6rem' }}>
-                            <div style={{ fontSize: '0.75rem', color: '#667085', marginBottom: '0.15rem' }}>Prediction ID &amp; RFC-8785 Hash:</div>
+                            <div style={{ fontSize: '0.75rem', color: '#64748B', marginBottom: '0.15rem' }}>Prediction ID &amp; RFC-8785 Hash:</div>
                             <div style={{ 
                               fontFamily: 'var(--font-mono)', 
                               fontSize: '0.78rem', 
-                              color: '#166534', 
-                              background: '#F8FAFC', 
-                              border: '1px solid #E2E5E9',
+                              color: '#3B9CFF', 
+                              background: '#111A22', 
+                              border: '1px solid #1C2833',
                               padding: '0.4rem 0.6rem', 
                               borderRadius: '4px',
                               overflow: 'hidden',
@@ -2987,13 +3094,13 @@ export default function App() {
                           </div>
 
                           <div style={{ marginBottom: '0.8rem' }}>
-                            <div style={{ fontSize: '0.75rem', color: '#667085', marginBottom: '0.15rem' }}>Model SHA-256 Digest:</div>
+                            <div style={{ fontSize: '0.75rem', color: '#64748B', marginBottom: '0.15rem' }}>Model SHA-256 Digest:</div>
                             <div style={{ 
                               fontFamily: 'var(--font-mono)', 
                               fontSize: '0.78rem', 
-                              color: '#475467', 
-                              background: '#F8FAFC', 
-                              border: '1px solid #E2E5E9',
+                              color: '#94A3B8', 
+                              background: '#111A22', 
+                              border: '1px solid #1C2833',
                               padding: '0.4rem 0.6rem', 
                               borderRadius: '4px',
                               overflow: 'hidden',
@@ -3027,10 +3134,10 @@ export default function App() {
                   );
                 })()
               ) : (
-                <div className="glass-panel" style={{ padding: '2.5rem', textAlign: 'center', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
-                  <Cpu size={40} color="#2563EB" style={{ margin: '0 auto 1rem auto', opacity: 0.8 }} />
-                  <h3 style={{ fontSize: '1.15rem', color: '#1F2937', marginBottom: '0.5rem' }}>No Machine Learning Predictions Recorded</h3>
-                  <p style={{ fontSize: '0.85rem', color: '#667085', maxWidth: '540px', margin: '0 auto 1.5rem auto' }}>
+                <div className="glass-panel" style={{ padding: '2.5rem', textAlign: 'center', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
+                  <Cpu size={40} color="#2587E8" style={{ margin: '0 auto 1rem auto', opacity: 0.8 }} />
+                  <h3 style={{ fontSize: '1.15rem', color: '#F1F5F9', marginBottom: '0.5rem' }}>No Machine Learning Predictions Recorded</h3>
+                  <p style={{ fontSize: '0.85rem', color: '#64748B', maxWidth: '540px', margin: '0 auto 1.5rem auto' }}>
                     Click "Run Threat Analysis" to extract 21 forensic telemetry features across host evidence, execute the Random Forest classifier, and seal the prediction cryptographically.
                   </p>
                   <button className="btn-primary" onClick={handleRunMlDetection} disabled={mlAnalyzing}>
@@ -3041,17 +3148,17 @@ export default function App() {
 
               {/* Explainability: Top Contributing Factors */}
               {mlPredictions.length > 0 && mlPredictions[0].top_factors && mlPredictions[0].top_factors.length > 0 && (
-                <div className="glass-panel" style={{ padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
+                <div className="glass-panel" style={{ padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                     <div>
-                      <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#1F2937', margin: 0 }}>
+                      <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#F1F5F9', margin: 0 }}>
                         Transparent Forensic Factor Attribution
                       </h3>
-                      <p style={{ fontSize: '0.82rem', color: '#667085', margin: '0.2rem 0 0 0' }}>
+                      <p style={{ fontSize: '0.82rem', color: '#64748B', margin: '0.2rem 0 0 0' }}>
                         Ground-truth evidence signals driving the Random Forest classification score
                       </p>
                     </div>
-                    <span style={{ fontSize: '0.75rem', color: '#166534', background: '#ECFDF3', border: '1px solid #BBF7D0', padding: '0.2rem 0.55rem', borderRadius: '4px', fontWeight: 600 }}>
+                    <span style={{ fontSize: '0.75rem', color: '#3B9CFF', background: 'rgba(37, 135, 232, 0.12)', border: '1px solid rgba(37, 135, 232, 0.3)', padding: '0.2rem 0.55rem', borderRadius: '4px', fontWeight: 600 }}>
                       Top {mlPredictions[0].top_factors.length} Factors
                     </span>
                   </div>
@@ -3061,8 +3168,8 @@ export default function App() {
                       <div 
                         key={idx} 
                         style={{ 
-                          background: '#F8FAFC', 
-                          border: '1px solid #E2E5E9', 
+                          background: '#111A22', 
+                          border: '1px solid #1C2833', 
                           borderRadius: '8px', 
                           padding: '1rem',
                           display: 'flex',
@@ -3072,23 +3179,23 @@ export default function App() {
                       >
                         <div>
                           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
-                            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#166534', fontWeight: 600 }}>
+                            <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.8rem', color: '#3B9CFF', fontWeight: 600 }}>
                               #{idx + 1} {factor.feature}
                             </span>
-                            <span style={{ fontSize: '0.75rem', color: '#667085' }}>
-                              Impact: <strong style={{ color: '#1F2937' }}>{factor.impact_score.toFixed(4)}</strong>
+                            <span style={{ fontSize: '0.75rem', color: '#64748B' }}>
+                              Impact: <strong style={{ color: '#F1F5F9' }}>{factor.impact_score.toFixed(4)}</strong>
                             </span>
                           </div>
-                          <p style={{ fontSize: '0.82rem', color: '#475467', lineHeight: '1.45', margin: '0.4rem 0' }}>
+                          <p style={{ fontSize: '0.82rem', color: '#94A3B8', lineHeight: '1.45', margin: '0.4rem 0' }}>
                             {factor.description}
                           </p>
                         </div>
                         <div style={{ marginTop: '0.6rem' }}>
-                          <div style={{ width: '100%', height: '4px', background: '#E2E5E9', borderRadius: '2px', overflow: 'hidden' }}>
+                          <div style={{ width: '100%', height: '4px', background: '#1C2833', borderRadius: '2px', overflow: 'hidden' }}>
                             <div style={{ 
                               width: `${Math.min(100, Math.max(8, factor.impact_score * 40))}%`, 
                               height: '100%', 
-                              background: factor.impact_score > 0.5 ? '#DC2626' : factor.impact_score > 0.1 ? '#D97706' : '#2563EB',
+                              background: factor.impact_score > 0.5 ? '#DC2626' : factor.impact_score > 0.1 ? '#F59E0B' : '#2587E8',
                               borderRadius: '2px' 
                             }} />
                           </div>
@@ -3100,58 +3207,58 @@ export default function App() {
               )}
 
               {/* Model Registry & Performance Metrics */}
-              <div className="glass-panel" style={{ padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
+              <div className="glass-panel" style={{ padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
                 <div style={{ marginBottom: '1rem' }}>
-                  <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#1F2937', margin: 0 }}>
+                  <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#F1F5F9', margin: 0 }}>
                     Model Registry, Provenance &amp; Verification
                   </h3>
-                  <p style={{ fontSize: '0.82rem', color: '#667085', margin: '0.2rem 0 0 0' }}>
+                  <p style={{ fontSize: '0.82rem', color: '#64748B', margin: '0.2rem 0 0 0' }}>
                     Cryptographic audit ledger for machine learning artifacts and evaluation benchmarks
                   </p>
                 </div>
 
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.85rem', marginBottom: '1rem' }}>
-                  <div style={{ background: '#F8FAFC', padding: '0.9rem', borderRadius: '8px', border: '1px solid #E2E5E9' }}>
-                    <div style={{ fontSize: '0.72rem', color: '#667085', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Model Algorithm</div>
-                    <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#1F2937', marginTop: '0.25rem' }}>
+                  <div style={{ background: '#111A22', padding: '0.9rem', borderRadius: '8px', border: '1px solid #1C2833' }}>
+                    <div style={{ fontSize: '0.72rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Model Algorithm</div>
+                    <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#F1F5F9', marginTop: '0.25rem' }}>
                       {mlModelStatus?.algorithm || 'RandomForestClassifier'}
                     </div>
-                    <div style={{ fontSize: '0.75rem', color: '#166534', marginTop: '0.2rem' }}>100 Trees • Balanced Weights</div>
+                    <div style={{ fontSize: '0.75rem', color: '#3B9CFF', marginTop: '0.2rem' }}>100 Trees • Balanced Weights</div>
                   </div>
 
-                  <div style={{ background: '#F8FAFC', padding: '0.9rem', borderRadius: '8px', border: '1px solid #E2E5E9' }}>
-                    <div style={{ fontSize: '0.72rem', color: '#667085', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Holdout Accuracy</div>
+                  <div style={{ background: '#111A22', padding: '0.9rem', borderRadius: '8px', border: '1px solid #1C2833' }}>
+                    <div style={{ fontSize: '0.72rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Holdout Accuracy</div>
                     <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#16A34A', marginTop: '0.25rem' }}>
                       {mlModelMetrics?.metrics?.accuracy ? `${(mlModelMetrics.metrics.accuracy * 100).toFixed(1)}%` : '100.0%'}
                     </div>
-                    <div style={{ fontSize: '0.75rem', color: '#667085', marginTop: '0.2rem' }}>F1-Score: 1.0000 (Synthetic)</div>
+                    <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '0.2rem' }}>F1-Score: 1.0000 (Synthetic)</div>
                   </div>
 
-                  <div style={{ background: '#F8FAFC', padding: '0.9rem', borderRadius: '8px', border: '1px solid #E2E5E9' }}>
-                    <div style={{ fontSize: '0.72rem', color: '#667085', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Training Dataset</div>
-                    <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#1F2937', marginTop: '0.25rem' }}>
+                  <div style={{ background: '#111A22', padding: '0.9rem', borderRadius: '8px', border: '1px solid #1C2833' }}>
+                    <div style={{ fontSize: '0.72rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Training Dataset</div>
+                    <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#F1F5F9', marginTop: '0.25rem' }}>
                       {mlModelMetrics?.sample_count || 2000} Vectors
                     </div>
-                    <div style={{ fontSize: '0.75rem', color: '#667085', marginTop: '0.2rem' }}>Deterministic Seed: 42</div>
+                    <div style={{ fontSize: '0.75rem', color: '#64748B', marginTop: '0.2rem' }}>Deterministic Seed: 42</div>
                   </div>
 
-                  <div style={{ background: '#F8FAFC', padding: '0.9rem', borderRadius: '8px', border: '1px solid #E2E5E9' }}>
-                    <div style={{ fontSize: '0.72rem', color: '#667085', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Feature Schema</div>
-                    <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#1F2937', marginTop: '0.25rem' }}>
+                  <div style={{ background: '#111A22', padding: '0.9rem', borderRadius: '8px', border: '1px solid #1C2833' }}>
+                    <div style={{ fontSize: '0.72rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Feature Schema</div>
+                    <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#F1F5F9', marginTop: '0.25rem' }}>
                       v{mlModelStatus?.feature_schema_version || '1.0'}
                     </div>
-                    <div style={{ fontSize: '0.75rem', color: '#166534', marginTop: '0.2rem' }}>21 Normalized Features</div>
+                    <div style={{ fontSize: '0.75rem', color: '#3B9CFF', marginTop: '0.2rem' }}>21 Normalized Features</div>
                   </div>
                 </div>
 
                 {/* Disclaimer Alert */}
                 <div style={{ 
-                  background: '#FFFBEB', 
+                  background: 'rgba(245, 158, 11, 0.12)', 
                   border: '1px solid #FDE68A', 
                   borderRadius: '6px', 
                   padding: '0.75rem 1rem',
                   fontSize: '0.8rem',
-                  color: '#D97706',
+                  color: '#F59E0B',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.5rem'
@@ -3164,9 +3271,9 @@ export default function App() {
               </div>
 
               {/* Historical Predictions Table */}
-              <div className="glass-panel" style={{ padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
+              <div className="glass-panel" style={{ padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-                  <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#1F2937', margin: 0 }}>
+                  <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#F1F5F9', margin: 0 }}>
                     Prediction Audit Ledger ({mlPredictions.length})
                   </h3>
                 </div>
@@ -3174,7 +3281,7 @@ export default function App() {
                 <div style={{ overflowX: 'auto' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
                     <thead>
-                      <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E5E9', textAlign: 'left', color: '#667085' }}>
+                      <tr style={{ background: '#111A22', borderBottom: '1px solid #1C2833', textAlign: 'left', color: '#64748B' }}>
                         <th style={{ padding: '0.65rem 0.85rem' }}>Prediction ID</th>
                         <th style={{ padding: '0.65rem 0.85rem' }}>Timestamp</th>
                         <th style={{ padding: '0.65rem 0.85rem' }}>Classification</th>
@@ -3189,15 +3296,15 @@ export default function App() {
                       {mlPredictions.map(pred => {
                         const isMal = pred.classification === 'MALICIOUS';
                         const isSusp = pred.classification === 'SUSPICIOUS';
-                        const color = isMal ? '#DC2626' : isSusp ? '#D97706' : '#16A34A';
-                        const bg = isMal ? '#FEF2F2' : isSusp ? '#FFFBEB' : '#F0FDF4';
-                        const border = isMal ? '#FECACA' : isSusp ? '#FDE68A' : '#BBF7D0';
+                        const color = isMal ? '#DC2626' : isSusp ? '#F59E0B' : '#16A34A';
+                        const bg = isMal ? 'rgba(239, 68, 68, 0.12)' : isSusp ? 'rgba(245, 158, 11, 0.12)' : 'rgba(16, 185, 129, 0.12)';
+                        const border = isMal ? 'rgba(239, 68, 68, 0.25)' : isSusp ? 'rgba(245, 158, 11, 0.25)' : '#1C2833';
                         return (
-                          <tr key={pred.prediction_id} style={{ borderBottom: '1px solid #E2E5E9' }}>
-                            <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>
+                          <tr key={pred.prediction_id} style={{ borderBottom: '1px solid #1C2833' }}>
+                            <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#3B9CFF', fontWeight: 600 }}>
                               {pred.prediction_id}
                             </td>
-                            <td style={{ padding: '0.65rem 0.85rem', color: '#475467' }}>
+                            <td style={{ padding: '0.65rem 0.85rem', color: '#94A3B8' }}>
                               {new Date(pred.created_at).toLocaleString()}
                             </td>
                             <td style={{ padding: '0.65rem 0.85rem' }}>
@@ -3216,10 +3323,10 @@ export default function App() {
                             <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: color, fontWeight: 600 }}>
                               {pred.threat_score.toFixed(4)}
                             </td>
-                            <td style={{ padding: '0.65rem 0.85rem', color: '#475467' }}>
+                            <td style={{ padding: '0.65rem 0.85rem', color: '#94A3B8' }}>
                               {(pred.confidence * 100).toFixed(1)}%
                             </td>
-                            <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#667085' }}>
+                            <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#64748B' }}>
                               {pred.prediction_hash ? `${pred.prediction_hash.substring(0, 16)}...` : '-'}
                             </td>
                             <td style={{ padding: '0.65rem 0.85rem' }}>
@@ -3255,11 +3362,11 @@ export default function App() {
           {activeTab === 'threat_intel' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               {/* Threat Intel Header & Ingestion Actions */}
-              <div className="glass-panel" style={{ padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
+              <div className="glass-panel" style={{ padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.75rem' }}>
                   <div>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#1F2937' }}>Threat Intelligence & STIX 2.1 Ingestion Engine</h2>
-                    <p style={{ fontSize: '0.85rem', color: '#667085', marginTop: '0.2rem' }}>
+                    <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#F1F5F9' }}>Threat Intelligence & STIX 2.1 Ingestion Engine</h2>
+                    <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.2rem' }}>
                       Defensive STIX 2.1 repository correlating TAXII feeds, local bundles, and threat intelligence with observed endpoint evidence.
                     </p>
                   </div>
@@ -3286,14 +3393,14 @@ export default function App() {
                 {/* Sources Status Bar */}
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1rem', marginTop: '1rem' }}>
                   {threatIntelSources.map(src => (
-                    <div key={src.id} style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', borderRadius: '8px', padding: '1rem' }}>
+                    <div key={src.id} style={{ background: '#111A22', border: '1px solid #1C2833', borderRadius: '8px', padding: '1rem' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.4rem' }}>
-                        <strong style={{ fontSize: '0.9rem', color: '#1F2937' }}>{src.name}</strong>
-                        <span style={{ padding: '0.15rem 0.45rem', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 700, background: '#F0FDF4', color: '#16A34A', border: '1px solid #BBF7D0' }}>
+                        <strong style={{ fontSize: '0.9rem', color: '#F1F5F9' }}>{src.name}</strong>
+                        <span style={{ padding: '0.15rem 0.45rem', borderRadius: '4px', fontSize: '0.7rem', fontWeight: 700, background: 'rgba(16, 185, 129, 0.12)', color: '#16A34A', border: '1px solid rgba(37, 135, 232, 0.3)' }}>
                           {src.status}
                         </span>
                       </div>
-                      <p style={{ fontSize: '0.8rem', color: '#667085', lineHeight: '1.45', margin: 0 }}>
+                      <p style={{ fontSize: '0.8rem', color: '#64748B', lineHeight: '1.45', margin: 0 }}>
                         {src.description}
                       </p>
                     </div>
@@ -3302,17 +3409,17 @@ export default function App() {
               </div>
 
               {/* Case Threat Correlation Matches */}
-              <div className="glass-panel" style={{ padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
+              <div className="glass-panel" style={{ padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.75rem' }}>
                   <div>
-                    <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1F2937', margin: 0 }}>
+                    <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#F1F5F9', margin: 0 }}>
                       Active Case Threat Correlations ({threatMatches.length} Matches)
                     </h3>
-                    <p style={{ fontSize: '0.82rem', color: '#667085', margin: '0.2rem 0 0 0' }}>
-                      Forensic indicators in case <strong style={{ color: '#166534', fontFamily: 'var(--font-mono)' }}>{selectedCaseId}</strong> corroborated by imported Threat Intelligence signatures.
+                    <p style={{ fontSize: '0.82rem', color: '#64748B', margin: '0.2rem 0 0 0' }}>
+                      Forensic indicators in case <strong style={{ color: '#3B9CFF', fontFamily: 'var(--font-mono)' }}>{selectedCaseId}</strong> corroborated by imported Threat Intelligence signatures.
                     </p>
                   </div>
-                  <span style={{ padding: '0.25rem 0.6rem', borderRadius: '4px', background: '#FEF2F2', color: '#DC2626', border: '1px solid #FECACA', fontSize: '0.75rem', fontWeight: 700 }}>
+                  <span style={{ padding: '0.25rem 0.6rem', borderRadius: '4px', background: 'rgba(239, 68, 68, 0.12)', color: '#EF4444', border: '1px solid #1C2833', fontSize: '0.75rem', fontWeight: 700 }}>
                     HIGH FIDELITY CORRELATION
                   </span>
                 </div>
@@ -3322,34 +3429,34 @@ export default function App() {
                     <div 
                       key={idx}
                       style={{
-                        background: '#F8FAFC',
-                        borderLeft: `4px solid ${m.severity === 'CRITICAL' ? '#DC2626' : '#D97706'}`,
-                        borderTop: '1px solid #E2E5E9',
-                        borderRight: '1px solid #E2E5E9',
-                        borderBottom: '1px solid #E2E5E9',
+                        background: '#111A22',
+                        borderLeft: `4px solid ${m.severity === 'CRITICAL' ? '#DC2626' : '#F59E0B'}`,
+                        borderTop: '1px solid #1C2833',
+                        borderRight: '1px solid #1C2833',
+                        borderBottom: '1px solid #1C2833',
                         borderRadius: '0 6px 6px 0',
                         padding: '1rem'
                       }}
                     >
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.4rem', flexWrap: 'wrap', gap: '0.5rem' }}>
                         <div>
-                          <strong style={{ fontSize: '0.95rem', color: '#1F2937' }}>{m.intel_name}</strong>
-                          <div style={{ fontSize: '0.8rem', color: '#667085', marginTop: '0.2rem' }}>
+                          <strong style={{ fontSize: '0.95rem', color: '#F1F5F9' }}>{m.intel_name}</strong>
+                          <div style={{ fontSize: '0.8rem', color: '#64748B', marginTop: '0.2rem' }}>
                             {m.description}
                           </div>
                         </div>
                         <div style={{ display: 'flex', gap: '0.4rem' }}>
-                          <span style={{ padding: '0.15rem 0.5rem', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 700, background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0' }}>
+                          <span style={{ padding: '0.15rem 0.5rem', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 700, background: 'rgba(37, 135, 232, 0.12)', color: '#3B9CFF', border: '1px solid rgba(37, 135, 232, 0.3)' }}>
                             MITRE: {m.mitre_attack_id}
                           </span>
-                          <span style={{ padding: '0.15rem 0.5rem', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 700, background: '#FEF2F2', color: '#DC2626', border: '1px solid #FECACA' }}>
+                          <span style={{ padding: '0.15rem 0.5rem', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 700, background: 'rgba(239, 68, 68, 0.12)', color: '#EF4444', border: '1px solid #1C2833' }}>
                             Confidence: {m.confidence}%
                           </span>
                         </div>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', marginTop: '0.5rem', fontSize: '0.8rem', flexWrap: 'wrap' }}>
-                        <div>Matched IOC: <code style={{ color: '#166534', background: '#FFFFFF', border: '1px solid #D0D5DD', padding: '0.15rem 0.45rem', borderRadius: '4px', fontFamily: 'var(--font-mono)' }}>{m.matched_indicator}</code> <span style={{ color: '#667085' }}>({m.indicator_type})</span></div>
-                        <div>Target Endpoint: <span style={{ color: '#1F2937', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>{m.agent_id}</span></div>
+                        <div>Matched IOC: <code style={{ color: '#3B9CFF', background: '#0E151C', border: '1px solid #1C2833', padding: '0.15rem 0.45rem', borderRadius: '4px', fontFamily: 'var(--font-mono)' }}>{m.matched_indicator}</code> <span style={{ color: '#64748B' }}>({m.indicator_type})</span></div>
+                        <div>Target Endpoint: <span style={{ color: '#F1F5F9', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>{m.agent_id}</span></div>
                       </div>
                     </div>
                   ))}
@@ -3357,13 +3464,13 @@ export default function App() {
               </div>
 
               {/* Ingested STIX 2.1 Repository */}
-              <div className="glass-panel" style={{ padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
-                <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#1F2937', marginBottom: '0.85rem' }}>
+              <div className="glass-panel" style={{ padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
+                <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#F1F5F9', marginBottom: '0.85rem' }}>
                   STIX 2.1 Objects Ledger ({threatIntelItems.length} Items)
                 </h3>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.84rem' }}>
                   <thead>
-                    <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E5E9', textAlign: 'left', color: '#667085' }}>
+                    <tr style={{ background: '#111A22', borderBottom: '1px solid #1C2833', textAlign: 'left', color: '#64748B' }}>
                       <th style={{ padding: '0.65rem 0.85rem' }}>STIX ID</th>
                       <th style={{ padding: '0.65rem 0.85rem' }}>Type</th>
                       <th style={{ padding: '0.65rem 0.85rem' }}>Name</th>
@@ -3374,8 +3481,8 @@ export default function App() {
                   </thead>
                   <tbody>
                     {threatIntelItems.map(item => (
-                      <tr key={item.id} style={{ borderBottom: '1px solid #E2E5E9' }}>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#667085' }}>
+                      <tr key={item.id} style={{ borderBottom: '1px solid #1C2833' }}>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#64748B' }}>
                           {item.stix_id || item.id}
                         </td>
                         <td style={{ padding: '0.65rem 0.85rem' }}>
@@ -3384,20 +3491,20 @@ export default function App() {
                             borderRadius: '4px', 
                             fontSize: '0.72rem', 
                             fontWeight: 600,
-                            background: item.intel_type === 'indicator' ? '#EFF6FF' : '#FAF5FF',
-                            color: item.intel_type === 'indicator' ? '#2563EB' : '#9333EA',
-                            border: `1px solid ${item.intel_type === 'indicator' ? '#BFDBFE' : '#E9D5FF'}`
+                            background: item.intel_type === 'indicator' ? 'rgba(37, 135, 232, 0.12)' : '#FAF5FF',
+                            color: item.intel_type === 'indicator' ? '#2587E8' : '#9333EA',
+                            border: `1px solid ${item.intel_type === 'indicator' ? 'rgba(37, 135, 232, 0.25)' : '#E9D5FF'}`
                           }}>
                             {item.intel_type}
                           </span>
                         </td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#1F2937' }}>{item.name}</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475467' }}>
+                        <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#F1F5F9' }}>{item.name}</td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#94A3B8' }}>
                           {item.pattern ? item.pattern.slice(0, 45) + (item.pattern.length > 45 ? '...' : '') : 'N/A'}
                         </td>
                         <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#16A34A' }}>{item.confidence}%</td>
                         <td style={{ padding: '0.65rem 0.85rem' }}>
-                          <span style={{ fontSize: '0.75rem', color: '#667085' }}>{item.source}</span>
+                          <span style={{ fontSize: '0.75rem', color: '#64748B' }}>{item.source}</span>
                         </td>
                       </tr>
                     ))}
@@ -3411,11 +3518,11 @@ export default function App() {
           {activeTab === 'response_center' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               {/* Header & Strict Safety Guarantee */}
-              <div className="glass-panel" style={{ padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
+              <div className="glass-panel" style={{ padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.85rem', flexWrap: 'wrap', gap: '0.75rem' }}>
                   <div>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#1F2937' }}>Defensive Incident Response Center</h2>
-                    <p style={{ fontSize: '0.85rem', color: '#667085', marginTop: '0.2rem' }}>
+                    <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#F1F5F9' }}>Defensive Incident Response Center</h2>
+                    <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.2rem' }}>
                       Deterministic defensive playbook automation with strict action allowlists and dual-control human analyst sign-offs.
                     </p>
                   </div>
@@ -3429,10 +3536,10 @@ export default function App() {
                 </div>
 
                 {/* Safety Guarantee Notice */}
-                <div style={{ background: '#ECFDF3', border: '1px solid #BBF7D0', borderRadius: '8px', padding: '0.85rem 1rem', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
-                  <Shield size={22} color="#2563EB" style={{ flexShrink: 0 }} />
-                  <div style={{ fontSize: '0.82rem', color: '#1F2937', lineHeight: '1.45' }}>
-                    <strong style={{ color: '#166534' }}>Deterministic Defensive Allowlist Guarantee:</strong> Only explicitly authorized defensive actions (<code style={{ color: '#166534', fontFamily: 'var(--font-mono)' }}>collect.*</code>, <code style={{ color: '#166534', fontFamily: 'var(--font-mono)' }}>generate.report</code>, <code style={{ color: '#166534', fontFamily: 'var(--font-mono)' }}>isolate.endpoint.simulated</code>, <code style={{ color: '#166534', fontFamily: 'var(--font-mono)' }}>suspend.process.simulated</code>) are accepted. Destructive commands and arbitrary shell execution are strictly rejected (<code style={{ color: '#DC2626', fontFamily: 'var(--font-mono)' }}>UNSUPPORTED_RESPONSE_ACTION</code>). All playbooks require analyst approval prior to execution.
+                <div style={{ background: 'rgba(37, 135, 232, 0.12)', border: '1px solid rgba(37, 135, 232, 0.3)', borderRadius: '8px', padding: '0.85rem 1rem', display: 'flex', gap: '0.75rem', alignItems: 'center' }}>
+                  <Shield size={22} color="#2587E8" style={{ flexShrink: 0 }} />
+                  <div style={{ fontSize: '0.82rem', color: '#F1F5F9', lineHeight: '1.45' }}>
+                    <strong style={{ color: '#3B9CFF' }}>Deterministic Defensive Allowlist Guarantee:</strong> Only explicitly authorized defensive actions (<code style={{ color: '#3B9CFF', fontFamily: 'var(--font-mono)' }}>collect.*</code>, <code style={{ color: '#3B9CFF', fontFamily: 'var(--font-mono)' }}>generate.report</code>, <code style={{ color: '#3B9CFF', fontFamily: 'var(--font-mono)' }}>isolate.endpoint.simulated</code>, <code style={{ color: '#3B9CFF', fontFamily: 'var(--font-mono)' }}>suspend.process.simulated</code>) are accepted. Destructive commands and arbitrary shell execution are strictly rejected (<code style={{ color: '#EF4444', fontFamily: 'var(--font-mono)' }}>UNSUPPORTED_RESPONSE_ACTION</code>). All playbooks require analyst approval prior to execution.
                   </div>
                 </div>
               </div>
@@ -3445,35 +3552,35 @@ export default function App() {
                     className="glass-panel"
                     style={{ 
                       padding: '1.5rem',
-                      background: '#FFFFFF',
-                      border: '1px solid #E2E5E9',
+                      background: '#0E151C',
+                      border: '1px solid #1C2833',
                       borderRadius: '8px',
                       boxShadow: 'var(--shadow-card)',
                       borderLeft: `4px solid ${
-                        pb.status === 'COMPLETED' ? '#16A34A' : (pb.status === 'APPROVED' ? '#2563EB' : (pb.status === 'REJECTED' ? '#DC2626' : '#D97706'))
+                        pb.status === 'COMPLETED' ? '#16A34A' : (pb.status === 'APPROVED' ? '#2587E8' : (pb.status === 'REJECTED' ? '#DC2626' : '#F59E0B'))
                       }`
                     }}
                   >
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.75rem' }}>
                       <div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-                          <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1F2937' }}>{pb.name}</h3>
+                          <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#F1F5F9' }}>{pb.name}</h3>
                           <span style={{ 
                             padding: '0.2rem 0.55rem', 
                             borderRadius: '4px', 
                             fontSize: '0.75rem', 
                             fontWeight: 700,
-                            background: pb.status === 'COMPLETED' ? '#F0FDF4' : (pb.status === 'APPROVED' ? '#EFF6FF' : (pb.status === 'REJECTED' ? '#FEF2F2' : '#FFFBEB')),
-                            color: pb.status === 'COMPLETED' ? '#16A34A' : (pb.status === 'APPROVED' ? '#2563EB' : (pb.status === 'REJECTED' ? '#DC2626' : '#D97706')),
-                            border: `1px solid ${pb.status === 'COMPLETED' ? '#BBF7D0' : (pb.status === 'APPROVED' ? '#BFDBFE' : (pb.status === 'REJECTED' ? '#FECACA' : '#FDE68A'))}`
+                            background: pb.status === 'COMPLETED' ? 'rgba(16, 185, 129, 0.12)' : (pb.status === 'APPROVED' ? 'rgba(37, 135, 232, 0.12)' : (pb.status === 'REJECTED' ? 'rgba(239, 68, 68, 0.12)' : 'rgba(245, 158, 11, 0.12)')),
+                            color: pb.status === 'COMPLETED' ? '#16A34A' : (pb.status === 'APPROVED' ? '#2587E8' : (pb.status === 'REJECTED' ? '#DC2626' : '#F59E0B')),
+                            border: `1px solid ${pb.status === 'COMPLETED' ? '#1C2833' : (pb.status === 'APPROVED' ? 'rgba(37, 135, 232, 0.25)' : (pb.status === 'REJECTED' ? 'rgba(239, 68, 68, 0.25)' : 'rgba(245, 158, 11, 0.25)'))}`
                           }}>
                             {pb.status}
                           </span>
-                          <span style={{ fontSize: '0.78rem', color: '#667085' }}>
-                            Trigger: <strong style={{ color: '#1F2937' }}>{pb.trigger_type}</strong>
+                          <span style={{ fontSize: '0.78rem', color: '#64748B' }}>
+                            Trigger: <strong style={{ color: '#F1F5F9' }}>{pb.trigger_type}</strong>
                           </span>
                         </div>
-                        <p style={{ fontSize: '0.85rem', color: '#475467', margin: '0.4rem 0 0 0' }}>
+                        <p style={{ fontSize: '0.85rem', color: '#94A3B8', margin: '0.4rem 0 0 0' }}>
                           {pb.description}
                         </p>
                       </div>
@@ -3487,7 +3594,7 @@ export default function App() {
                               setApprovalModalPlaybook(pb);
                               setApprovalComment('');
                             }}
-                            style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.8rem', background: '#D97706', borderColor: '#D97706' }}
+                            style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.8rem', background: '#F59E0B', borderColor: '#F59E0B' }}
                           >
                             <CheckCircle2 size={14} /> Analyst Sign-Off
                           </button>
@@ -3511,8 +3618,8 @@ export default function App() {
                     </div>
 
                     {/* Sequence Steps */}
-                    <div style={{ marginTop: '1rem', borderTop: '1px solid #E2E5E9', paddingTop: '0.85rem' }}>
-                      <div style={{ fontSize: '0.78rem', color: '#667085', marginBottom: '0.5rem', fontWeight: 600 }}>
+                    <div style={{ marginTop: '1rem', borderTop: '1px solid #1C2833', paddingTop: '0.85rem' }}>
+                      <div style={{ fontSize: '0.78rem', color: '#64748B', marginBottom: '0.5rem', fontWeight: 600 }}>
                         Sequential Approved Defensive Steps:
                       </div>
                       <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
@@ -3520,8 +3627,8 @@ export default function App() {
                           <div 
                             key={i} 
                             style={{ 
-                              background: '#F8FAFC', 
-                              border: '1px solid #E2E5E9', 
+                              background: '#111A22', 
+                              border: '1px solid #1C2833', 
                               borderRadius: '6px', 
                               padding: '0.45rem 0.7rem',
                               display: 'flex',
@@ -3530,19 +3637,19 @@ export default function App() {
                               fontSize: '0.78rem'
                             }}
                           >
-                            <span style={{ color: '#166534', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>#{act.step_number}</span>
-                            <code style={{ color: '#1F2937', fontFamily: 'var(--font-mono)' }}>{act.action_type}</code>
+                            <span style={{ color: '#3B9CFF', fontWeight: 700, fontFamily: 'var(--font-mono)' }}>#{act.step_number}</span>
+                            <code style={{ color: '#F1F5F9', fontFamily: 'var(--font-mono)' }}>{act.action_type}</code>
                             {act.target_agent_id && (
-                              <span style={{ color: '#667085', fontSize: '0.72rem' }}>({act.target_agent_id})</span>
+                              <span style={{ color: '#64748B', fontSize: '0.72rem' }}>({act.target_agent_id})</span>
                             )}
                             <span style={{ 
                               padding: '0.1rem 0.4rem', 
                               borderRadius: '4px', 
                               fontSize: '0.7rem', 
                               fontWeight: 700,
-                              background: act.status === 'COMPLETED' ? '#F0FDF4' : '#F1F5F9',
+                              background: act.status === 'COMPLETED' ? 'rgba(16, 185, 129, 0.12)' : '#F1F5F9',
                               color: act.status === 'COMPLETED' ? '#16A34A' : '#667085',
-                              border: `1px solid ${act.status === 'COMPLETED' ? '#BBF7D0' : '#E2E5E9'}`
+                              border: `1px solid ${act.status === 'COMPLETED' ? '#1C2833' : '#1C2833'}`
                             }}>
                               {act.status}
                             </span>
@@ -3553,8 +3660,8 @@ export default function App() {
 
                     {/* Approvals Record */}
                     {pb.approvals && pb.approvals.length > 0 && (
-                      <div style={{ marginTop: '0.75rem', fontSize: '0.78rem', color: '#475467', background: '#F8FAFC', border: '1px solid #E2E5E9', padding: '0.45rem 0.75rem', borderRadius: '4px' }}>
-                        Analyst Sign-Off: <strong style={{ color: '#166534' }}>{pb.approvals[0].approver_email}</strong> • Decision: <span style={{ color: '#16A34A', fontWeight: 700 }}>{pb.approvals[0].decision}</span> ({pb.approvals[0].comment})
+                      <div style={{ marginTop: '0.75rem', fontSize: '0.78rem', color: '#94A3B8', background: '#111A22', border: '1px solid #1C2833', padding: '0.45rem 0.75rem', borderRadius: '4px' }}>
+                        Analyst Sign-Off: <strong style={{ color: '#3B9CFF' }}>{pb.approvals[0].approver_email}</strong> • Decision: <span style={{ color: '#16A34A', fontWeight: 700 }}>{pb.approvals[0].decision}</span> ({pb.approvals[0].comment})
                       </div>
                     )}
                   </div>
@@ -3571,11 +3678,11 @@ export default function App() {
           {/* TAB 2: JOCKY SCRIPT STUDIO */}
           {activeTab === 'studio' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <div className="glass-panel" style={{ padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
+              <div className="glass-panel" style={{ padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', flexWrap: 'wrap', gap: '0.75rem' }}>
                   <div>
-                    <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#1F2937' }}>JOCKY Forensic Script Studio</h2>
-                    <p style={{ fontSize: '0.85rem', color: '#667085', marginTop: '0.2rem' }}>
+                    <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#F1F5F9' }}>JOCKY Forensic Script Studio</h2>
+                    <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.2rem' }}>
                       Author declarative forensic scripts with pre-dispatch capability verification and deterministic plan hashing.
                     </p>
                   </div>
@@ -3585,10 +3692,10 @@ export default function App() {
                       className="btn-secondary"
                       style={{
                         fontSize: '0.8rem',
-                        background: selectedScriptType === 'demo_persistence' ? '#EFF6FF' : '#FFFFFF',
-                        color: selectedScriptType === 'demo_persistence' ? '#2563EB' : '#16A34A',
-                        border: selectedScriptType === 'demo_persistence' ? '1px solid #BFDBFE' : '1px solid #BBF7D0',
-                        fontWeight: 700
+                        background: selectedScriptType === 'demo_persistence' ? 'rgba(37, 135, 232, 0.15)' : '#111A22',
+                        color: selectedScriptType === 'demo_persistence' ? '#3B9CFF' : '#94A3B8',
+                        border: selectedScriptType === 'demo_persistence' ? '1px solid #2587E8' : '1px solid #1C2833',
+                        fontWeight: 600
                       }}
                       onClick={() => handleScriptTypeChange('demo_persistence')}
                     >
@@ -3598,9 +3705,10 @@ export default function App() {
                       className="btn-secondary" 
                       style={{ 
                         fontSize: '0.8rem', 
-                        background: selectedScriptType === 'triage' ? '#EFF6FF' : '#FFFFFF',
-                        color: selectedScriptType === 'triage' ? '#2563EB' : '#475467',
-                        border: selectedScriptType === 'triage' ? '1px solid #BFDBFE' : '1px solid #E2E5E9'
+                        background: selectedScriptType === 'triage' ? 'rgba(37, 135, 232, 0.15)' : '#111A22',
+                        color: selectedScriptType === 'triage' ? '#3B9CFF' : '#94A3B8',
+                        border: selectedScriptType === 'triage' ? '1px solid #2587E8' : '1px solid #1C2833',
+                        fontWeight: 600
                       }} 
                       onClick={() => handleScriptTypeChange('triage')}
                     >
@@ -3610,9 +3718,10 @@ export default function App() {
                       className="btn-secondary" 
                       style={{ 
                         fontSize: '0.8rem', 
-                        background: selectedScriptType === 'malware' ? '#EFF6FF' : '#FFFFFF',
-                        color: selectedScriptType === 'malware' ? '#2563EB' : '#475467',
-                        border: selectedScriptType === 'malware' ? '1px solid #BFDBFE' : '1px solid #E2E5E9'
+                        background: selectedScriptType === 'malware' ? 'rgba(37, 135, 232, 0.15)' : '#111A22',
+                        color: selectedScriptType === 'malware' ? '#3B9CFF' : '#94A3B8',
+                        border: selectedScriptType === 'malware' ? '1px solid #2587E8' : '1px solid #1C2833',
+                        fontWeight: 600
                       }} 
                       onClick={() => handleScriptTypeChange('malware')}
                     >
@@ -3622,9 +3731,10 @@ export default function App() {
                       className="btn-secondary" 
                       style={{ 
                         fontSize: '0.8rem', 
-                        background: selectedScriptType === 'network' ? '#EFF6FF' : '#FFFFFF',
-                        color: selectedScriptType === 'network' ? '#2563EB' : '#475467',
-                        border: selectedScriptType === 'network' ? '1px solid #BFDBFE' : '1px solid #E2E5E9'
+                        background: selectedScriptType === 'network' ? 'rgba(37, 135, 232, 0.15)' : '#111A22',
+                        color: selectedScriptType === 'network' ? '#3B9CFF' : '#94A3B8',
+                        border: selectedScriptType === 'network' ? '1px solid #2587E8' : '1px solid #1C2833',
+                        fontWeight: 600
                       }} 
                       onClick={() => handleScriptTypeChange('network')}
                     >
@@ -3639,9 +3749,9 @@ export default function App() {
                   style={{
                     width: '100%',
                     height: '220px',
-                    backgroundColor: '#F8FAFC',
-                    color: '#1F2937',
-                    border: '1px solid #D0D5DD',
+                    backgroundColor: '#111A22',
+                    color: '#F1F5F9',
+                    border: '1px solid #1C2833',
                     borderRadius: '8px',
                     padding: '1rem',
                     fontSize: '13.5px',
@@ -3652,14 +3762,14 @@ export default function App() {
                 />
 
                 {/* Pre-Dispatch Capability & Target Bar */}
-                <div style={{ marginTop: '1.25rem', padding: '1rem', background: '#F8FAFC', border: '1px solid #E2E5E9', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
+                <div style={{ marginTop: '1.25rem', padding: '1rem', background: '#111A22', border: '1px solid #1C2833', borderRadius: '8px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '0.75rem' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-                    <div style={{ fontSize: '0.85rem', color: '#475467' }}>
+                    <div style={{ fontSize: '0.85rem', color: '#94A3B8' }}>
                       Target Endpoint:
                       <select
                         value={targetAgentId}
                         onChange={(e) => setTargetAgentId(e.target.value)}
-                        style={{ marginLeft: '0.5rem', background: '#FFFFFF', color: '#1F2937', border: '1px solid #D0D5DD', borderRadius: '4px', padding: '0.25rem 0.6rem', fontSize: '0.82rem' }}
+                        style={{ marginLeft: '0.5rem', background: '#0E151C', color: '#F1F5F9', border: '1px solid #1C2833', borderRadius: '4px', padding: '0.25rem 0.6rem', fontSize: '0.82rem' }}
                       >
                         {agents.map(a => (
                           <option key={a.id} value={a.id}>{a.id} ({a.platform} - {a.os_ver})</option>
@@ -3669,9 +3779,9 @@ export default function App() {
 
                     {/* Compatibility Badge */}
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.82rem' }}>
-                      <span style={{ color: '#667085' }}>Capability Match:</span>
+                      <span style={{ color: '#64748B' }}>Capability Match:</span>
                       {isScriptIncompatible ? (
-                        <span style={{ color: '#DC2626', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
+                        <span style={{ color: '#EF4444', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.2rem' }}>
                           <X size={14} /> INCOMPATIBLE (UNSUPPORTED_CAPABILITY)
                         </span>
                       ) : (
@@ -3687,8 +3797,8 @@ export default function App() {
                       id="run-jocky-btn-studio"
                       className="btn-primary"
                       style={{
-                        background: '#166534',
-                        border: '1px solid #166534',
+                        background: '#2587E8',
+                        border: '1px solid #2587E8',
                         fontWeight: 600
                       }}
                       onClick={() => setActiveTab('demo')}
@@ -3708,20 +3818,20 @@ export default function App() {
                 </div>
 
                 {isScriptIncompatible && (
-                  <div style={{ marginTop: '0.75rem', padding: '0.6rem 0.85rem', background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '6px', color: '#DC2626', fontSize: '0.82rem' }}>
+                  <div style={{ marginTop: '0.75rem', padding: '0.6rem 0.85rem', background: 'rgba(239, 68, 68, 0.12)', border: '1px solid #1C2833', borderRadius: '6px', color: '#EF4444', fontSize: '0.82rem' }}>
                     Warning: Operation 'malware.pe_info' targets Windows Portable Executable headers and cannot be dispatched to Linux endpoint '{targetAgentId}'. Cleanly rejected pre-dispatch.
                   </div>
                 )}
 
                 {compileOutput && (
-                  <div style={{ marginTop: '1rem', padding: '1rem', background: '#ECFDF3', border: '1px solid #BBF7D0', borderRadius: '8px', fontSize: '0.82rem', color: '#1F2937' }}>
-                    <div style={{ color: '#166534', fontWeight: 600, marginBottom: '0.25rem' }}>Execution Plan Hash (SHA-256): <code style={{ fontFamily: 'var(--font-mono)' }}>{compileOutput.planHash}</code></div>
+                  <div style={{ marginTop: '1rem', padding: '1rem', background: 'rgba(37, 135, 232, 0.12)', border: '1px solid rgba(37, 135, 232, 0.3)', borderRadius: '8px', fontSize: '0.82rem', color: '#F1F5F9' }}>
+                    <div style={{ color: '#3B9CFF', fontWeight: 600, marginBottom: '0.25rem' }}>Execution Plan Hash (SHA-256): <code style={{ fontFamily: 'var(--font-mono)' }}>{compileOutput.planHash}</code></div>
                     <div>Approved Collectors: <code style={{ color: '#16A34A', fontFamily: 'var(--font-mono)' }}>{compileOutput.approvedFunctions.join(', ')}</code></div>
                   </div>
                 )}
 
                 {taskNotice && (
-                  <div style={{ marginTop: '1rem', padding: '0.75rem 1rem', background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: '6px', color: '#16A34A', fontSize: '0.85rem' }}>
+                  <div style={{ marginTop: '1rem', padding: '0.75rem 1rem', background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(37, 135, 232, 0.3)', borderRadius: '6px', color: '#16A34A', fontSize: '0.85rem' }}>
                     {taskNotice}
                   </div>
                 )}
@@ -3732,11 +3842,11 @@ export default function App() {
           {/* TAB 3: FLEET (5+ AGENTS) */}
           {/* TAB 3: FLEET (5+ AGENTS) */}
           {activeTab === 'agents' && (
-            <div className="glass-panel" style={{ padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
+            <div className="glass-panel" style={{ padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
                 <div>
-                  <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#1F2937' }}>Distributed Fleet Management (5+ Endpoints)</h2>
-                  <p style={{ fontSize: '0.85rem', color: '#667085', marginTop: '0.2rem' }}>
+                  <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#F1F5F9' }}>Distributed Fleet Management (5+ Endpoints)</h2>
+                  <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.2rem' }}>
                     Multi-platform forensic telemetry agents enrolled with unique cryptographic credentials.
                   </p>
                 </div>
@@ -3749,9 +3859,9 @@ export default function App() {
                         className="btn-secondary" 
                         style={{ 
                           padding: '0.35rem 0.85rem', 
-                          background: isSel ? '#EFF6FF' : '#FFFFFF',
-                          color: isSel ? '#2563EB' : '#475467',
-                          border: isSel ? '1px solid #BFDBFE' : '1px solid #E2E5E9',
+                          background: isSel ? 'rgba(37, 135, 232, 0.12)' : '#111A22',
+                          color: isSel ? '#2587E8' : '#475467',
+                          border: isSel ? '1px solid #1C2833' : '1px solid #1C2833',
                           fontWeight: isSel ? 600 : 500,
                           cursor: 'pointer'
                         }}
@@ -3766,7 +3876,7 @@ export default function App() {
 
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
                 <thead>
-                  <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E5E9', textAlign: 'left', color: '#667085' }}>
+                  <tr style={{ background: '#111A22', borderBottom: '1px solid #1C2833', textAlign: 'left', color: '#64748B' }}>
                     <th style={{ padding: '0.75rem 1rem' }}>Agent ID</th>
                     <th style={{ padding: '0.75rem 1rem' }}>Hostname</th>
                     <th style={{ padding: '0.75rem 1rem' }}>Platform / OS</th>
@@ -3777,20 +3887,20 @@ export default function App() {
                 </thead>
                 <tbody>
                   {filteredAgents.map((agent) => (
-                    <tr key={agent.id} style={{ borderBottom: '1px solid #E2E5E9' }}>
-                      <td style={{ padding: '0.75rem 1rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>{agent.id}</td>
-                      <td style={{ padding: '0.75rem 1rem', fontWeight: 500, color: '#1F2937' }}>{agent.hostname}</td>
-                      <td style={{ padding: '0.75rem 1rem', color: '#475467' }}>{agent.platform} ({agent.os_ver})</td>
-                      <td style={{ padding: '0.75rem 1rem', fontFamily: 'var(--font-mono)', color: '#475467' }}>{agent.ip}</td>
+                    <tr key={agent.id} style={{ borderBottom: '1px solid #1C2833' }}>
+                      <td style={{ padding: '0.75rem 1rem', fontFamily: 'var(--font-mono)', color: '#3B9CFF', fontWeight: 600 }}>{agent.id}</td>
+                      <td style={{ padding: '0.75rem 1rem', fontWeight: 500, color: '#F1F5F9' }}>{agent.hostname}</td>
+                      <td style={{ padding: '0.75rem 1rem', color: '#94A3B8' }}>{agent.platform} ({agent.os_ver})</td>
+                      <td style={{ padding: '0.75rem 1rem', fontFamily: 'var(--font-mono)', color: '#94A3B8' }}>{agent.ip}</td>
                       <td style={{ padding: '0.75rem 1rem' }}>
                         <span style={{ 
                           padding: '0.2rem 0.6rem', 
                           borderRadius: '12px', 
                           fontSize: '0.75rem', 
                           fontWeight: 600,
-                          background: agent.status === 'online' ? '#F0FDF4' : '#F1F5F9',
+                          background: agent.status === 'online' ? 'rgba(16, 185, 129, 0.12)' : '#F1F5F9',
                           color: agent.status === 'online' ? '#16A34A' : '#667085',
-                          border: agent.status === 'online' ? '1px solid #BBF7D0' : '1px solid #E2E5E9'
+                          border: agent.status === 'online' ? '1px solid #1C2833' : '1px solid #1C2833'
                         }}>
                           {agent.status.toUpperCase()}
                         </span>
@@ -3809,11 +3919,11 @@ export default function App() {
 
           {/* TAB 4: TASK MONITOR */}
           {activeTab === 'tasks' && (
-            <div className="glass-panel" style={{ padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
+            <div className="glass-panel" style={{ padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
                 <div>
-                  <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#111827' }}>Forensic Task Lifecycle Monitor</h2>
-                  <p style={{ fontSize: '0.85rem', color: '#475569', marginTop: '0.2rem' }}>
+                  <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#F1F5F9' }}>Forensic Task Lifecycle Monitor</h2>
+                  <p style={{ fontSize: '0.85rem', color: '#94A3B8', marginTop: '0.2rem' }}>
                     Atomic lease tracking: PENDING -&gt; ASSIGNED -&gt; RUNNING -&gt; COMPLETED. Replay protected.
                   </p>
                 </div>
@@ -3821,7 +3931,7 @@ export default function App() {
 
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
                 <thead>
-                  <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E5E9', textAlign: 'left', color: '#667085' }}>
+                  <tr style={{ background: '#111A22', borderBottom: '1px solid #1C2833', textAlign: 'left', color: '#64748B' }}>
                     <th style={{ padding: '0.75rem 1rem' }}>Task ID</th>
                     <th style={{ padding: '0.75rem 1rem' }}>Case</th>
                     <th style={{ padding: '0.75rem 1rem' }}>Target Agent</th>
@@ -3832,25 +3942,25 @@ export default function App() {
                 </thead>
                 <tbody>
                   {tasks.map((task) => (
-                    <tr key={task.id} style={{ borderBottom: '1px solid #E2E5E9' }}>
-                      <td style={{ padding: '0.75rem 1rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>{task.id}</td>
-                      <td style={{ padding: '0.75rem 1rem', color: '#475467' }}>{task.case_id}</td>
-                      <td style={{ padding: '0.75rem 1rem', fontFamily: 'var(--font-mono)', color: '#475467' }}>{task.agent_id}</td>
-                      <td style={{ padding: '0.75rem 1rem', fontWeight: 500, color: '#1F2937' }}>{task.name}</td>
+                    <tr key={task.id} style={{ borderBottom: '1px solid #1C2833' }}>
+                      <td style={{ padding: '0.75rem 1rem', fontFamily: 'var(--font-mono)', color: '#3B9CFF', fontWeight: 600 }}>{task.id}</td>
+                      <td style={{ padding: '0.75rem 1rem', color: '#94A3B8' }}>{task.case_id}</td>
+                      <td style={{ padding: '0.75rem 1rem', fontFamily: 'var(--font-mono)', color: '#94A3B8' }}>{task.agent_id}</td>
+                      <td style={{ padding: '0.75rem 1rem', fontWeight: 500, color: '#F1F5F9' }}>{task.name}</td>
                       <td style={{ padding: '0.75rem 1rem' }}>
                         <span style={{
                           padding: '0.2rem 0.6rem',
                           borderRadius: '12px',
                           fontSize: '0.75rem',
                           fontWeight: 600,
-                          background: task.status === 'completed' ? '#F0FDF4' : (task.status === 'running' ? '#EFF6FF' : '#FFFBEB'),
-                          color: task.status === 'completed' ? '#16A34A' : (task.status === 'running' ? '#2563EB' : '#D97706'),
-                          border: `1px solid ${task.status === 'completed' ? '#BBF7D0' : (task.status === 'running' ? '#BFDBFE' : '#FDE68A')}`
+                          background: task.status === 'completed' ? 'rgba(16, 185, 129, 0.12)' : (task.status === 'running' ? 'rgba(37, 135, 232, 0.12)' : 'rgba(245, 158, 11, 0.12)'),
+                          color: task.status === 'completed' ? '#16A34A' : (task.status === 'running' ? '#2587E8' : '#F59E0B'),
+                          border: `1px solid ${task.status === 'completed' ? '#1C2833' : (task.status === 'running' ? 'rgba(37, 135, 232, 0.25)' : 'rgba(245, 158, 11, 0.25)')}`
                         }}>
                           {task.status.toUpperCase()}
                         </span>
                       </td>
-                      <td style={{ padding: '0.75rem 1rem', color: '#667085' }}>{task.created_at}</td>
+                      <td style={{ padding: '0.75rem 1rem', color: '#64748B' }}>{task.created_at}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -3863,8 +3973,8 @@ export default function App() {
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
               {/* Evidence Page Header */}
               <div style={{ 
-                background: '#FFFFFF', 
-                border: '1px solid #E2E5E9', 
+                background: '#0E151C', 
+                border: '1px solid #1C2833', 
                 borderRadius: '8px', 
                 padding: '1.5rem', 
                 boxShadow: 'var(--shadow-card)',
@@ -3876,14 +3986,14 @@ export default function App() {
               }}>
                 <div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginBottom: '0.35rem' }}>
-                    <h1 style={{ fontSize: '1.4rem', fontWeight: 600, color: '#111827', margin: 0 }}>Evidence Management</h1>
+                    <h1 style={{ fontSize: '1.4rem', fontWeight: 600, color: '#F1F5F9', margin: 0 }}>Evidence Management</h1>
                     <span style={{ 
                       display: 'inline-flex',
                       alignItems: 'center',
                       gap: '0.35rem',
-                      background: '#ECFDF3', 
-                      color: '#166534', 
-                      border: '1px solid #BBF7D0', 
+                      background: 'rgba(37, 135, 232, 0.12)', 
+                      color: '#3B9CFF', 
+                      border: '1px solid rgba(37, 135, 232, 0.3)', 
                       padding: '0.2rem 0.6rem', 
                       borderRadius: '4px', 
                       fontSize: '0.8rem', 
@@ -3893,15 +4003,15 @@ export default function App() {
                       Case: {selectedCaseId || 'CASE-2026-001'}
                     </span>
                   </div>
-                  <p style={{ fontSize: '0.85rem', color: '#475569', margin: 0 }}>
+                  <p style={{ fontSize: '0.85rem', color: '#94A3B8', margin: 0 }}>
                     Cryptographically sealed tamper-evident forensic artifacts categorized by origin and system vector.
                   </p>
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
                   <div style={{ 
                     padding: '0.4rem 0.8rem', 
-                    background: '#F0FDF4', 
-                    border: '1px solid #BBF7D0', 
+                    background: 'rgba(16, 185, 129, 0.12)', 
+                    border: '1px solid rgba(37, 135, 232, 0.3)', 
                     borderRadius: '6px', 
                     fontSize: '0.82rem', 
                     fontWeight: 600, 
@@ -3917,7 +4027,7 @@ export default function App() {
 
               {/* Verification Feedback Banner */}
               {verifyModalData && (
-                <div style={{ padding: '1rem 1.25rem', background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: '8px', boxShadow: 'var(--shadow-sm)' }}>
+                <div style={{ padding: '1rem 1.25rem', background: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(37, 135, 232, 0.3)', borderRadius: '8px', boxShadow: 'var(--shadow-sm)' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.35rem' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', color: '#16A34A', fontWeight: 600, fontSize: '0.9rem' }}>
                       <CheckCircle2 size={18} />
@@ -3926,7 +4036,7 @@ export default function App() {
                     <button className="btn-secondary" style={{ padding: '0.2rem 0.5rem', fontSize: '0.75rem' }} onClick={() => setVerifyModalData(null)}>Dismiss</button>
                   </div>
                   <div style={{ fontSize: '0.85rem', color: '#15803D' }}>{verifyModalData.message}</div>
-                  <div style={{ fontSize: '0.8rem', fontFamily: 'var(--font-mono)', color: '#475467', marginTop: '0.35rem', background: '#FFFFFF', padding: '0.35rem 0.6rem', borderRadius: '4px', border: '1px solid #E2E5E9', wordBreak: 'break-all' }}>
+                  <div style={{ fontSize: '0.8rem', fontFamily: 'var(--font-mono)', color: '#94A3B8', marginTop: '0.35rem', background: '#0E151C', padding: '0.35rem 0.6rem', borderRadius: '4px', border: '1px solid #1C2833', wordBreak: 'break-all' }}>
                     SHA-256 Seal: {verifyModalData.claimedHash}
                   </div>
                 </div>
@@ -3980,8 +4090,8 @@ export default function App() {
                       key={cat.id} 
                       className="glass-panel" 
                       style={{ 
-                        background: '#FFFFFF', 
-                        border: '1px solid #E2E5E9', 
+                        background: '#0E151C', 
+                        border: '1px solid #1C2833', 
                         borderRadius: '8px', 
                         padding: '1.25rem 1.5rem',
                         boxShadow: 'var(--shadow-card)'
@@ -3994,20 +4104,20 @@ export default function App() {
                             width: '32px', 
                             height: '32px', 
                             borderRadius: '6px', 
-                            background: '#ECFDF3', 
-                            border: '1px solid #BBF7D0',
+                            background: 'rgba(37, 135, 232, 0.12)', 
+                            border: '1px solid rgba(37, 135, 232, 0.3)',
                             display: 'flex',
                             alignItems: 'center',
                             justifyContent: 'center',
-                            color: '#166534'
+                            color: '#3B9CFF'
                           }}>
                             <Icon size={16} />
                           </div>
                           <div>
-                            <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#1F2937', margin: 0 }}>
+                            <h3 style={{ fontSize: '1.05rem', fontWeight: 600, color: '#F1F5F9', margin: 0 }}>
                               {cat.name}
                             </h3>
-                            <div style={{ fontSize: '0.8rem', color: '#667085' }}>{cat.desc}</div>
+                            <div style={{ fontSize: '0.8rem', color: '#64748B' }}>{cat.desc}</div>
                           </div>
                         </div>
                         <span style={{ 
@@ -4015,9 +4125,9 @@ export default function App() {
                           fontWeight: 600, 
                           padding: '0.2rem 0.6rem', 
                           borderRadius: '12px',
-                          background: items.length > 0 ? '#EFF6FF' : '#F1F5F9',
-                          color: items.length > 0 ? '#2563EB' : '#667085',
-                          border: items.length > 0 ? '1px solid #BFDBFE' : '1px solid #E2E5E9'
+                          background: items.length > 0 ? 'rgba(37, 135, 232, 0.12)' : '#F1F5F9',
+                          color: items.length > 0 ? '#2587E8' : '#667085',
+                          border: items.length > 0 ? '1px solid #1C2833' : '1px solid #1C2833'
                         }}>
                           {items.length} {items.length === 1 ? 'Artifact' : 'Artifacts'}
                         </span>
@@ -4028,7 +4138,7 @@ export default function App() {
                         <div style={{ overflowX: 'auto' }}>
                           <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
                             <thead>
-                              <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E5E9', textAlign: 'left', color: '#667085' }}>
+                              <tr style={{ background: '#111A22', borderBottom: '1px solid #1C2833', textAlign: 'left', color: '#64748B' }}>
                                 <th style={{ padding: '0.6rem 0.85rem' }}>Evidence ID</th>
                                 <th style={{ padding: '0.6rem 0.85rem' }}>Collector Function</th>
                                 <th style={{ padding: '0.6rem 0.85rem' }}>Origin Agent</th>
@@ -4039,25 +4149,25 @@ export default function App() {
                             </thead>
                             <tbody>
                               {items.map((ev) => (
-                                <tr key={ev.id} style={{ borderBottom: '1px solid #E2E5E9' }}>
-                                  <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>
+                                <tr key={ev.id} style={{ borderBottom: '1px solid #1C2833' }}>
+                                  <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#3B9CFF', fontWeight: 600 }}>
                                     {ev.id}
                                   </td>
-                                  <td style={{ padding: '0.65rem 0.85rem', fontWeight: 500, color: '#1F2937' }}>
+                                  <td style={{ padding: '0.65rem 0.85rem', fontWeight: 500, color: '#F1F5F9' }}>
                                     {ev.collector}
                                   </td>
-                                  <td style={{ padding: '0.65rem 0.85rem', color: '#475467', fontFamily: 'var(--font-mono)', fontSize: '0.82rem' }}>
+                                  <td style={{ padding: '0.65rem 0.85rem', color: '#94A3B8', fontFamily: 'var(--font-mono)', fontSize: '0.82rem' }}>
                                     {ev.agent_id}
                                   </td>
                                   <td style={{ padding: '0.65rem 0.85rem' }}>
                                     <span style={{ 
                                       fontFamily: 'var(--font-mono)', 
                                       fontSize: '0.78rem', 
-                                      color: '#475467', 
-                                      background: '#F8FAFC', 
+                                      color: '#94A3B8', 
+                                      background: '#111A22', 
                                       padding: '0.2rem 0.45rem', 
                                       borderRadius: '4px',
-                                      border: '1px solid #E2E5E9'
+                                      border: '1px solid #1C2833'
                                     }}>
                                       {ev.sha256_hash.slice(0, 16)}...{ev.sha256_hash.slice(-8)}
                                     </span>
@@ -4068,9 +4178,9 @@ export default function App() {
                                       borderRadius: '4px', 
                                       fontSize: '0.72rem', 
                                       fontWeight: 600, 
-                                      background: '#ECFDF3', 
-                                      color: '#166534', 
-                                      border: '1px solid #BBF7D0' 
+                                      background: 'rgba(37, 135, 232, 0.12)', 
+                                      color: '#3B9CFF', 
+                                      border: '1px solid rgba(37, 135, 232, 0.3)' 
                                     }}>
                                       VERIFIED
                                     </span>
@@ -4102,11 +4212,11 @@ export default function App() {
                       ) : (
                         <div style={{ 
                           padding: '1.25rem', 
-                          background: '#F8FAFC', 
-                          border: '1px dashed #E2E5E9', 
+                          background: '#111A22', 
+                          border: '1px dashed #1C2833', 
                           borderRadius: '6px', 
                           textAlign: 'center', 
-                          color: '#667085',
+                          color: '#64748B',
                           fontSize: '0.84rem'
                         }}>
                           No {cat.name.toLowerCase()} evidence artifacts collected yet in CASE-2026-001. Dispatch a JOCKY script containing <code>{cat.id}.*</code> collectors to seal envelopes for this category.
@@ -4121,11 +4231,11 @@ export default function App() {
 
           {/* TAB 6: CASES */}
           {activeTab === 'cases' && (
-            <div className="glass-panel" style={{ padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
+            <div className="glass-panel" style={{ padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem', flexWrap: 'wrap', gap: '0.75rem' }}>
                 <div>
-                  <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#1F2937' }}>Forensic Investigation Cases</h2>
-                  <p style={{ fontSize: '0.85rem', color: '#667085', marginTop: '0.2rem' }}>
+                  <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#F1F5F9' }}>Forensic Investigation Cases</h2>
+                  <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.2rem' }}>
                     Lifecycle tracking: OPEN -&gt; INVESTIGATING -&gt; CONTAINED -&gt; CLOSED.
                   </p>
                 </div>
@@ -4137,7 +4247,7 @@ export default function App() {
 
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.88rem' }}>
                 <thead>
-                  <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E5E9', textAlign: 'left', color: '#667085' }}>
+                  <tr style={{ background: '#111A22', borderBottom: '1px solid #1C2833', textAlign: 'left', color: '#64748B' }}>
                     <th style={{ padding: '0.75rem 1rem' }}>Case ID</th>
                     <th style={{ padding: '0.75rem 1rem' }}>Title</th>
                     <th style={{ padding: '0.75rem 1rem' }}>Severity</th>
@@ -4147,28 +4257,28 @@ export default function App() {
                 </thead>
                 <tbody>
                   {cases.map((c) => (
-                    <tr key={c.id} style={{ borderBottom: '1px solid #E2E5E9' }}>
-                      <td style={{ padding: '0.75rem 1rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>{c.id}</td>
-                      <td style={{ padding: '0.75rem 1rem', fontWeight: 500, color: '#1F2937' }}>{c.title}</td>
+                    <tr key={c.id} style={{ borderBottom: '1px solid #1C2833' }}>
+                      <td style={{ padding: '0.75rem 1rem', fontFamily: 'var(--font-mono)', color: '#3B9CFF', fontWeight: 600 }}>{c.id}</td>
+                      <td style={{ padding: '0.75rem 1rem', fontWeight: 500, color: '#F1F5F9' }}>{c.title}</td>
                       <td style={{ padding: '0.75rem 1rem' }}>
                         <span style={{
                           padding: '0.2rem 0.55rem',
                           borderRadius: '4px',
                           fontSize: '0.75rem',
                           fontWeight: 700,
-                          background: c.severity === 'critical' || c.severity === 'high' ? '#FEF2F2' : (c.severity === 'medium' ? '#FFFBEB' : '#F0FDF4'),
-                          color: c.severity === 'critical' || c.severity === 'high' ? '#DC2626' : (c.severity === 'medium' ? '#D97706' : '#16A34A'),
-                          border: `1px solid ${c.severity === 'critical' || c.severity === 'high' ? '#FECACA' : (c.severity === 'medium' ? '#FDE68A' : '#BBF7D0')}`
+                          background: c.severity === 'critical' || c.severity === 'high' ? 'rgba(239, 68, 68, 0.12)' : (c.severity === 'medium' ? 'rgba(245, 158, 11, 0.12)' : 'rgba(16, 185, 129, 0.12)'),
+                          color: c.severity === 'critical' || c.severity === 'high' ? '#DC2626' : (c.severity === 'medium' ? '#F59E0B' : '#16A34A'),
+                          border: `1px solid ${c.severity === 'critical' || c.severity === 'high' ? 'rgba(239, 68, 68, 0.25)' : (c.severity === 'medium' ? 'rgba(245, 158, 11, 0.25)' : '#1C2833')}`
                         }}>
                           {c.severity.toUpperCase()}
                         </span>
                       </td>
                       <td style={{ padding: '0.75rem 1rem' }}>
-                        <span style={{ padding: '0.2rem 0.55rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600, background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0' }}>
+                        <span style={{ padding: '0.2rem 0.55rem', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600, background: 'rgba(37, 135, 232, 0.12)', color: '#3B9CFF', border: '1px solid rgba(37, 135, 232, 0.3)' }}>
                           {c.status}
                         </span>
                       </td>
-                      <td style={{ padding: '0.75rem 1rem', color: '#667085' }}>{c.created_at}</td>
+                      <td style={{ padding: '0.75rem 1rem', color: '#64748B' }}>{c.created_at}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -4186,15 +4296,15 @@ export default function App() {
                 alignItems: 'center', 
                 flexWrap: 'wrap', 
                 gap: '1rem', 
-                background: '#FFFFFF', 
+                background: '#0E151C', 
                 padding: '1.25rem 1.5rem', 
                 borderRadius: '8px', 
-                border: '1px solid #E2E5E9', 
+                border: '1px solid #1C2833', 
                 boxShadow: 'var(--shadow-card)' 
               }}>
                 <div>
-                  <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#1F2937', margin: 0 }}>Forensic Reports</h2>
-                  <p style={{ fontSize: '0.85rem', color: '#667085', margin: '0.2rem 0 0 0' }}>
+                  <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#F1F5F9', margin: 0 }}>Forensic Reports</h2>
+                  <p style={{ fontSize: '0.85rem', color: '#64748B', margin: '0.2rem 0 0 0' }}>
                     Court-admissible forensic documentation sealed with SHA-256 evidence integrity hashes.
                   </p>
                 </div>
@@ -4219,8 +4329,8 @@ export default function App() {
 
               {/* Official Forensic Report Document (Courtroom & Enterprise Grade) */}
               <div style={{ 
-                background: '#FFFFFF', 
-                border: '1px solid #E2E5E9', 
+                background: '#0E151C', 
+                border: '1px solid #1C2833', 
                 borderRadius: '8px', 
                 padding: '2.5rem', 
                 boxShadow: 'var(--shadow-card)', 
@@ -4228,57 +4338,57 @@ export default function App() {
                 lineHeight: '1.6'
               }}>
                 {/* Formal Header Bar */}
-                <div style={{ borderBottom: '2px solid #1F2937', paddingBottom: '1.25rem', marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1.5rem' }}>
+                <div style={{ borderBottom: '2px solid #F1F5F9', paddingBottom: '1.25rem', marginBottom: '2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', flexWrap: 'wrap', gap: '1.5rem' }}>
                   <div>
-                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#667085', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+                    <div style={{ fontSize: '0.75rem', fontWeight: 700, color: '#64748B', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
                       OFFICIAL DIGITAL FORENSICS & INCIDENT RESPONSE (DFIR) REPORT
                     </div>
-                    <h1 style={{ fontSize: '1.85rem', fontWeight: 700, color: '#1F2937', marginTop: '0.35rem', letterSpacing: '-0.01em' }}>
+                    <h1 style={{ fontSize: '1.85rem', fontWeight: 700, color: '#F1F5F9', marginTop: '0.35rem', letterSpacing: '-0.01em' }}>
                       Forensic Report
                     </h1>
-                    <div style={{ fontSize: '0.88rem', color: '#667085', marginTop: '0.25rem' }}>
+                    <div style={{ fontSize: '0.88rem', color: '#64748B', marginTop: '0.25rem' }}>
                       Standard: RFC-8785 Canonical JSON • Chain of Custody Verified • Tamper-Evident Ledger
                     </div>
                   </div>
-                  <div style={{ textAlign: 'right', fontSize: '0.82rem', color: '#667085', lineHeight: '1.7' }}>
-                    <div><strong style={{ color: '#1F2937' }}>Document ID:</strong> <span style={{ fontFamily: 'var(--font-mono)' }}>JOCKY-DFIR-2026-001</span></div>
-                    <div><strong style={{ color: '#1F2937' }}>Date Issued:</strong> 25 Sep 2026, 14:35 UTC</div>
-                    <div><strong style={{ color: '#1F2937' }}>Classification:</strong> <span style={{ color: '#DC2626', fontWeight: 700 }}>CONFIDENTIAL // EVIDENCE</span></div>
-                    <div><strong style={{ color: '#1F2937' }}>Attestation:</strong> Cryptographic SHA-256</div>
+                  <div style={{ textAlign: 'right', fontSize: '0.82rem', color: '#64748B', lineHeight: '1.7' }}>
+                    <div><strong style={{ color: '#F1F5F9' }}>Document ID:</strong> <span style={{ fontFamily: 'var(--font-mono)' }}>JOCKY-DFIR-2026-001</span></div>
+                    <div><strong style={{ color: '#F1F5F9' }}>Date Issued:</strong> 25 Sep 2026, 14:35 UTC</div>
+                    <div><strong style={{ color: '#F1F5F9' }}>Classification:</strong> <span style={{ color: '#EF4444', fontWeight: 700 }}>CONFIDENTIAL // EVIDENCE</span></div>
+                    <div><strong style={{ color: '#F1F5F9' }}>Attestation:</strong> Cryptographic SHA-256</div>
                   </div>
                 </div>
 
                 {/* 1. Case ID */}
                 <div style={{ marginBottom: '2rem' }}>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1F2937', borderBottom: '1px solid #E2E5E9', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#F1F5F9', borderBottom: '1px solid #1C2833', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
                     Case ID
                   </h3>
-                  <div style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', borderRadius: '6px', padding: '1.25rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem', fontSize: '0.88rem' }}>
+                  <div style={{ background: '#111A22', border: '1px solid #1C2833', borderRadius: '6px', padding: '1.25rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '1.25rem', fontSize: '0.88rem' }}>
                     <div>
-                      <div style={{ color: '#667085', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Case Reference</div>
-                      <div style={{ fontWeight: 700, color: '#166534', fontFamily: 'var(--font-mono)', fontSize: '1.05rem', marginTop: '0.15rem' }}>
+                      <div style={{ color: '#64748B', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Case Reference</div>
+                      <div style={{ fontWeight: 700, color: '#3B9CFF', fontFamily: 'var(--font-mono)', fontSize: '1.05rem', marginTop: '0.15rem' }}>
                         {currentCase?.id || 'CASE-2026-001'}
                       </div>
                     </div>
                     <div>
-                      <div style={{ color: '#667085', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Investigation Title</div>
-                      <div style={{ fontWeight: 600, color: '#1F2937', marginTop: '0.15rem' }}>
+                      <div style={{ color: '#64748B', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Investigation Title</div>
+                      <div style={{ fontWeight: 600, color: '#F1F5F9', marginTop: '0.15rem' }}>
                         {currentCase?.title || 'Suspicious Persistence Investigation'}
                       </div>
                     </div>
                     <div>
-                      <div style={{ color: '#667085', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Target Endpoint</div>
-                      <div style={{ fontWeight: 600, color: '#1F2937', fontFamily: 'var(--font-mono)', marginTop: '0.15rem' }}>
+                      <div style={{ color: '#64748B', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Target Endpoint</div>
+                      <div style={{ fontWeight: 600, color: '#F1F5F9', fontFamily: 'var(--font-mono)', marginTop: '0.15rem' }}>
                         DEMO-WINDOWS-ENDPOINT (10.100.1.14)
                       </div>
                     </div>
                     <div>
-                      <div style={{ color: '#667085', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Status & Severity</div>
+                      <div style={{ color: '#64748B', fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Status & Severity</div>
                       <div style={{ display: 'flex', gap: '0.4rem', marginTop: '0.25rem' }}>
-                        <span style={{ background: '#FEF2F2', color: '#DC2626', border: '1px solid #FECACA', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>
+                        <span style={{ background: 'rgba(239, 68, 68, 0.12)', color: '#EF4444', border: '1px solid #1C2833', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 700 }}>
                           HIGH SEVERITY
                         </span>
-                        <span style={{ background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
+                        <span style={{ background: 'rgba(37, 135, 232, 0.12)', color: '#3B9CFF', border: '1px solid rgba(37, 135, 232, 0.3)', padding: '2px 8px', borderRadius: '4px', fontSize: '0.75rem', fontWeight: 600 }}>
                           {currentCase?.status?.toUpperCase() || 'INVESTIGATING'}
                         </span>
                       </div>
@@ -4288,25 +4398,25 @@ export default function App() {
 
                 {/* 01 Investigation Summary */}
                 <div style={{ marginBottom: '2rem' }}>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#111827', borderBottom: '1px solid #E5E7EB', paddingBottom: '0.5rem', marginBottom: '0.85rem' }}>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#F1F5F9', borderBottom: '1px solid #1C2833', paddingBottom: '0.5rem', marginBottom: '0.85rem' }}>
                     01 Investigation Summary
                   </h3>
-                  <p style={{ color: '#475569', fontSize: '0.9rem', marginBottom: '0.75rem' }}>
-                    An automated forensic acquisition was dispatched against target host <code style={{ fontFamily: 'var(--font-mono)', color: '#166534' }}>DEMO-WINDOWS-ENDPOINT</code> executing declarative JOCKY script <code style={{ fontFamily: 'var(--font-mono)' }}>demo_persistence.jocky</code>. The six-stage execution workflow (COLLECT - CORRELATE - ANALYZE - VERIFY - CHAIN - REPORT) completed in 1.62 ms with full envelope attestation.
+                  <p style={{ color: '#94A3B8', fontSize: '0.9rem', marginBottom: '0.75rem' }}>
+                    An automated forensic acquisition was dispatched against target host <code style={{ fontFamily: 'var(--font-mono)', color: '#3B9CFF' }}>DEMO-WINDOWS-ENDPOINT</code> executing declarative JOCKY script <code style={{ fontFamily: 'var(--font-mono)' }}>demo_persistence.jocky</code>. The six-stage execution workflow (COLLECT - CORRELATE - ANALYZE - VERIFY - CHAIN - REPORT) completed in 1.62 ms with full envelope attestation.
                   </p>
-                  <p style={{ color: '#475569', fontSize: '0.9rem', margin: 0 }}>
+                  <p style={{ color: '#94A3B8', fontSize: '0.9rem', margin: 0 }}>
                     Correlation identified anomalous registry run keys registered under <code style={{ fontFamily: 'var(--font-mono)' }}>HKLM_Run</code> referencing masqueraded system executables, concurrent rogue process spawning without parent linkage, and suspicious TCP socket bindings.
                   </p>
                 </div>
 
                 {/* 02 Evidence */}
                 <div style={{ marginBottom: '2rem' }}>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#111827', borderBottom: '1px solid #E5E7EB', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#F1F5F9', borderBottom: '1px solid #1C2833', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
                     02 Evidence
                   </h3>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem', marginBottom: '1rem' }}>
                     <thead>
-                      <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E5E7EB', textAlign: 'left', color: '#64748B' }}>
+                      <tr style={{ background: '#111A22', borderBottom: '1px solid #1C2833', textAlign: 'left', color: '#64748B' }}>
                         <th style={{ padding: '0.65rem 0.85rem' }}>Category</th>
                         <th style={{ padding: '0.65rem 0.85rem' }}>Evidence ID</th>
                         <th style={{ padding: '0.65rem 0.85rem' }}>Collector</th>
@@ -4315,40 +4425,40 @@ export default function App() {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr style={{ borderBottom: '1px solid #E5E7EB' }}>
-                        <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#111827' }}>Registry</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>EV-31BA09C4</td>
+                      <tr style={{ borderBottom: '1px solid #1C2833' }}>
+                        <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#F1F5F9' }}>Registry</td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#3B9CFF', fontWeight: 600 }}>EV-31BA09C4</td>
                         <td style={{ padding: '0.65rem 0.85rem' }}>persistence.startup</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475569' }}>9f82b714529a7019c81b29a80e41982736bfa8019a823471ef99a8bc00984712</td>
-                        <td style={{ padding: '0.65rem 0.85rem' }}><span style={{ background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 600 }}>VERIFIED</span></td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#94A3B8' }}>9f82b714529a7019c81b29a80e41982736bfa8019a823471ef99a8bc00984712</td>
+                        <td style={{ padding: '0.65rem 0.85rem' }}><span style={{ background: 'rgba(37, 135, 232, 0.12)', color: '#3B9CFF', border: '1px solid rgba(37, 135, 232, 0.3)', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 600 }}>VERIFIED</span></td>
                       </tr>
-                      <tr style={{ borderBottom: '1px solid #E5E7EB' }}>
-                        <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#111827' }}>Process</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>EV-8D92FA10</td>
+                      <tr style={{ borderBottom: '1px solid #1C2833' }}>
+                        <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#F1F5F9' }}>Process</td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#3B9CFF', fontWeight: 600 }}>EV-8D92FA10</td>
                         <td style={{ padding: '0.65rem 0.85rem' }}>process.list</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475569' }}>4a7d189fec0a29b3c79124ae8019fb42a8b9281a02938471ef09a8bc12984712</td>
-                        <td style={{ padding: '0.65rem 0.85rem' }}><span style={{ background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 600 }}>VERIFIED</span></td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#94A3B8' }}>4a7d189fec0a29b3c79124ae8019fb42a8b9281a02938471ef09a8bc12984712</td>
+                        <td style={{ padding: '0.65rem 0.85rem' }}><span style={{ background: 'rgba(37, 135, 232, 0.12)', color: '#3B9CFF', border: '1px solid rgba(37, 135, 232, 0.3)', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 600 }}>VERIFIED</span></td>
                       </tr>
-                      <tr style={{ borderBottom: '1px solid #E5E7EB' }}>
-                        <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#111827' }}>Network</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>EV-44CA991B</td>
+                      <tr style={{ borderBottom: '1px solid #1C2833' }}>
+                        <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#F1F5F9' }}>Network</td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#3B9CFF', fontWeight: 600 }}>EV-44CA991B</td>
                         <td style={{ padding: '0.65rem 0.85rem' }}>network.connections</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475569' }}>5d41402abc4b2a76b9719d911017c592b23ae41e4649b934ca495991b7852b85</td>
-                        <td style={{ padding: '0.65rem 0.85rem' }}><span style={{ background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 600 }}>VERIFIED</span></td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#94A3B8' }}>5d41402abc4b2a76b9719d911017c592b23ae41e4649b934ca495991b7852b85</td>
+                        <td style={{ padding: '0.65rem 0.85rem' }}><span style={{ background: 'rgba(37, 135, 232, 0.12)', color: '#3B9CFF', border: '1px solid rgba(37, 135, 232, 0.3)', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 600 }}>VERIFIED</span></td>
                       </tr>
-                      <tr style={{ borderBottom: '1px solid #E5E7EB' }}>
-                        <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#111827' }}>Filesystem</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>EV-PE-7721AA</td>
+                      <tr style={{ borderBottom: '1px solid #1C2833' }}>
+                        <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#F1F5F9' }}>Filesystem</td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#3B9CFF', fontWeight: 600 }}>EV-PE-7721AA</td>
                         <td style={{ padding: '0.65rem 0.85rem' }}>malware.pe_info</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475569' }}>e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</td>
-                        <td style={{ padding: '0.65rem 0.85rem' }}><span style={{ background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 600 }}>VERIFIED</span></td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#94A3B8' }}>e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855</td>
+                        <td style={{ padding: '0.65rem 0.85rem' }}><span style={{ background: 'rgba(37, 135, 232, 0.12)', color: '#3B9CFF', border: '1px solid rgba(37, 135, 232, 0.3)', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 600 }}>VERIFIED</span></td>
                       </tr>
-                      <tr style={{ borderBottom: '1px solid #E5E7EB' }}>
-                        <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#111827' }}>Event Logs</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#166534', fontWeight: 600 }}>EV-EVT-9021B</td>
+                      <tr style={{ borderBottom: '1px solid #1C2833' }}>
+                        <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#F1F5F9' }}>Event Logs</td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#3B9CFF', fontWeight: 600 }}>EV-EVT-9021B</td>
                         <td style={{ padding: '0.65rem 0.85rem' }}>system.eventlog</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475569' }}>7c91a38f01b92019c81b29a80e41982736bfa8019a823471ef99a8bc00984110</td>
-                        <td style={{ padding: '0.65rem 0.85rem' }}><span style={{ background: '#ECFDF3', color: '#166534', border: '1px solid #BBF7D0', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 600 }}>VERIFIED</span></td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#94A3B8' }}>7c91a38f01b92019c81b29a80e41982736bfa8019a823471ef99a8bc00984110</td>
+                        <td style={{ padding: '0.65rem 0.85rem' }}><span style={{ background: 'rgba(37, 135, 232, 0.12)', color: '#3B9CFF', border: '1px solid rgba(37, 135, 232, 0.3)', padding: '2px 6px', borderRadius: '4px', fontSize: '0.72rem', fontWeight: 600 }}>VERIFIED</span></td>
                       </tr>
                     </tbody>
                   </table>
@@ -4356,15 +4466,15 @@ export default function App() {
 
                 {/* 03 Analysis */}
                 <div style={{ marginBottom: '2rem' }}>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#111827', borderBottom: '1px solid #E5E7EB', paddingBottom: '0.5rem', marginBottom: '0.85rem' }}>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#F1F5F9', borderBottom: '1px solid #1C2833', paddingBottom: '0.5rem', marginBottom: '0.85rem' }}>
                     03 Analysis
                   </h3>
-                  <p style={{ color: '#475569', fontSize: '0.9rem', marginBottom: '0.85rem' }}>
+                  <p style={{ color: '#94A3B8', fontSize: '0.9rem', marginBottom: '0.85rem' }}>
                     The 21-Dimensional Forensic Analysis evaluates multi-modal telemetry across process dynamics, startup persistence, socket behaviors, and integrity metrics.
                   </p>
-                  <div style={{ background: '#F8FAFC', border: '1px solid #E5E7EB', borderRadius: '6px', padding: '1rem 1.25rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.85rem', fontSize: '0.84rem' }}>
+                  <div style={{ background: '#111A22', border: '1px solid #1C2833', borderRadius: '6px', padding: '1rem 1.25rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: '0.85rem', fontSize: '0.84rem' }}>
                     <div><strong>Total Dimensions:</strong> 21 Evaluated</div>
-                    <div><strong>Anomalous Vectors:</strong> <span style={{ color: '#DC2626', fontWeight: 700 }}>7 Detected</span></div>
+                    <div><strong>Anomalous Vectors:</strong> <span style={{ color: '#EF4444', fontWeight: 700 }}>7 Detected</span></div>
                     <div><strong>L2 Norm Magnitude:</strong> 0.8741</div>
                     <div><strong>Process Execution Anomaly:</strong> 0.9200</div>
                     <div><strong>Registry Volatility Metric:</strong> 0.8850</div>
@@ -4374,36 +4484,36 @@ export default function App() {
 
                 {/* 04 Findings */}
                 <div style={{ marginBottom: '2rem' }}>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#111827', borderBottom: '1px solid #E5E7EB', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#F1F5F9', borderBottom: '1px solid #1C2833', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
                     04 Findings
                   </h3>
                   <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', marginBottom: '1rem' }}>
-                    <div style={{ background: '#FEF2F2', border: '1px solid #FECACA', borderRadius: '6px', padding: '1rem' }}>
-                      <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#DC2626', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Threat Score</div>
-                      <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#DC2626', margin: '0.25rem 0' }}>86 <span style={{ fontSize: '1rem', fontWeight: 500, color: '#64748B' }}>/ 100</span></div>
-                      <div style={{ fontSize: '0.75rem', color: '#DC2626', fontWeight: 700 }}>HIGH THREAT SEVERITY</div>
+                    <div style={{ background: 'rgba(239, 68, 68, 0.12)', border: '1px solid #1C2833', borderRadius: '6px', padding: '1rem' }}>
+                      <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#EF4444', textTransform: 'uppercase', letterSpacing: '0.04em' }}>Threat Score</div>
+                      <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#EF4444', margin: '0.25rem 0' }}>86 <span style={{ fontSize: '1rem', fontWeight: 500, color: '#64748B' }}>/ 100</span></div>
+                      <div style={{ fontSize: '0.75rem', color: '#EF4444', fontWeight: 700 }}>HIGH THREAT SEVERITY</div>
                     </div>
-                    <div style={{ background: '#F8FAFC', border: '1px solid #E5E7EB', borderRadius: '6px', padding: '1rem' }}>
+                    <div style={{ background: '#111A22', border: '1px solid #1C2833', borderRadius: '6px', padding: '1rem' }}>
                       <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>MITRE ATT&amp;CK Technique</div>
-                      <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#111827', margin: '0.25rem 0' }}>T1547.001</div>
+                      <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#F1F5F9', margin: '0.25rem 0' }}>T1547.001</div>
                       <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Boot/Logon Autostart Execution: Registry Run Keys</div>
                     </div>
-                    <div style={{ background: '#F8FAFC', border: '1px solid #E5E7EB', borderRadius: '6px', padding: '1rem' }}>
+                    <div style={{ background: '#111A22', border: '1px solid #1C2833', borderRadius: '6px', padding: '1rem' }}>
                       <div style={{ fontSize: '0.75rem', fontWeight: 600, color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.04em' }}>ML Engine Confidence</div>
-                      <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#166534', margin: '0.25rem 0' }}>99.4%</div>
-                      <div style={{ fontSize: '0.75rem', color: '#166534', fontWeight: 600 }}>Random Forest Classifier (RFC-8785 Sealed)</div>
+                      <div style={{ fontSize: '1.75rem', fontWeight: 700, color: '#3B9CFF', margin: '0.25rem 0' }}>99.4%</div>
+                      <div style={{ fontSize: '0.75rem', color: '#3B9CFF', fontWeight: 600 }}>Random Forest Classifier (RFC-8785 Sealed)</div>
                     </div>
                   </div>
                 </div>
 
                 {/* 05 Chain of Custody */}
                 <div style={{ marginBottom: '2rem' }}>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#111827', borderBottom: '1px solid #E5E7EB', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#F1F5F9', borderBottom: '1px solid #1C2833', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
                     05 Chain of Custody
                   </h3>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.84rem' }}>
                     <thead>
-                      <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E5E7EB', textAlign: 'left', color: '#64748B' }}>
+                      <tr style={{ background: '#111A22', borderBottom: '1px solid #1C2833', textAlign: 'left', color: '#64748B' }}>
                         <th style={{ padding: '0.65rem 0.85rem' }}>Seq #</th>
                         <th style={{ padding: '0.65rem 0.85rem' }}>Timestamp</th>
                         <th style={{ padding: '0.65rem 0.85rem' }}>Custody Action</th>
@@ -4412,26 +4522,26 @@ export default function App() {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr style={{ borderBottom: '1px solid #E5E7EB' }}>
+                      <tr style={{ borderBottom: '1px solid #1C2833' }}>
                         <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600 }}>001</td>
                         <td style={{ padding: '0.65rem 0.85rem', color: '#64748B' }}>14:20:15 UTC</td>
                         <td style={{ padding: '0.65rem 0.85rem', fontWeight: 500 }}>ACQUISITION_SEAL</td>
                         <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)' }}>AGENT-WIN-01</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475569' }}>4a7d189f...84712</td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#94A3B8' }}>4a7d189f...84712</td>
                       </tr>
-                      <tr style={{ borderBottom: '1px solid #E5E7EB' }}>
+                      <tr style={{ borderBottom: '1px solid #1C2833' }}>
                         <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600 }}>002</td>
                         <td style={{ padding: '0.65rem 0.85rem', color: '#64748B' }}>14:20:18 UTC</td>
                         <td style={{ padding: '0.65rem 0.85rem', fontWeight: 500 }}>VAULT_INGEST</td>
                         <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)' }}>JOCKY_CORE_LEDGER</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475569' }}>9f82b714...984712</td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#94A3B8' }}>9f82b714...984712</td>
                       </tr>
-                      <tr style={{ borderBottom: '1px solid #E5E7EB' }}>
+                      <tr style={{ borderBottom: '1px solid #1C2833' }}>
                         <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600 }}>003</td>
                         <td style={{ padding: '0.65rem 0.85rem', color: '#64748B' }}>14:21:00 UTC</td>
                         <td style={{ padding: '0.65rem 0.85rem', fontWeight: 500 }}>INTEGRITY_VERIFIED</td>
                         <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)' }}>lead-analyst@jocky.defense</td>
-                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475569' }}>5d41402a...852b85</td>
+                        <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#94A3B8' }}>5d41402a...852b85</td>
                       </tr>
                     </tbody>
                   </table>
@@ -4439,24 +4549,24 @@ export default function App() {
 
                 {/* 06 Conclusion */}
                 <div>
-                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#111827', borderBottom: '1px solid #E5E7EB', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#F1F5F9', borderBottom: '1px solid #1C2833', paddingBottom: '0.5rem', marginBottom: '1rem' }}>
                     06 Conclusion
                   </h3>
-                  <p style={{ color: '#475467', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+                  <p style={{ color: '#94A3B8', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
                     Digital evidence confirms an unapproved startup registry run key persistence mechanism consistent with MITRE ATT&CK T1547.001. All digital artifacts are preserved with cryptographic SHA-256 integrity and verifiable chain of custody. Recommended remediation: isolate endpoint DEMO-WINDOWS-ENDPOINT, delete rogue HKLM_Run registry value, and terminate spawned worker process tree.
                   </p>
 
                   {/* Examiner Validation Block */}
-                  <div style={{ paddingTop: '1.5rem', borderTop: '1px solid #E2E5E9', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1.5rem' }}>
+                  <div style={{ paddingTop: '1.5rem', borderTop: '1px solid #1C2833', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', flexWrap: 'wrap', gap: '1.5rem' }}>
                     <div>
-                      <div style={{ fontSize: '0.75rem', color: '#667085', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Certified Digital Forensic Examiner</div>
-                      <div style={{ fontWeight: 700, fontSize: '1rem', color: '#1F2937', marginTop: '0.2rem' }}>Senior Digital Forensics Lead</div>
-                      <div style={{ fontSize: '0.82rem', color: '#667085' }}>Cyber Defense & Forensic Readiness Group</div>
+                      <div style={{ fontSize: '0.75rem', color: '#64748B', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Certified Digital Forensic Examiner</div>
+                      <div style={{ fontWeight: 700, fontSize: '1rem', color: '#F1F5F9', marginTop: '0.2rem' }}>Senior Digital Forensics Lead</div>
+                      <div style={{ fontSize: '0.82rem', color: '#64748B' }}>Cyber Defense & Forensic Readiness Group</div>
                     </div>
                     <div style={{ textAlign: 'right' }}>
-                      <div style={{ padding: '0.5rem 1rem', background: '#F8FAFC', border: '1px solid #E2E5E9', borderRadius: '6px', display: 'inline-block' }}>
-                        <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#166534', letterSpacing: '0.05em' }}>CRYPTOGRAPHICALLY SEALED</div>
-                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.76rem', color: '#667085', marginTop: '0.15rem' }}>SHA-256: 7f83b165...ec49a712</div>
+                      <div style={{ padding: '0.5rem 1rem', background: '#111A22', border: '1px solid #1C2833', borderRadius: '6px', display: 'inline-block' }}>
+                        <div style={{ fontSize: '0.72rem', fontWeight: 700, color: '#3B9CFF', letterSpacing: '0.05em' }}>CRYPTOGRAPHICALLY SEALED</div>
+                        <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.76rem', color: '#64748B', marginTop: '0.15rem' }}>SHA-256: 7f83b165...ec49a712</div>
                       </div>
                     </div>
                   </div>
@@ -4467,11 +4577,11 @@ export default function App() {
 
           {/* TAB 8: AUDIT TRAIL */}
           {activeTab === 'audit' && (
-            <div className="glass-panel" style={{ padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
+            <div className="glass-panel" style={{ padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '8px', boxShadow: 'var(--shadow-card)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
                 <div>
-                  <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#1F2937' }}>Tamper-Evident System Audit Trail</h2>
-                  <p style={{ fontSize: '0.85rem', color: '#667085', marginTop: '0.2rem' }}>
+                  <h2 style={{ fontSize: '1.25rem', fontWeight: 600, color: '#F1F5F9' }}>Tamper-Evident System Audit Trail</h2>
+                  <p style={{ fontSize: '0.85rem', color: '#64748B', marginTop: '0.2rem' }}>
                     Immutable record of all investigator actions, task leases, and agent telemetry submissions.
                   </p>
                 </div>
@@ -4479,7 +4589,7 @@ export default function App() {
 
               <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
                 <thead>
-                  <tr style={{ background: '#F8FAFC', borderBottom: '1px solid #E2E5E9', textAlign: 'left', color: '#667085' }}>
+                  <tr style={{ background: '#111A22', borderBottom: '1px solid #1C2833', textAlign: 'left', color: '#64748B' }}>
                     <th style={{ padding: '0.65rem 0.85rem' }}>Timestamp</th>
                     <th style={{ padding: '0.65rem 0.85rem' }}>Actor</th>
                     <th style={{ padding: '0.65rem 0.85rem' }}>Actor Type</th>
@@ -4490,31 +4600,31 @@ export default function App() {
                 </thead>
                 <tbody>
                   {auditLogs.map((log) => (
-                    <tr key={log.id} style={{ borderBottom: '1px solid #E2E5E9' }}>
-                      <td style={{ padding: '0.65rem 0.85rem', color: '#667085' }}>{log.timestamp}</td>
-                      <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#1F2937' }}>{log.actor}</td>
+                    <tr key={log.id} style={{ borderBottom: '1px solid #1C2833' }}>
+                      <td style={{ padding: '0.65rem 0.85rem', color: '#64748B' }}>{log.timestamp}</td>
+                      <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#F1F5F9' }}>{log.actor}</td>
                       <td style={{ padding: '0.65rem 0.85rem' }}>
                         <span style={{ 
                           fontSize: '0.72rem', 
                           padding: '0.15rem 0.45rem', 
                           borderRadius: '4px', 
-                          background: log.actor_type === 'USER' ? '#EFF6FF' : '#F0FDF4', 
-                          color: log.actor_type === 'USER' ? '#2563EB' : '#16A34A',
-                          border: `1px solid ${log.actor_type === 'USER' ? '#BFDBFE' : '#BBF7D0'}`
+                          background: log.actor_type === 'USER' ? 'rgba(37, 135, 232, 0.12)' : 'rgba(16, 185, 129, 0.12)', 
+                          color: log.actor_type === 'USER' ? '#2587E8' : '#16A34A',
+                          border: `1px solid ${log.actor_type === 'USER' ? 'rgba(37, 135, 232, 0.25)' : '#1C2833'}`
                         }}>
                           {log.actor_type}
                         </span>
                       </td>
-                      <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#1F2937' }}>{log.action}</td>
-                      <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#475467' }}>{log.resource}</td>
+                      <td style={{ padding: '0.65rem 0.85rem', fontWeight: 600, color: '#F1F5F9' }}>{log.action}</td>
+                      <td style={{ padding: '0.65rem 0.85rem', fontFamily: 'var(--font-mono)', color: '#94A3B8' }}>{log.resource}</td>
                       <td style={{ padding: '0.65rem 0.85rem' }}>
                         <span style={{ 
                           fontSize: '0.72rem', 
                           padding: '0.15rem 0.45rem', 
                           borderRadius: '4px', 
-                          background: log.result === 'SUCCESS' ? '#F0FDF4' : '#FEF2F2', 
+                          background: log.result === 'SUCCESS' ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)', 
                           color: log.result === 'SUCCESS' ? '#16A34A' : '#DC2626',
-                          border: `1px solid ${log.result === 'SUCCESS' ? '#BBF7D0' : '#FECACA'}`
+                          border: `1px solid ${log.result === 'SUCCESS' ? '#1C2833' : 'rgba(239, 68, 68, 0.25)'}`
                         }}>
                           {log.result}
                         </span>
@@ -4530,18 +4640,18 @@ export default function App() {
 
       {/* MODAL: Agent Capabilities */}
       {capsModalAgent && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.45)', backdropFilter: 'blur(3px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
-          <div className="glass-panel" style={{ width: '480px', padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '10px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0, 0, 0, 0.75)', backdropFilter: 'blur(3px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
+          <div className="glass-panel" style={{ width: '480px', padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '10px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1F2937', margin: 0 }}>Capabilities: {capsModalAgent.id}</h3>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#F1F5F9', margin: 0 }}>Capabilities: {capsModalAgent.id}</h3>
               <button className="btn-secondary" style={{ padding: '0.2rem 0.5rem', fontSize: '0.78rem' }} onClick={() => setCapsModalAgent(null)}>Close</button>
             </div>
-            <p style={{ fontSize: '0.82rem', color: '#667085', marginBottom: '0.75rem' }}>
-              Platform: <strong style={{ color: '#1F2937' }}>{capsModalAgent.platform}</strong> ({capsModalAgent.os_ver})
+            <p style={{ fontSize: '0.82rem', color: '#64748B', marginBottom: '0.75rem' }}>
+              Platform: <strong style={{ color: '#F1F5F9' }}>{capsModalAgent.platform}</strong> ({capsModalAgent.os_ver})
             </p>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem', maxHeight: '200px', overflowY: 'auto' }}>
               {capsModalAgent.caps.map(c => (
-                <span key={c} style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', color: '#166534', padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}>
+                <span key={c} style={{ background: '#111A22', border: '1px solid #1C2833', color: '#3B9CFF', padding: '0.25rem 0.5rem', borderRadius: '4px', fontSize: '0.75rem', fontFamily: 'var(--font-mono)' }}>
                   {c}
                 </span>
               ))}
@@ -4552,26 +4662,26 @@ export default function App() {
 
       {/* MODAL: New Case */}
       {showNewCaseModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.45)', backdropFilter: 'blur(3px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
-          <div className="glass-panel" style={{ width: '450px', padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '10px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
-            <h3 style={{ fontSize: '1.15rem', fontWeight: 600, color: '#1F2937', marginBottom: '1rem' }}>Open New Investigation Case</h3>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0, 0, 0, 0.75)', backdropFilter: 'blur(3px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
+          <div className="glass-panel" style={{ width: '450px', padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '10px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
+            <h3 style={{ fontSize: '1.15rem', fontWeight: 600, color: '#F1F5F9', marginBottom: '1rem' }}>Open New Investigation Case</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
               <div>
-                <label style={{ fontSize: '0.8rem', color: '#667085', display: 'block', marginBottom: '0.25rem' }}>Case Title</label>
+                <label style={{ fontSize: '0.8rem', color: '#64748B', display: 'block', marginBottom: '0.25rem' }}>Case Title</label>
                 <input
                   type="text"
                   value={newCaseTitle}
                   onChange={(e) => setNewCaseTitle(e.target.value)}
                   placeholder="e.g. Lateral Movement Triage"
-                  style={{ width: '100%', padding: '0.5rem 0.75rem', background: '#FFFFFF', border: '1px solid #D0D5DD', borderRadius: '6px', color: '#1F2937', outline: 'none', fontSize: '0.85rem' }}
+                  style={{ width: '100%', padding: '0.5rem 0.75rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '6px', color: '#F1F5F9', outline: 'none', fontSize: '0.85rem' }}
                 />
               </div>
               <div>
-                <label style={{ fontSize: '0.8rem', color: '#667085', display: 'block', marginBottom: '0.25rem' }}>Severity</label>
+                <label style={{ fontSize: '0.8rem', color: '#64748B', display: 'block', marginBottom: '0.25rem' }}>Severity</label>
                 <select
                   value={newCaseSeverity}
                   onChange={(e) => setNewCaseSeverity(e.target.value)}
-                  style={{ width: '100%', padding: '0.5rem 0.75rem', background: '#FFFFFF', border: '1px solid #D0D5DD', borderRadius: '6px', color: '#1F2937', fontSize: '0.85rem' }}
+                  style={{ width: '100%', padding: '0.5rem 0.75rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '6px', color: '#F1F5F9', fontSize: '0.85rem' }}
                 >
                   <option value="low">Low</option>
                   <option value="medium">Medium</option>
@@ -4590,15 +4700,15 @@ export default function App() {
 
       {/* MODAL: Inspect Evidence JSON */}
       {inspectEvidence && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.45)', backdropFilter: 'blur(3px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
-          <div className="glass-panel" style={{ width: '640px', maxHeight: '80vh', padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '10px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)', display: 'flex', flexDirection: 'column' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0, 0, 0, 0.75)', backdropFilter: 'blur(3px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
+          <div className="glass-panel" style={{ width: '640px', maxHeight: '80vh', padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '10px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)', display: 'flex', flexDirection: 'column' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#1F2937', margin: 0 }}>
-                Evidence Envelope: <span style={{ fontFamily: 'var(--font-mono)', color: '#166534' }}>{inspectEvidence.id}</span>
+              <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: '#F1F5F9', margin: 0 }}>
+                Evidence Envelope: <span style={{ fontFamily: 'var(--font-mono)', color: '#3B9CFF' }}>{inspectEvidence.id}</span>
               </h3>
               <button className="btn-secondary" style={{ padding: '0.2rem 0.5rem', fontSize: '0.78rem' }} onClick={() => setInspectEvidence(null)}>Close</button>
             </div>
-            <pre style={{ flex: 1, overflowY: 'auto', background: '#F8FAFC', border: '1px solid #E2E5E9', padding: '1rem', borderRadius: '6px', fontSize: '0.82rem', color: '#1F2937', fontFamily: 'var(--font-mono)', lineHeight: '1.5' }}>
+            <pre style={{ flex: 1, overflowY: 'auto', background: '#111A22', border: '1px solid #1C2833', padding: '1rem', borderRadius: '6px', fontSize: '0.82rem', color: '#F1F5F9', fontFamily: 'var(--font-mono)', lineHeight: '1.5' }}>
               {JSON.stringify(inspectEvidence, null, 2)}
             </pre>
           </div>
@@ -4607,28 +4717,28 @@ export default function App() {
 
       {/* MODAL: Playbook Analyst Review & Approval */}
       {approvalModalPlaybook && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.45)', backdropFilter: 'blur(3px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
-          <div className="glass-panel" style={{ width: '520px', padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '10px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
-            <h3 style={{ fontSize: '1.15rem', fontWeight: 600, color: '#1F2937', marginBottom: '0.5rem' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0, 0, 0, 0.75)', backdropFilter: 'blur(3px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
+          <div className="glass-panel" style={{ width: '520px', padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '10px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
+            <h3 style={{ fontSize: '1.15rem', fontWeight: 600, color: '#F1F5F9', marginBottom: '0.5rem' }}>
               Analyst Response Review & Sign-Off
             </h3>
-            <p style={{ fontSize: '0.82rem', color: '#667085', marginBottom: '1rem' }}>
-              Playbook: <strong style={{ color: '#166534' }}>{approvalModalPlaybook.name}</strong> ({approvalModalPlaybook.actions?.length || 0} steps)
+            <p style={{ fontSize: '0.82rem', color: '#64748B', marginBottom: '1rem' }}>
+              Playbook: <strong style={{ color: '#3B9CFF' }}>{approvalModalPlaybook.name}</strong> ({approvalModalPlaybook.actions?.length || 0} steps)
             </p>
 
-            <div style={{ background: '#F8FAFC', border: '1px solid #E2E5E9', borderRadius: '6px', padding: '0.75rem', marginBottom: '1rem' }}>
-              <div style={{ fontSize: '0.75rem', color: '#667085', marginBottom: '0.35rem', fontWeight: 600 }}>Proposed Actions:</div>
+            <div style={{ background: '#111A22', border: '1px solid #1C2833', borderRadius: '6px', padding: '0.75rem', marginBottom: '1rem' }}>
+              <div style={{ fontSize: '0.75rem', color: '#64748B', marginBottom: '0.35rem', fontWeight: 600 }}>Proposed Actions:</div>
               {approvalModalPlaybook.actions?.map(a => (
-                <div key={a.id} style={{ fontSize: '0.8rem', color: '#1F2937', display: 'flex', gap: '0.5rem', marginBottom: '0.25rem' }}>
-                  <span style={{ color: '#166534', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>#{a.step_number}</span>
+                <div key={a.id} style={{ fontSize: '0.8rem', color: '#F1F5F9', display: 'flex', gap: '0.5rem', marginBottom: '0.25rem' }}>
+                  <span style={{ color: '#3B9CFF', fontWeight: 600, fontFamily: 'var(--font-mono)' }}>#{a.step_number}</span>
                   <code style={{ fontFamily: 'var(--font-mono)' }}>{a.action_type}</code>
-                  {a.target_agent_id && <span style={{ color: '#667085' }}>({a.target_agent_id})</span>}
+                  {a.target_agent_id && <span style={{ color: '#64748B' }}>({a.target_agent_id})</span>}
                 </div>
               ))}
             </div>
 
             <div style={{ marginBottom: '1rem' }}>
-              <label style={{ fontSize: '0.8rem', color: '#667085', display: 'block', marginBottom: '0.35rem' }}>
+              <label style={{ fontSize: '0.8rem', color: '#64748B', display: 'block', marginBottom: '0.35rem' }}>
                 Examiner Justification / Comments
               </label>
               <textarea
@@ -4636,7 +4746,7 @@ export default function App() {
                 value={approvalComment}
                 onChange={(e) => setApprovalComment(e.target.value)}
                 placeholder="Enter forensic authorization justification..."
-                style={{ width: '100%', padding: '0.5rem 0.75rem', background: '#FFFFFF', border: '1px solid #D0D5DD', borderRadius: '6px', color: '#1F2937', fontSize: '0.82rem', outline: 'none' }}
+                style={{ width: '100%', padding: '0.5rem 0.75rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '6px', color: '#F1F5F9', fontSize: '0.82rem', outline: 'none' }}
               />
             </div>
 
@@ -4647,14 +4757,14 @@ export default function App() {
               <button 
                 className="btn-secondary" 
                 onClick={() => handleApprovePlaybook('REJECTED')}
-                style={{ color: '#DC2626', borderColor: '#FECACA', background: '#FEF2F2' }}
+                style={{ color: '#EF4444', borderColor: 'rgba(239, 68, 68, 0.25)', background: 'rgba(239, 68, 68, 0.12)' }}
               >
                 Reject Playbook
               </button>
               <button 
                 className="btn-primary" 
                 onClick={() => handleApprovePlaybook('APPROVED')}
-                style={{ background: '#166534' }}
+                style={{ background: '#2587E8' }}
               >
                 Authorize & Approve
               </button>
@@ -4665,44 +4775,44 @@ export default function App() {
 
       {/* MODAL: Create Response Playbook */}
       {showNewPlaybookModal && (
-        <div style={{ position: 'fixed', inset: 0, background: 'rgba(15, 23, 42, 0.45)', backdropFilter: 'blur(3px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
-          <div className="glass-panel" style={{ width: '500px', padding: '1.5rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '10px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
-            <h3 style={{ fontSize: '1.15rem', fontWeight: 600, color: '#1F2937', marginBottom: '0.5rem' }}>
+        <div style={{ position: 'fixed', inset: 0, background: 'rgba(0, 0, 0, 0.75)', backdropFilter: 'blur(3px)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 100 }}>
+          <div className="glass-panel" style={{ width: '500px', padding: '1.5rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '10px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
+            <h3 style={{ fontSize: '1.15rem', fontWeight: 600, color: '#F1F5F9', marginBottom: '0.5rem' }}>
               Create Defensive Response Playbook
             </h3>
-            <p style={{ fontSize: '0.82rem', color: '#667085', marginBottom: '1rem' }}>
+            <p style={{ fontSize: '0.82rem', color: '#64748B', marginBottom: '1rem' }}>
               Enforces strict allowlist validation for deterministic incident response.
             </p>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
               <div>
-                <label style={{ fontSize: '0.8rem', color: '#667085', display: 'block', marginBottom: '0.25rem' }}>Playbook Name</label>
+                <label style={{ fontSize: '0.8rem', color: '#64748B', display: 'block', marginBottom: '0.25rem' }}>Playbook Name</label>
                 <input
                   type="text"
                   value={newPbName}
                   onChange={(e) => setNewPbName(e.target.value)}
                   placeholder="e.g. Lateral Movement Rapid Containment"
-                  style={{ width: '100%', padding: '0.5rem 0.75rem', background: '#FFFFFF', border: '1px solid #D0D5DD', borderRadius: '6px', color: '#1F2937', outline: 'none', fontSize: '0.85rem' }}
+                  style={{ width: '100%', padding: '0.5rem 0.75rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '6px', color: '#F1F5F9', outline: 'none', fontSize: '0.85rem' }}
                 />
               </div>
 
               <div>
-                <label style={{ fontSize: '0.8rem', color: '#667085', display: 'block', marginBottom: '0.25rem' }}>Description</label>
+                <label style={{ fontSize: '0.8rem', color: '#64748B', display: 'block', marginBottom: '0.25rem' }}>Description</label>
                 <textarea
                   rows={2}
                   value={newPbDesc}
                   onChange={(e) => setNewPbDesc(e.target.value)}
                   placeholder="Defensive response goals and triggers..."
-                  style={{ width: '100%', padding: '0.5rem 0.75rem', background: '#FFFFFF', border: '1px solid #D0D5DD', borderRadius: '6px', color: '#1F2937', outline: 'none', fontSize: '0.85rem' }}
+                  style={{ width: '100%', padding: '0.5rem 0.75rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '6px', color: '#F1F5F9', outline: 'none', fontSize: '0.85rem' }}
                 />
               </div>
 
               <div>
-                <label style={{ fontSize: '0.8rem', color: '#667085', display: 'block', marginBottom: '0.25rem' }}>Approved Defensive Action (Step 1)</label>
+                <label style={{ fontSize: '0.8rem', color: '#64748B', display: 'block', marginBottom: '0.25rem' }}>Approved Defensive Action (Step 1)</label>
                 <select
                   value={newPbActionType}
                   onChange={(e) => setNewPbActionType(e.target.value)}
-                  style={{ width: '100%', padding: '0.5rem 0.75rem', background: '#FFFFFF', border: '1px solid #D0D5DD', borderRadius: '6px', color: '#166534', fontWeight: 600, fontSize: '0.85rem' }}
+                  style={{ width: '100%', padding: '0.5rem 0.75rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '6px', color: '#3B9CFF', fontWeight: 600, fontSize: '0.85rem' }}
                 >
                   <option value="collect.processes">collect.processes (Volatile Process Snapshot)</option>
                   <option value="collect.network">collect.network (Active Sockets & Sinks)</option>
@@ -4715,11 +4825,11 @@ export default function App() {
               </div>
 
               <div>
-                <label style={{ fontSize: '0.8rem', color: '#667085', display: 'block', marginBottom: '0.25rem' }}>Target Fleet Agent</label>
+                <label style={{ fontSize: '0.8rem', color: '#64748B', display: 'block', marginBottom: '0.25rem' }}>Target Fleet Agent</label>
                 <select
                   value={newPbTargetAgent}
                   onChange={(e) => setNewPbTargetAgent(e.target.value)}
-                  style={{ width: '100%', padding: '0.5rem 0.75rem', background: '#FFFFFF', border: '1px solid #D0D5DD', borderRadius: '6px', color: '#1F2937', fontSize: '0.85rem' }}
+                  style={{ width: '100%', padding: '0.5rem 0.75rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '6px', color: '#F1F5F9', fontSize: '0.85rem' }}
                 >
                   {agents.map(a => (
                     <option key={a.id} value={a.id}>{a.id} ({a.hostname} - {a.platform})</option>
@@ -4741,24 +4851,24 @@ export default function App() {
         <div style={{
           position: 'fixed',
           top: 0, left: 0, right: 0, bottom: 0,
-          background: 'rgba(15, 23, 42, 0.45)',
+          background: 'rgba(0, 0, 0, 0.75)',
           backdropFilter: 'blur(3px)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
           zIndex: 9999
         }}>
-          <div className="glass-panel" style={{ width: '560px', maxWidth: '90%', padding: '1.75rem', background: '#FFFFFF', border: '1px solid #E2E5E9', borderRadius: '10px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid #E2E5E9', paddingBottom: '0.75rem' }}>
+          <div className="glass-panel" style={{ width: '560px', maxWidth: '90%', padding: '1.75rem', background: '#0E151C', border: '1px solid #1C2833', borderRadius: '10px', boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem', borderBottom: '1px solid #1C2833', paddingBottom: '0.75rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
                 <ShieldCheck size={22} color={mlVerifyResult.is_valid ? '#16A34A' : '#DC2626'} />
-                <h3 style={{ fontSize: '1.15rem', fontWeight: 600, color: '#1F2937', margin: 0 }}>
+                <h3 style={{ fontSize: '1.15rem', fontWeight: 600, color: '#F1F5F9', margin: 0 }}>
                   Cryptographic Seal Verification
                 </h3>
               </div>
               <button 
                 onClick={() => setShowMlVerifyModal(false)} 
-                style={{ background: 'transparent', border: 'none', color: '#667085', cursor: 'pointer' }}
+                style={{ background: 'transparent', border: 'none', color: '#64748B', cursor: 'pointer' }}
               >
                 <X size={18} />
               </button>
@@ -4768,34 +4878,34 @@ export default function App() {
               <div style={{ 
                 padding: '0.8rem', 
                 borderRadius: '8px', 
-                background: mlVerifyResult.is_valid ? '#F0FDF4' : '#FEF2F2',
-                border: mlVerifyResult.is_valid ? '1px solid #BBF7D0' : '1px solid #FECACA'
+                background: mlVerifyResult.is_valid ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)',
+                border: mlVerifyResult.is_valid ? '1px solid #1C2833' : '1px solid #1C2833'
               }}>
                 <div style={{ fontSize: '0.85rem', fontWeight: 700, color: mlVerifyResult.is_valid ? '#16A34A' : '#DC2626' }}>
                   {mlVerifyResult.is_valid ? 'PREDICTION INTEGRITY VERIFIED (RFC-8785 VALID)' : 'INTEGRITY TAMPERING DETECTED'}
                 </div>
-                <div style={{ fontSize: '0.8rem', color: '#475467', marginTop: '0.25rem' }}>
+                <div style={{ fontSize: '0.8rem', color: '#94A3B8', marginTop: '0.25rem' }}>
                   {mlVerifyResult.message}
                 </div>
               </div>
 
               <div>
-                <label style={{ fontSize: '0.75rem', color: '#667085', display: 'block', marginBottom: '0.2rem' }}>Prediction ID</label>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: '#166534', background: '#F8FAFC', padding: '0.4rem 0.6rem', borderRadius: '4px', border: '1px solid #E2E5E9' }}>
+                <label style={{ fontSize: '0.75rem', color: '#64748B', display: 'block', marginBottom: '0.2rem' }}>Prediction ID</label>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', color: '#3B9CFF', background: '#111A22', padding: '0.4rem 0.6rem', borderRadius: '4px', border: '1px solid #1C2833' }}>
                   {mlVerifyResult.prediction_id}
                 </div>
               </div>
 
               <div>
-                <label style={{ fontSize: '0.75rem', color: '#667085', display: 'block', marginBottom: '0.2rem' }}>Claimed Canonical Hash (Stored)</label>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#475467', background: '#F8FAFC', padding: '0.4rem 0.6rem', borderRadius: '4px', border: '1px solid #E2E5E9', wordBreak: 'break-all' }}>
+                <label style={{ fontSize: '0.75rem', color: '#64748B', display: 'block', marginBottom: '0.2rem' }}>Claimed Canonical Hash (Stored)</label>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: '#94A3B8', background: '#111A22', padding: '0.4rem 0.6rem', borderRadius: '4px', border: '1px solid #1C2833', wordBreak: 'break-all' }}>
                   {mlVerifyResult.claimed_hash}
                 </div>
               </div>
 
               <div>
-                <label style={{ fontSize: '0.75rem', color: '#667085', display: 'block', marginBottom: '0.2rem' }}>Recalculated Canonical Hash (Computed Now)</label>
-                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: mlVerifyResult.is_valid ? '#16A34A' : '#DC2626', background: '#F8FAFC', padding: '0.4rem 0.6rem', borderRadius: '4px', border: '1px solid #E2E5E9', wordBreak: 'break-all' }}>
+                <label style={{ fontSize: '0.75rem', color: '#64748B', display: 'block', marginBottom: '0.2rem' }}>Recalculated Canonical Hash (Computed Now)</label>
+                <div style={{ fontFamily: 'var(--font-mono)', fontSize: '0.78rem', color: mlVerifyResult.is_valid ? '#16A34A' : '#DC2626', background: '#111A22', padding: '0.4rem 0.6rem', borderRadius: '4px', border: '1px solid #1C2833', wordBreak: 'break-all' }}>
                   {mlVerifyResult.recalculated_hash}
                 </div>
               </div>
