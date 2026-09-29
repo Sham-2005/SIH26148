@@ -557,7 +557,7 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
               <span style={{
                 fontSize: '0.78rem',
                 fontWeight: 600,
-                color: stageIndex === 6 ? '#16A34A' : isRunning ? '#2587E8' : '#667085'
+                color: stageIndex === 6 ? '#10B981' : isRunning ? '#2587E8' : '#64748B'
               }}>
                 {stageIndex === 6 ? '6 / 6 STAGES COMPLETED' : isRunning ? `EXECUTING STAGE ${stageIndex + 1} OF 6` : 'READY FOR EXECUTION'}
               </span>
@@ -576,19 +576,19 @@ export default function OneClickDemo({ initialScript = BUILTIN_DEMO_SCRIPT }) {
 
                 let statusIcon = '';
                 let borderColor = '#1C2833';
-                let bgColor = '#F8FAFC';
-                let textColor = '#667085';
+                let bgColor = '#111A22';
+                let textColor = '#94A3B8';
 
                 if (isCompleted) {
                   statusIcon = '';
-                  borderColor = '#1C2833';
+                  borderColor = 'rgba(16, 185, 129, 0.3)';
                   bgColor = 'rgba(16, 185, 129, 0.12)';
-                  textColor = '#16A34A';
+                  textColor = '#10B981';
                 } else if (isActive) {
                   statusIcon = '';
-                  borderColor = 'rgba(37, 135, 232, 0.25)';
-                  bgColor = 'rgba(37, 135, 232, 0.12)';
-                  textColor = '#2587E8';
+                  borderColor = 'rgba(37, 135, 232, 0.4)';
+                  bgColor = 'rgba(37, 135, 232, 0.15)';
+                  textColor = '#3B9CFF';
                 }
 
                 return (
