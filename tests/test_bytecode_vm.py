@@ -2,6 +2,8 @@ from compiler.lexer.lexer import Lexer
 from compiler.parser.parser import Parser
 from compiler.semantic.analyzer import SemanticAnalyzer
 from compiler.bytecode.compiler import BytecodeCompiler
+from compiler.bytecode.format import BytecodeImage, Instruction
+from compiler.bytecode.opcodes import Opcode
 from vm.vm import JockyVM
 
 
@@ -20,7 +22,10 @@ def test_forensic_call_reaches_vm_dispatcher():
     }
     ''')
     observed = []
-    result = JockyVM(dispatcher=lambda fn, args: observed.append((fn, args)) or [{"ok": True}]).execute(image)
+    result = JockyVM(
+        dispatcher=lambda fn, args: observed.append((fn, args)) or [{"ok": True}]
+    ).execute(image)
+
     assert result.status == "SUCCESS"
     assert observed == [("process.list", [])]
     assert result.evidence_sealed is True
@@ -28,11 +33,13 @@ def test_forensic_call_reaches_vm_dispatcher():
 
 
 def test_vm_rejects_undefined_variable():
-    image = compile_source('''
-    script bad {
-        process.info(pid);
-    }
-    ''')
+    image = BytecodeImage(
+        instructions=[
+            Instruction(Opcode.LOAD, "missing"),
+            Instruction(Opcode.HALT),
+        ]
+    )
+
     try:
         JockyVM().execute(image)
     except Exception as exc:
