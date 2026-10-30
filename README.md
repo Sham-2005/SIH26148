@@ -31,7 +31,7 @@ In modern cybersecurity operations, digital forensics and incident response (DFI
 
 ## 3. The Problem
 
-Digital forensic evidence must withstand rigorous judicial cross-examination and adversarial scrutiny. In practice, investigative teams face four core dilemmas:
+Digital forensic evidence must withstand rigorous judicial cross-examination and adversarial scrutiny. In practice, investigative teams face four core dilemmas: 
 
 1. **Non-Deterministic Evidence Serialization**: Differing whitespace, key-ordering, and encoding across platforms cause identical JSON/dictionary payloads to produce conflicting cryptographic hashes.
 2. **Missing Longitudinal Provenance**: Investigators cannot easily demonstrate the unbroken line of custody connecting an alert or finding back to the raw telemetry, the collector process, and the specific script executed.
